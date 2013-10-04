@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addons>
+<addon id="repository.Blazetamer" name="Blazetamer's Repository" version="2.5" provider-name="Blazetamer">
+	<extension point="xbmc.addon.repository" name="Blaztamer's Addon Repository">
+		<info compressed="false">http://github.com/Blazetamer/Repo/raw/master/addons.xml</info>
+		<checksum>http://github.com/Blazetamer/Repo/raw/master/addons.xml.md5</checksum>
+		<datadir zip="true">http://github.com/Blazetamer/Repo/raw/master/zips</datadir>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary>Install all of Blazetamer's Addons</summary>
+		<description>Download and install addons from Blazetamer.......For Official Support Visit XBMCHUB.COM</description>
+		<platform>all</platform>
+	</extension>
+</addon>
+
+<addon id="weather.yahoo" name="Yahoo! Weather" version="1.0" provider-name="Blazetamer">
+	<requires>
+		<import addon="xbmc.python" version="2.1.0"/>
+		<import addon="script.module.simplejson" version="2.0.10"/>
+	</requires>
+	<extension point="xbmc.python.weather" library="default.py"/>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="en">Weather forecast from yahoo.com</summary>
+		<description lang="en">Weather forecast provided by Yahoo! Weather (http://weather.yahoo.com/)</description>
+		<disclaimer lang="en">Use of this add-on implies that you have agreed to the Terms of Service located at http://developer.yahoo.com/weather/#terms</disclaimer>
+		<language></language>
+		<platform>all</platform>
+					</extension>
+</addon>
+</addons>
