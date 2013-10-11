@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.freefunvid" version="1.0.0" name="Funny Videos" provider-name="Blazetamer">
+<addon id="plugin.video.freefunvid" version="1.0.1" name="Funny Videos" provider-name="Blazetamer">
 <requires>
 <import addon="xbmc.python" version="1.0"/>
 </requires>

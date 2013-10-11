@@ -1,3 +1,6 @@
+V1.0.1 
+Fixed Issue with clicking twiceto play video
+Thanks to o9R1sh for the codes
 
 V1.0.0
 Initial Release  "First Official Addon Made by Blazetamer
