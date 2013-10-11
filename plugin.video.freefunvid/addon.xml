@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.freefunvid" version="1.0.0" name="Funny Videos" provider-name="Blazetamer">
+<requires>
+<import addon="xbmc.python" version="1.0"/>
+</requires>
+<extension point="xbmc.python.pluginsource" library="default.py">
+<provides>video</provides>
+</extension>
+<extension point="xbmc.addon.metadata">
+<summary> A large, organized database of free funny videos.</summary>
+<description>FreeFunnyVideo.org offers a large, organized database of free funny videos, funny cats videos. Here you can find lots of funny videos, video clips,music video clips and much more. </description>
+<platform>all</platform>
+</extension>
+</addon>
