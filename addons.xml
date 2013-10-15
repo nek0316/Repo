@@ -14,6 +14,20 @@
 </extension>
 </addon>
 
+<addon id="plugin.video.popcornflix" version="1.0.0b" name=" PopcornFlix" provider-name="Blazetamer">
+<requires>
+<import addon="xbmc.python" version="1.0"/>
+</requires>
+<extension point="xbmc.python.pluginsource" library="default.py">
+<provides>video</provides>
+</extension>
+<extension point="xbmc.addon.metadata">
+<summary>PopcornFlix BETA</summary>
+<description>**This is a Pre-Release BETA Version of popcornflix ...You will recieve the Official Release when/if it is available **Movies from the Popular Website PopcornFlix  ***For Official support visit xbmchub.com***</description>
+<platform>all</platform>
+</extension>
+</addon>
+
 <addon id="repository.Blazetamer" name="Blazetamer's Repository" version="2.5" provider-name="Blazetamer">
 	<extension point="xbmc.addon.repository" name="Blaztamer's Addon Repository">
 		<info compressed="false">http://github.com/Blazetamer/Repo/raw/master/addons.xml</info>
