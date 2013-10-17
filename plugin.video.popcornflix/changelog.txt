@@ -1,5 +1,8 @@
+V1.0.2b
+Quick Fix
+
 V1.0.1b
-Added Search option **Thanks to Hollywood99 for the advice"
+Added Search option **Thanks to Highway99 for the advice"
 Added Artwork "Teaser"
 Cleaned up the Menus
 
