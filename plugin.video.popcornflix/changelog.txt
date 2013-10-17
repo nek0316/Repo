@@ -1,3 +1,7 @@
+V1.0.1b
+Added Search option **Thanks to Hollywood99 for the advice"
+Added Artwork "Teaser"
+Cleaned up the Menus
 
 V1.0.0b
 Initial BETA Pre- Release

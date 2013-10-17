@@ -3,31 +3,24 @@ import urllib,urllib2,re,xbmcplugin,xbmcgui,xbmc, xbmcaddon, os, sys
 from meta import TheTVDBInfo, set_movie_meta, download_movie_meta, set_tv_show_meta, download_tv_show_meta, meta_exist
 
 #Popcorn Flix - Blazetamer.
-addon = xbmcaddon.Addon ('plugin.video.popcorn1')
+addon_id = 'plugin.video.popcornflix'
 URL= 'http://popcornflix.com'
-#_plugin = xbmcaddon.Addon(id=addon_id)
-#PATHS
 
-addonPath = addon.getAddonInfo('path')
-artPath = addonPath + '/art/'
-fanartPath = addonPath + '/art/'
 
 def CATEGORIES():
-    
-    addDir('[COLOR blue]New Arrivals[/COLOR]','http://popcornflix.com/New-Arrivals-movies/',1,artPath+'newarrival.png')
-    addDir('[COLOR orange]Most Popular[/COLOR]','http://popcornflix.com/most-popular-movies/',1,'')
-    addDir('[COLOR blue]Rock Stars[/COLOR]','http://popcornflix.com/Rock-Star-movies',3,'')
-    addDir('[COLOR orange]Action/Thriller[/COLOR]','http://popcornflix.com/Action/Thriller-movies',3,'')
-    addDir('[COLOR blue]Comedy[/COLOR]','http://popcornflix.com/Action/Thriller-movies',3,'')
-    addDir('[COLOR orange]Horror Movies[/COLOR]','http://popcornflix.com/Horror-movies',3,'')
-    addDir('[COLOR blue]Drama[/COLOR]','http://popcornflix.com/Drama-movies',3,'')
-    addDir('[COLOR orange]Romance[/COLOR]','http://popcornflix.com/Romance-movies',3,'')
-    addDir('[COLOR blue]Kids/Family[/COLOR]','http://popcornflix.com/Family/Kids-movies',3,'')
-    addDir('[COLOR orange]TV Series[/COLOR]','http://popcornflix.com/TV-Series',3,'')
-    addDir('[COLOR blue]Urban Movies[/COLOR]','http://popcornflix.com/Urban-movies',3,'')
-    addDir('[COLOR orange]Documentary/Shorts[/COLOR]','http://popcornflix.com/Documentary/Shorts-movies',3,'')
-    addDir('[COLOR blue]Bollywood[/COLOR]','http://popcornflix.com/Bollywood-movies',3,'')
-    addDir('[COLOR red][B]Search[/B] >>>[/COLOR]','http://www.popcornflix.com/search?query=',10,'')
+    addDir('New Arrivals','http://popcornflix.com/New-Arrivals-movies/',1,'')
+    addDir('Most Popular','http://popcornflix.com/most-popular-movies/',1,'')
+    addDir('Rock Stars','http://popcornflix.com/Rock-Star-movies',3,'')
+    addDir('Action/Thriller','http://popcornflix.com/Action/Thriller-movies',3,'')
+    addDir('Comedy','http://popcornflix.com/Action/Thriller-movies',3,'')
+    addDir('Horror Movies','http://popcornflix.com/Horror-movies',3,'')
+    addDir('Drama','http://popcornflix.com/Drama-movies',3,'')
+    addDir('Romance','http://popcornflix.com/Romance-movies',3,'')
+    addDir('Kids/Family','http://popcornflix.com/Family/Kids-movies',3,'')
+    addDir('TV Series','http://popcornflix.com/TV-Series',3,'')
+    addDir('Urban Movies','http://popcornflix.com/Urban-movies',3,'')
+    addDir('Documentary/Shorts','http://popcornflix.com/Documentary/Shorts-movies',3,'')
+    addDir('Bollywood','http://popcornflix.com/Bollywood-movies',3,'')
 
 def INDEX(url):
         req = urllib2.Request(url)
@@ -60,29 +53,8 @@ def INDEX_DEEP(url):
         response.close()
         match=re.compile('<a href="(.+?)"><img width="184" height="256" src="(.+?)" alt="(.+?)">').findall(link)
         for url,thumbnail,name in match:
-                addDir(name,URL+url,2,thumbnail)
+                addDir(name,URL+url,2,thumbnail)                 
 
-#Start Ketboard Function                
-def _get_keyboard( default="", heading="", hidden=False ):
-	""" shows a keyboard and returns a value """
-	keyboard = xbmc.Keyboard( default, heading, hidden )
-	keyboard.doModal()
-	if ( keyboard.isConfirmed() ):
-		return unicode( keyboard.getText(), "utf-8" )
-	return default
-
-
-#Start Search Function
-def SEARCH(url):
-	searchUrl = url 
-	vq = _get_keyboard( heading="Searching  PoPcornflix" )
-	# if blank or the user cancelled the keyboard, return
-	if ( not vq ): return False, 0
-	# we need to set the title to our query
-	title = urllib.quote_plus(vq)
-	searchUrl += title 
-	print "Searching URL: " + searchUrl 
-	INDEX,INDEX_DEEP(searchUrl)
         
 
                 
@@ -164,12 +136,7 @@ elif mode==2:
 
 elif mode==3:
         print ""+url
-        INDEX_DEEP(url)
-       
-#For Search Function
-elif mode==10:
-        print ""+url
-        SEARCH(url)
+        INDEX_DEEP(url)        
 
 
 
