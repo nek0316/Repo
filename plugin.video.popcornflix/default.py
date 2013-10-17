@@ -3,7 +3,7 @@ import urllib,urllib2,re,xbmcplugin,xbmcgui,xbmc, xbmcaddon, os, sys
 from meta import TheTVDBInfo, set_movie_meta, download_movie_meta, set_tv_show_meta, download_tv_show_meta, meta_exist
 
 #Popcorn Flix - Blazetamer.
-addon = xbmcaddon.Addon ('plugin.video.popcorn1')
+addon = xbmcaddon.Addon ('plugin.video.popcornflix')
 URL= 'http://popcornflix.com'
 #_plugin = xbmcaddon.Addon(id=addon_id)
 #PATHS
