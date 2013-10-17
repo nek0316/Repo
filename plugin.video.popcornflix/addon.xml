@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.popcornflix" version="1.5.0" name=" PopcornFlix" provider-name="Blazetamer">
+<addon id="plugin.video.popcornflix" version="1.5.1" name=" PopcornFlix" provider-name="Blazetamer">
 <requires>
 <import addon="xbmc.python" version="1.0"/>
 </requires>
@@ -7,8 +7,8 @@
 <provides>video</provides>
 </extension>
 <extension point="xbmc.addon.metadata">
-<summary>PopcornFlix BETA</summary>
-<description>**This is a Pre-Release BETA Version of popcornflix ...You will recieve the Official Release when/if it is available **Movies from the Popular Website PopcornFlix  ***For Official support visit xbmchub.com***</description>
+<summary>PopcornFlix</summary>
+<description>***Movies from the Popular Website PopcornFlix  ***For Official support visit xbmchub.com***</description>
 <platform>all</platform>
 </extension>
 </addon>
