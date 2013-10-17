@@ -3,7 +3,7 @@ import urllib,urllib2,re,xbmcplugin,xbmcgui,xbmc, xbmcaddon, os, sys
 from meta import TheTVDBInfo, set_movie_meta, download_movie_meta, set_tv_show_meta, download_tv_show_meta, meta_exist
 
 #Popcorn Flix - Blazetamer.
-addon = xbmcaddon.Addon ('plugin.video.popcornflix')
+addon = xbmcaddon.Addon ('plugin.video.popcorn1')
 URL= 'http://popcornflix.com'
 #_plugin = xbmcaddon.Addon(id=addon_id)
 #PATHS
@@ -15,19 +15,19 @@ fanartPath = addonPath + '/art/'
 def CATEGORIES():
     
     addDir('[COLOR blue]New Arrivals[/COLOR]','http://popcornflix.com/New-Arrivals-movies/',1,artPath+'newarrival.png')
-    addDir('[COLOR orange]Most Popular[/COLOR]','http://popcornflix.com/most-popular-movies/',1,artPath+'mostpopular.png')
-    addDir('[COLOR blue]Rock Stars[/COLOR]','http://popcornflix.com/Rock-Star-movies',3,artPath+'rockstars.png')
-    addDir('[COLOR orange]Action/Thriller[/COLOR]','http://popcornflix.com/Action/Thriller-movies',3,artPath+'thriller.png')
-    addDir('[COLOR blue]Comedy[/COLOR]','http://popcornflix.com/Action/Thriller-movies',3,artPath+'comedy.png')
-    addDir('[COLOR orange]Horror Movies[/COLOR]','http://popcornflix.com/Horror-movies',3,artPath+'horror.png')
-    addDir('[COLOR blue]Drama[/COLOR]','http://popcornflix.com/Drama-movies',3,artPath+'drama.png')
-    addDir('[COLOR orange]Romance[/COLOR]','http://popcornflix.com/Romance-movies',3,artPath+'romance.png')
-    addDir('[COLOR blue]Kids/Family[/COLOR]','http://popcornflix.com/Family/Kids-movies',3,artPath+'kidfamily.png')
-    addDir('[COLOR orange]TV Series[/COLOR]','http://popcornflix.com/TV-Series',3,artPath+'tvseries.png')
-    addDir('[COLOR blue]Urban Movies[/COLOR]','http://popcornflix.com/Urban-movies',3,artPath+'urbanmovies.png')
-    addDir('[COLOR orange]Documentary/Shorts[/COLOR]','http://popcornflix.com/Documentary/Shorts-movies',3,artPath+'documentary.png')
-    addDir('[COLOR blue]Bollywood[/COLOR]','http://popcornflix.com/Bollywood-movies',3,artPath+'bollywood.png')
-    addDir('[COLOR red][B]Search[/B] >>>[/COLOR]','http://www.popcornflix.com/search?query=',10,artPath+'search.png')
+    addDir('[COLOR orange]Most Popular[/COLOR]','http://popcornflix.com/most-popular-movies/',1,'')
+    addDir('[COLOR blue]Rock Stars[/COLOR]','http://popcornflix.com/Rock-Star-movies',3,'')
+    addDir('[COLOR orange]Action/Thriller[/COLOR]','http://popcornflix.com/Action/Thriller-movies',3,'')
+    addDir('[COLOR blue]Comedy[/COLOR]','http://popcornflix.com/Action/Thriller-movies',3,'')
+    addDir('[COLOR orange]Horror Movies[/COLOR]','http://popcornflix.com/Horror-movies',3,'')
+    addDir('[COLOR blue]Drama[/COLOR]','http://popcornflix.com/Drama-movies',3,'')
+    addDir('[COLOR orange]Romance[/COLOR]','http://popcornflix.com/Romance-movies',3,'')
+    addDir('[COLOR blue]Kids/Family[/COLOR]','http://popcornflix.com/Family/Kids-movies',3,'')
+    addDir('[COLOR orange]TV Series[/COLOR]','http://popcornflix.com/TV-Series',3,'')
+    addDir('[COLOR blue]Urban Movies[/COLOR]','http://popcornflix.com/Urban-movies',3,'')
+    addDir('[COLOR orange]Documentary/Shorts[/COLOR]','http://popcornflix.com/Documentary/Shorts-movies',3,'')
+    addDir('[COLOR blue]Bollywood[/COLOR]','http://popcornflix.com/Bollywood-movies',3,'')
+    addDir('[COLOR red][B]Search[/B] >>>[/COLOR]','http://www.popcornflix.com/search?query=',10,'')
 
 def INDEX(url):
         req = urllib2.Request(url)
