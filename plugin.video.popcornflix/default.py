@@ -18,7 +18,7 @@ def CATEGORIES():
     addDir('[COLOR orange]Most Popular[/COLOR]','http://popcornflix.com/most-popular-movies/',1,artPath+'mostpopular.png')
     addDir('[COLOR blue]Rock Stars[/COLOR]','http://popcornflix.com/Rock-Star-movies',3,artPath+'rockstars.png')
     addDir('[COLOR orange]Action/Thriller[/COLOR]','http://popcornflix.com/Action/Thriller-movies',3,artPath+'thriller.png')
-    addDir('[COLOR blue]Comedy[/COLOR]','http://popcornflix.com/Action/Thriller-movies',3,artPath+'comedy.png')
+    addDir('[COLOR blue]Comedy[/COLOR]','http://www.popcornflix.com/Comedy-movies',3,artPath+'comedy.png')
     addDir('[COLOR orange]Horror Movies[/COLOR]','http://popcornflix.com/Horror-movies',3,artPath+'horror.png')
     addDir('[COLOR blue]Drama[/COLOR]','http://popcornflix.com/Drama-movies',3,artPath+'drama.png')
     addDir('[COLOR orange]Romance[/COLOR]','http://popcornflix.com/Romance-movies',3,artPath+'romance.png')

@@ -1,3 +1,6 @@
+V1.5.7
+Fixed broken link in "Comedy" section
+
 V1.5.6
 Improved Video performance
 PaPlayer is now set as default 
