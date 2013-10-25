@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.popcornflix" version="1.5.7" name=" PopcornFlix" provider-name="[COLOR red][B]Blazetamer[/B][/COLOR]">
+<addon id="plugin.video.popcornflix" version="1.6.0" name=" PopcornFlix" provider-name="[COLOR red][B]Blazetamer[/B][/COLOR]">
 <requires>
 <import addon="xbmc.python" version="1.0"/>
 </requires>
