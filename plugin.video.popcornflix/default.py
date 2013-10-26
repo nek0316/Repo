@@ -1,6 +1,7 @@
 import urllib,urllib2,re,xbmcplugin,xbmcgui,xbmc, xbmcaddon, os, sys
+import urlresolver
 
-from meta import TheTVDBInfo, set_movie_meta, download_movie_meta, set_tv_show_meta, download_tv_show_meta, meta_exist
+#from meta import TheTVDBInfo, set_movie_meta, download_movie_meta, set_tv_show_meta, download_tv_show_meta, meta_exist
 
 #Popcorn Flix - Blazetamer.
 addon = xbmcaddon.Addon ('plugin.video.popcornflix')
@@ -41,8 +42,8 @@ def INDEX(url):
         link=response.read()
         response.close()
         match=re.compile('<a href="(.+?)">\n\t\t  <img width="184" height="256" src="(.+?)" alt="(.+?)"/>').findall(link)
-        for url,thumbnail,name in match:
-                addDir(name,URL+url,2,thumbnail)
+        for url,iconimage,name in match:
+                addDir(name,URL+url,2,iconimage)
                 
 def VIDEOLINKS(url,name):
         req = urllib2.Request(url)
@@ -54,7 +55,7 @@ def VIDEOLINKS(url,name):
         matchyear=re.compile('<span class="year">(.+?)</span>').findall(link)
         for url in match:
             for year in matchyear:
-                 addLink(name+year,match[0],'')
+                 addLink(name+year,url,'')
 
 
 def INDEX_DEEP(url):
@@ -64,9 +65,16 @@ def INDEX_DEEP(url):
         link=response.read()
         response.close()
         match=re.compile('<a href="(.+?)"><img width="184" height="256" src="(.+?)" alt="(.+?)">').findall(link)
-        for url,thumbnail,name in match:
-                addDir(name,URL+url,2,thumbnail)
+        for url,iconimage,name in match:
+                addDir(name,URL+url,2,iconimage)
+                
+#Set View Function
+def set_view(content='none',view_mode=50,do_sort=False):
+	h=int(sys.argv[1])
+	if (content is not 'none'): xbmcplugin.setContent(h, content)
+	if (tfalse(addst("auto-view"))==True): xbmc.executebuiltin("Container.SetViewMode(%s)" % str(view_mode))
 
+	
 #Start Ketboard Function                
 def _get_keyboard( default="", heading="", hidden=False ):
 	""" shows a keyboard and returns a value """
@@ -114,8 +122,8 @@ def get_params():
 
 def addLink(name,url,iconimage):
         ok=True
-        liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
-        liz.setInfo( type="Video", infoLabels={ "Title": name } )
+        liz=xbmcgui.ListItem(name,iconImage=iconimage, thumbnailImage=iconimage); liz.setInfo('video',{'Title':name,'Genre':'Live','Studio':name})
+        #liz.setInfo( type="Video", infoLabels={ "Title": name } )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=liz)
         xbmc.sleep(1000)
         xbmc.Player (xbmc.PLAYER_CORE_PAPLAYER).play(url, liz, False)
