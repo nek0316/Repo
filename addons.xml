@@ -29,6 +29,24 @@
 </extension>
 </addon>
 
+<addon id="plugin.video.redditube" version="1.0.0" name="Reddi Tube" provider-name="[COLOR red]Blazetamer[/COLOR]">
+<requires>
+<import addon="xbmc.python" version="1.0"/>
+<import addon="script.module.urlresolver"  version="1.0.0"/>
+<import addon="script.module.metahandler" version="1.0.0" />
+
+</requires>
+<extension point="xbmc.python.pluginsource" library="default.py">
+<provides>video</provides>
+</extension>
+<extension point="xbmc.addon.metadata">
+<summary>Reddi Tube Addon</summary>
+<description>Coding Assistance provided by **Rodrigo**[COLOR blue]ReddiTube give you Full length movies and videos from YouTube,Putlocker, Sockshare and more![/COLOR][COLOR red]***For Official support visit XBMCHUB.COM***[/COLOR]</description>
+
+<platform>all</platform>
+</extension>
+</addon>
+
 <addon id="repository.Blazetamer" name="Blazetamer's Repository" version="2.6" provider-name="Blazetamer">
 	<extension point="xbmc.addon.repository" name="Blaztamer's Addon Repository">
 		<info compressed="false">http://github.com/Blazetamer/Repo/raw/master/addons.xml</info>
