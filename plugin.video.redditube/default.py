@@ -43,18 +43,36 @@ def AUTO_VIEW(content):
 
 #Main Links 
 def CATEGORIES():
-    
-    addDir('[COLOR green]New Putlocker Arrivals[/COLOR]','http://www.reddit.com/r/FullMoviesOnPutLocker/new/.rss',1,artPath+'putlocker.png','','dir')
+    addDir('[COLOR orange] Search Putlocker by Genres[/COLOR]','none',4,artPath+'putlocker.png','','dir')
+    addDir('[COLOR red]New Putlocker Arrivals[/COLOR]','http://www.reddit.com/r/FullMoviesOnPutLocker/new/.rss',1,artPath+'putlocker.png','','dir')
     addDir('[COLOR red]Whats Hot on Putlocker[/COLOR]','http://www.reddit.com/r/FullMoviesOnPutLocker/.rss',1,artPath+'putlocker.png','','dir')
-    addDir('[COLOR blue]Top Putlocker Movies[/COLOR]','http://www.reddit.com/r/FullMoviesOnPutLocker/top/.rss',1,artPath+'putlocker.png','','dir')
-    addDir('[COLOR green]New SockShare Arrivals[/COLOR]','http://www.reddit.com/r/FullMoviesonSockshare/new/.rss',1,artPath+'sockshare.png','','dir')
-    addDir('[COLOR red]Whats Hot on SockShare[/COLOR]','http://www.reddit.com/r/fullmoviesonsockshare.rss',1,artPath+'sockshare.png','','dir')
-    addDir('[COLOR blue]Top SockShare Movies[/COLOR]','www.reddit.com/r/FullMoviesonSockshare/top/.rss',1,artPath+'sockshare.png','','dir')
-    addDir('[COLOR red]Whats Hot on YouTube[/COLOR]','http://www.reddit.com/r/fullmoviesonyoutube.rss',1,artPath+'youtube.png','','dir')
-    addDir('[COLOR green]New YouTube Arrivals[/COLOR]','http://www.reddit.com/r/fullmoviesonyoutube/new/.rss',1,artPath+'youtube.png','','dir')
-    addDir('[COLOR blue]Top YouTube Movies[/COLOR]','http://www.reddit.com/r/fullmoviesonyoutube/top/.rss',1,artPath+'youtube.png','','dir')
+    addDir('[COLOR red]Top Putlocker Movies[/COLOR]','http://www.reddit.com/r/FullMoviesOnPutLocker/top/.rss',1,artPath+'putlocker.png','','dir')
+    addDir('[COLOR blue]New SockShare Arrivals[/COLOR]','http://www.reddit.com/r/FullMoviesonSockshare/new/.rss',1,artPath+'sockshare.png','','dir')
+    addDir('[COLOR blue]Whats Hot on SockShare[/COLOR]','http://www.reddit.com/r/fullmoviesonsockshare.rss',1,artPath+'sockshare.png','','dir')
+    #addDir('[COLOR blue]Top SockShare Movies[/COLOR]','www.reddit.com/r/FullMoviesonSockshare/top/.rss',1,artPath+'sockshare.png','','dir')
+    addDir('Whats Hot on You[COLOR red]Tube[/COLOR]','http://www.reddit.com/r/fullmoviesonyoutube.rss',1,artPath+'youtube.png','','dir')
+    addDir('New You[COLOR red]Tube[/COLOR] Arrivals','http://www.reddit.com/r/fullmoviesonyoutube/new/.rss',1,artPath+'youtube.png','','dir')
+    addDir('Top You[COLOR red]Tube[/COLOR] Movies','http://www.reddit.com/r/fullmoviesonyoutube/top/.rss',1,artPath+'youtube.png','','dir')
+    #addDir('[COLOR green]New Vimeo Arrivals[/COLOR]','http://www.reddit.com/r/Fullmoviesonvimeo/new/.rss',1,artPath+'youtube.png','','dir')
+    #addDir('[COLOR green]Whats Hot on Vimeo[/COLOR]','http://www.reddit.com/r/Fullmoviesonvimeo/.rss',1,artPath+'youtube.png','','dir')
+    #addDir('Top Vimeo Videos','http://www.reddit.com/r/Fullmoviesonvimeo/top/.rss',1,artPath+'youtube.png','','dir')
     
     AUTO_VIEW('')
+
+def PUTGENRE ():
+     addDir('[COLOR red] Action[/COLOR]','http://www.reddit.com/r/FullMoviesOnPutLocker/search?q=flair%3Af02&restrict_sr=on',5,artPath+'putlocker.png','','dir')
+     addDir('[COLOR red] Adventure[/COLOR]','http://www.reddit.com/r/FullMoviesOnPutLocker/search?q=flair%3Af03&restrict_sr=on',5,artPath+'putlocker.png','','dir')
+     addDir('[COLOR red] Animation[/COLOR]','http://www.reddit.com/r/FullMoviesOnPutLocker/search?q=flair%3Af04&restrict_sr=on',5,artPath+'putlocker.png','','dir')
+     addDir('[COLOR red] Comedy[/COLOR]','http://www.reddit.com/r/FullMoviesOnPutLocker/search?q=flair%3Af06&restrict_sr=on',5,artPath+'putlocker.png','','dir')
+     addDir('[COLOR red] Drama[/COLOR]','http://www.reddit.com/r/FullMoviesOnPutLocker/search?q=flair%3Af09&restrict_sr=on',5,artPath+'putlocker.png','','dir')
+     addDir('[COLOR red] Family[/COLOR]','http://www.reddit.com/r/FullMoviesOnPutLocker/search?q=flair%3Af10&restrict_sr=on',5,artPath+'putlocker.png','','dir')
+     addDir('[COLOR red] Fantasy[/COLOR]','http://www.reddit.com/r/FullMoviesOnPutLocker/search?q=flair%3Af11&restrict_sr=on',5,artPath+'putlocker.png','','dir')
+     addDir('[COLOR red] Horror[/COLOR]','http://www.reddit.com/r/FullMoviesOnPutLocker/search?q=flair%3Af14&restrict_sr=on',5,artPath+'putlocker.png','','dir')
+     addDir('[COLOR red] Mystery[/COLOR]','http://www.reddit.com/r/FullMoviesOnPutLocker/search?q=flair%3Af17&restrict_sr=on',5,artPath+'putlocker.png','','dir')
+     addDir('[COLOR red] Science Fiction[/COLOR]','http://www.reddit.com/r/FullMoviesOnPutLocker/search?q=flair%3Af30&restrict_sr=on',5,artPath+'putlocker.png','','dir')
+     addDir('[COLOR red] Thriller[/COLOR]','http://www.reddit.com/r/FullMoviesOnPutLocker/search?q=flair%3Af22&restrict_sr=on',5,artPath+'putlocker.png','','dir')
+     addDir('[COLOR red] War[/COLOR]','http://www.reddit.com/r/FullMoviesOnPutLocker/search?q=flair%3Af23&restrict_sr=on',5,artPath+'putlocker.png','','dir')
+     addDir('[COLOR red] Western[/COLOR]','http://www.reddit.com/r/FullMoviesOnPutLocker/search?q=flair%3Af42&restrict_sr=on',5,artPath+'putlocker.png','','dir')
 
 #First Links from RSS 
 def INDEX(url):
@@ -83,6 +101,23 @@ def INDEX(url):
 
                    AUTO_VIEW('movies')
 
+
+            elif 'vimeo' in url:
+
+                inc += 1
+                if inc > 8:
+                   movie_name = name[:-6]
+                   year = name[-6:]
+                   movie_name = movie_name.decode('UTF-8','ignore')
+                                
+                   data = GRABMETA(movie_name,year)
+                   thumb = data['cover_url']
+                                
+                   favtype = 'movie'
+                   addDir(name,url,7,thumb,data,favtype)
+
+                   AUTO_VIEW('movies')     
+
             else:
                 inc += 1
                 if inc > 8:
@@ -97,6 +132,49 @@ def INDEX(url):
                  addDir(name,url,2,thumb,data,favtype)
 
                  AUTO_VIEW('movies')
+
+
+#FromDirect Red Page
+def INDEXD(url):
+        #addDir('Next Page',url+'&count=25',5,'','','dir')
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+        response = urllib2.urlopen(req)
+        link=response.read()
+        response.close()
+        match=re.compile('<a class="title " href="(.+?)" tabindex="1" >(.+?)</a>').findall(link)
+        inc = 0
+        if len(match) > 0:
+         for url,name in match:
+            
+                inc += 1
+                if inc > 8:
+                 movie_name = name[:-6]
+                 year = name[-6:]
+                 movie_name = movie_name.decode('UTF-8','ignore')
+                                
+                 data = GRABMETA(movie_name,year)
+                 thumb = data['cover_url']
+                                
+                 favtype = 'movie'
+                 addDir(name,url,6,thumb,data,favtype)
+
+                 AUTO_VIEW('movies')
+
+
+# Direct to PUTVID LINKS
+
+def PUTGEND(url,name):
+        
+         movie_name = name[:-6]
+         year = name[-6:]
+         movie_name = movie_name.decode('UTF-8','ignore')
+                                
+         data = GRABMETA(movie_name,year)
+         thumb = data['cover_url']   
+         RESOLVE(name,url,thumb)
+  
+         AUTO_VIEW('movies')
                 
 # Second From Source Single Page                
 def VIDEOLINKS(url,name):
@@ -134,7 +212,28 @@ def VIDEOLINKSYT(url,name):
          thumb = data['cover_url']
          RESOLVEYT(name,url,thumb)
             
-         AUTO_VIEW('movies') 
+         AUTO_VIEW('movies')
+
+
+# Second from  Source toVimeo
+def VIDEOLINKSVIM(url,name):
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+        response = urllib2.urlopen(req)
+        link=response.read()
+        response.close()
+        match=re.compile('"embedUrl" content="(.+?)">').findall(link)
+        for url in match:
+         url = url.replace('vimeo.com','player.vimeo.com')       
+         movie_name = name[:-6]
+         year = name[-6:]
+         movie_name = movie_name.decode('UTF-8','ignore')
+                                
+         data = GRABMETA(movie_name,year)
+         thumb = data['cover_url']   
+         RESOLVEVIM(name,url,thumb)
+  
+         AUTO_VIEW('movies')
 
 
 # Resolve and  Play for Putlocker/Sockshare
@@ -143,10 +242,10 @@ def RESOLVE(name,url,iconimage):
          url = urlresolver.HostedMediaFile(url=url).resolve()
          ok=True
          liz=xbmcgui.ListItem(name, iconImage=iconimage,thumbnailImage=iconimage); liz.setInfo( type="Video", infoLabels={ "Title": name } )
-         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=liz)
+         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=str(url),listitem=liz)
          xbmc.executebuiltin("XBMC.Notification(Please Wait!,Preparing Your Video,3000)")
          xbmc.sleep(1000)
-         xbmc.Player ().play(url, liz, False)
+         xbmc.Player ().play(str(url), liz, False)
 
          AUTO_VIEW('')
 
@@ -163,7 +262,25 @@ def RESOLVEYT(name,url,iconimage):
          xbmc.Player ().play(url, liz, False)         
 
          AUTO_VIEW('')
-            
+         
+#Resolve for Vimeo
+def RESOLVEVIM(name,url,iconimage):
+          #url = url.replace('vimeo.com','player.vimeo.com')
+          req = urllib2.Request(url)
+          req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+          response = urllib2.urlopen(req)
+          link=response.read()
+          response.close()
+          match=re.compile('"url":"(.+?)","height"').findall(link)
+          for url in match:
+           ok=True
+          liz=xbmcgui.ListItem(name, iconImage=iconimage,thumbnailImage=iconimage); liz.setInfo( type="Video", infoLabels={ "Title": name } )
+          ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=str(url),listitem=liz)
+          xbmc.executebuiltin("XBMC.Notification(Please Wait!,Preparing Your Video,3000)")
+          xbmc.sleep(1000)
+          xbmc.Player ().play(str(url), liz, False)
+
+          AUTO_VIEW('')
                 
 
 	
@@ -286,7 +403,23 @@ elif mode==2:
 
 elif mode==3:
         print ""+url
-        VIDEOLINKSYT(url,name)        
+        VIDEOLINKSYT(url,name)
+
+elif mode==4:
+        print ""+url
+        PUTGENRE()
+
+elif mode==5:
+        print ""+url
+        INDEXD(url)
+
+elif mode==6:
+        print ""+url
+        PUTGEND(url,name)
+        
+elif mode==7:
+        print ""
+        VIDEOLINKSVIM(url,name)
 
        
 #For Search Function

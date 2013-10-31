@@ -1,3 +1,9 @@
+V1.0.5
+Halloween Update!!
+Added Search By Genres in Putlocker
+"Check out the Horror Section"
 
-V1.0
+Removed "Top Sockshare" link 
+
+V1.0.0
 Initial Release
