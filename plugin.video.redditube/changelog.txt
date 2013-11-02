@@ -1,9 +1,12 @@
+V1.1.1
+Quick Fix
+
 V1.1.0
 Added deeper menus
-Added Search by Genre for Sockshrae
+Added Search by Genre for Sockshare
 Added Vimeo Video support
 Cleaned code 
-Adjustedcolor scheme
+Adjusted color scheme
 Increased addon Speed
 
 V1.0.5
