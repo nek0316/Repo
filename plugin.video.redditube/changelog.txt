@@ -1,3 +1,11 @@
+V1.1.0
+Added deeper menus
+Added Search by Genre for Sockshrae
+Added Vimeo Video support
+Cleaned code 
+Adjustedcolor scheme
+Increased addon Speed
+
 V1.0.5
 Halloween Update!!
 Added Search By Genres in Putlocker
