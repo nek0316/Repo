@@ -45,7 +45,7 @@ def AUTO_VIEW(content):
 def CATEGORIES():
     addDir('[COLOR orange] Search Putlocker by Genres>>>[/COLOR]','none',4,artPath+'putlocker.png','','dir')
     addDir('[COLOR red]New Putlocker Arrivals[/COLOR]','http://www.reddit.com/domain/putlocker.com/new/',11,artPath+'putlocker.png','','dir')
-    addDir('[COLOR red]Whats Hot on Putlocker[/COLOR]','http://www.reddit.com/domain/putlocker.com',11,artPath+'putlocker.png','','dir')
+    addDir('[COLOR red]Whats Hot on Putlocker[/COLOR]','http://www.reddit.com/domain/putlocker.com/',11,artPath+'putlocker.png','','dir')
     addDir('[COLOR red]Top Putlocker Movies[/COLOR]','http://www.reddit.com/domain/putlocker.com/top/',11,artPath+'putlocker.png','','dir')
     addDir('[COLOR orange] Search Sockshare by Genres>>>[/COLOR]','none',9,artPath+'sockshare.png','','dir')
     addDir('[COLOR red]New SockShare Arrivals[/COLOR]','http://www.reddit.com/r/FullMoviesonSockshare/new/',12,artPath+'sockshare.png','','dir')
@@ -91,7 +91,7 @@ def SOCKGENRE ():
      addDir('[COLOR red] Thriller[/COLOR]','http://www.reddit.com/r/FullMoviesonSockshare/search?q=flair%3Athriller&restrict_sr=on',5,artPath+'sockshare.png','','dir')
      addDir('[COLOR red] War[/COLOR]','http://www.reddit.com/r/FullMoviesonSockshare/search?q=flair%3Awar&restrict_sr=on',5,artPath+'sockshare.png','','dir')
      addDir('[COLOR red] Western[/COLOR]','http://www.reddit.com/r/FullMoviesonSockshare/search?q=flair%3Awestern&restrict_sr=on',5,artPath+'sockshare.png','','dir')   
-#First Links from P & S 
+# 1 Links 
 def INDEX(url):
         req = urllib2.Request(url)
         req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
@@ -159,6 +159,9 @@ def INDEXD(url):
         response = urllib2.urlopen(req)
         link=response.read()
         response.close()
+        match=re.compile('<span class="nextprev">view more:&#32;<a href="(.+?)" rel="nofollow').findall(link)
+        if len(match) > 0:
+                addDir('Next Page',(match[0]),12,artPath+'next.png','','dir')
         match=re.compile('<a class="title " href="(.+?)" tabindex="1" >(.+?)</a>').findall(link)
         inc = 0
         if len(match) > 0:
@@ -186,10 +189,13 @@ def INDEXPL(url):
         response = urllib2.urlopen(req)
         link=response.read()
         response.close()
+        match=re.compile('<div class="nav-buttons"><span class="nextprev">view more:&#32;<a href="(.+?)" rel="nofollow').findall(link)
+        if len(match) > 0:
+                addDir('Next Page',(match[0]),11,artPath+'next.png','','dir')
         match=re.compile('<div class=".+?"><p class=".+?"><a class=".+?" href="(.+?)" tabindex=".+?" rel=".+?" >(.+?)</a>').findall(link)
         inc = 0
         if len(match) > 0:
-         for url,name in match:
+         for url,name in match:        
                  #if '[HD]' in url:
                      name = name.replace(' [HD]','')    
             
@@ -209,12 +215,15 @@ def INDEXPL(url):
 
 # 12 Main SS
 def INDEXSS(url): 
-        #addDir('Next Page',url+'&count=25',5,'','','dir')
+        
         req = urllib2.Request(url)
         req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
         response = urllib2.urlopen(req)
         link=response.read()
         response.close()
+        match=re.compile('<span class="nextprev">view more:&#32;<a href="(.+?)" rel="nofollow').findall(link)
+        if len(match) > 0:
+                addDir('Next Page',(match[0]),12,artPath+'next.png','','dir')
         match=re.compile('title=".+?">.+?</span><a class="title " href="(.+?)" tabindex="1" >(.+?)</a>&#32;').findall(link)
         inc = 0
         if len(match) > 0:
@@ -236,7 +245,7 @@ def INDEXSS(url):
 
 # 8 Vimeo New
 def INDEXVIM(url):
-        #addDir('Next Page',url+'&count=25',5,'','','dir')
+        
         req = urllib2.Request(url)
         req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
         response = urllib2.urlopen(req)
@@ -263,7 +272,7 @@ def INDEXVIM(url):
                  
 
 
-# Direct to PUTVID LINKS
+#6 Direct to PUTVID LINKS
 
 def PUTGEND(url,name):
         
@@ -277,7 +286,7 @@ def PUTGEND(url,name):
   
          AUTO_VIEW('movies')
                 
-# Second From Source Single Page                
+# 2 Source Single Page                
 def VIDEOLINKS(url,name):
         req = urllib2.Request(url)
         req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
@@ -296,7 +305,7 @@ def VIDEOLINKS(url,name):
   
          AUTO_VIEW('movies')
 
-# Second From Source to YT
+# 3 From Source to YT
 def VIDEOLINKSYT(url,name):
         req = urllib2.Request(url)
         req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
@@ -414,7 +423,7 @@ def _get_keyboard( default="", heading="", hidden=False ):
 	return default
 
 
-#Start Search Function
+# 10 Start Search Function
 def SEARCH(url):
 	searchUrl = url 
 	vq = _get_keyboard( heading="Searching  PoPcornflix" )
