@@ -1,3 +1,6 @@
+V1.0.5
+Added "Next Page"option to allow full site inclusions
+Added main menu Artwork
 
 V1.0.0
 Initial Release

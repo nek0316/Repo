@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.docuhub" version="1.0.0" name="Docu-Hub" provider-name="[COLOR red]Blazetamer[/COLOR]">
+<addon id="plugin.video.docuhub" version="1.0.5" name="Docu-Hub" provider-name="[COLOR red]Blazetamer[/COLOR]">
 <requires>
 <import addon="xbmc.python" version="1.0"/>
 <import addon="script.module.urlresolver"  version="1.0.0"/>
