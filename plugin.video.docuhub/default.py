@@ -105,16 +105,16 @@ def TDINDEX(url):
         response = urllib2.urlopen(req)
         link=response.read()
         response.close()
-        match=re.compile('rel="next" href="(.+?)"').findall(link)
-        if len(match) > 0:
-                addDir('Next Page',(match[0]),'tdindex',artPath+'next.png')
         match=re.compile('"postTitle"><a\nhref="(.+?)" title="(.+?)">').findall(link)
         #matchimg=re.compile('src="(.+?)" class="alignleft').findall(link)
         for url,name in match:
             name =name.replace("&#039;s","'s")
          #for thumb in matchimg:        
             addDir(name,url,'tdvidpage','')
-            AUTO_VIEW('movies')
+            match=re.compile('rel="next" href="(.+?)"').findall(link)
+        if len(match) > 0:
+                addDir('Next Page',(match[0]),'tdindex',artPath+'next.png')
+                AUTO_VIEW('movies')
 
 # For Documentary.net
 def DOCNETINDEX(url):
@@ -123,17 +123,17 @@ def DOCNETINDEX(url):
         response = urllib2.urlopen(req)
         link=response.read()
         response.close()
-        match=re.compile("<a class='page-numbers' href='(.+?)'>(.+?)</a>").findall(link)
-        for url, number in match:
-         if len(match) > 0:
-                addDir('Page'+number,'http://documentary.net'+url,'docnetindex',artPath+'next.png')
         match=re.compile('<a href="(.+?)"   class=\'fix\'><img src="(.+?)" alt="(.+?)"').findall(link)
         #matchimg=re.compile('src="(.+?)" class="alignleft').findall(link)
         for url,iconimage,name in match:
                 name =name.replace("&#039;s","'s")
          #for thumb in matchimg:        
                 addDir(name,url,'docnetvidpage',iconimage)
-                AUTO_VIEW('movies')
+        match=re.compile("<a class='page-numbers' href='(.+?)'>(.+?)</a>").findall(link)
+        for url, number in match:
+          if len(match) > 0:
+                  addDir('Page'+number,'http://documentary.net'+url,'docnetindex',artPath+'next.png')
+                  AUTO_VIEW('movies')
 
 
 def DOCNETCAT(url):
@@ -191,15 +191,15 @@ def STORMINDEX(url):
         response = urllib2.urlopen(req)
         link=response.read()
         response.close()
-        match=re.compile('<link rel="next" href="(.+?)" />').findall(link)
-        if len(match) > 0:
-                addDir('Next Page',(match[0]),'stormindex',artPath+'next.png')
         match=re.compile('class="cover">\r\n\t\t<a href="(.+?)" title="(.+?)" >\r\n   \t\t\t<img width="198" height="297" src="(.+?)"').findall(link)
         for url,name,iconimage in match:
                 name =name.replace("&#039;s","'s")
                 name =name.replace("&#8211;","-")        
                 addDir(name,url,'stormvidpage',iconimage)
-                AUTO_VIEW('movies')
+        match=re.compile('<link rel="next" href="(.+?)" />').findall(link)
+        if len(match) > 0:
+           addDir('Next Page',(match[0]),'stormindex',artPath+'next.png')
+           AUTO_VIEW('movies')
 
 def STORMVIDPAGE(url,name):
         #link = net.http_GET(url).content
@@ -286,16 +286,16 @@ def DOCLOGLATEST(url):
         response = urllib2.urlopen(req)
         link=response.read()
         response.close()
-        match=re.compile("<a href='(.+?)' class='page larger'>(.+?)</a>").findall(link)
-        for url, number in match:
-         if len(match) > 0:
-                addDir('Page'+number,url,'docloglatest',artPath+'next.png')
         match=re.compile('<a href="(.+?)" title="(.+?)">\r\n          <img src="(.+?)" alt=".+?" class="thumb"').findall(link)
         #matchimg=re.compile('src="(.+?)" class="alignleft').findall(link)
         for url,name,iconimage in match:
          #for thumb in matchimg:        
             addDir(name,url,'doclogvidpage',iconimage)
-            AUTO_VIEW('movies')                        
+        match=re.compile("<a href='(.+?)' class='page larger'>(.+?)</a>").findall(link)
+        for url, number in match:
+         if len(match) > 0:
+           addDir('Page'+number,url,'docloglatest',artPath+'next.png')
+           AUTO_VIEW('movies')                        
     
 # For Primary YouTube Listing                
 def TDVIDPAGE(url,name):
