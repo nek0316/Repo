@@ -161,12 +161,14 @@ def DOCNETLATEST(url):
         response = urllib2.urlopen(req)
         link=response.read()
         response.close()
-        match=re.compile('<a href="(.+?)".+?><img src="(.+?)" alt="(.+?)" class=').findall(link)
+        match=re.compile('<a href="(.+?)"   class=.+?><img src="(.+?)" alt="(.+?)" />').findall(link)
         #matchimg=re.compile('src="(.+?)" class="alignleft').findall(link)
         for url,iconimage,name in match:
+             name =name.replace("&#039;s","'s")
+             name =name.replace("&#8211;","-")   
          #for thumb in matchimg:        
-            addDir(name,url,'docnetvidpage',iconimage)
-            AUTO_VIEW('movies')
+             addDir(name,url,'docnetvidpage',iconimage)
+             AUTO_VIEW('movies')
 
 def STORMLATEST(url):
         req = urllib2.Request(url)
