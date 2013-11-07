@@ -7,5 +7,14 @@
 	<setting id="default-view" type="number" label="Default 			View" 			
 		default="50"/>
    </category>
+<category label="Enable / Disable Sections">
+<setting id="topdocfilms" type="bool" label="Top Documentary Films" default="true"/>
+     <setting id="docnet" type="bool" label="Ducumentary.net" default="true"/>
+     <setting id="doclog" type="bool" label="Documentary Log" default="true"/>
+     <setting id="docstorm" type="bool" label="Documentary Storm" default="true"/>
+
+<setting id="resolver" type="bool" label="Resolver Settings" default="true"/>
+</category>
+
 </settings>
 

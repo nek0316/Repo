@@ -45,11 +45,16 @@ def AUTO_VIEW(content):
 
 #Main Links 
 def CATEGORIES():
-        addDir('[COLOR blue]***Choose your Site**[/COLOR] ','none','','')
-        addDir('Top Documentary Films ','none','topdoc',artPath+'topdocfilm.png')
-        addDir('Documentary.net','none','docnet',artPath+'docnet.png')
-        addDir('Documentary-Log ','none','doclog',artPath+'doculog.png')
-        addDir('Documentary Storm ','none','docstorm',artPath+'docstorm.png')
+        if settings.getSetting('topdocfilms') == 'true':
+                addDir('Top Documentary Films ','none','topdoc',artPath+'topdocfilm.png')
+        if settings.getSetting('docnet') == 'true':        
+                addDir('Documentary.net','none','docnet',artPath+'docnet.png')
+        if settings.getSetting('doclog') == 'true':        
+                addDir('Documentary-Log ','none','doclog',artPath+'doculog.png')
+        if settings.getSetting('docstorm') == 'true':        
+                addDir('Documentary Storm ','none','docstorm',artPath+'docstorm.png')
+        if settings.getSetting('resolver') == 'true':
+                addDir('[COLOR gold]Resolver Settings[/COLOR]','none','resolverSettings','')        
         AUTO_VIEW('list')
 
 def TOPDOC():
@@ -114,7 +119,7 @@ def TDINDEX(url):
             match=re.compile('rel="next" href="(.+?)"').findall(link)
         if len(match) > 0:
                 addDir('Next Page',(match[0]),'tdindex',artPath+'next.png')
-                AUTO_VIEW('movies')
+                AUTO_VIEW('list')
 
 # For Documentary.net
 def DOCNETINDEX(url):
@@ -147,7 +152,7 @@ def DOCNETCAT(url):
         for url,name in match:
          #for thumb in matchimg:        
             addDir(name,url,'docnetindex','')
-            AUTO_VIEW('movies')            
+            AUTO_VIEW('list')            
 
 def DOCNETLATEST(url):
 #link = net.http_GET(url).content
@@ -183,7 +188,7 @@ def STORMCAT(url):
         match=re.compile('<a href="(.+?)" title=".+?">(.+?)</a></li>').findall(link)
         for url,name in match:        
             addDir(name,url,'stormindex','')
-            AUTO_VIEW('movies')
+            AUTO_VIEW('list')
 
 def STORMINDEX(url):
         req = urllib2.Request(url)
@@ -248,7 +253,7 @@ def DOCLOGCAT(url):
         match=re.compile('<li class=".+?"><a href="(.+?)" title=".+?">(.+?)</a>').findall(link)
         for url,name in match:       
             addDir(name,url,'docloglatest','')
-            AUTO_VIEW('movies')
+            AUTO_VIEW('list')
 
 def DOCLOGVIDPAGE(url):
         #link = net.http_GET(url).content
@@ -305,37 +310,44 @@ def TDVIDPAGE(url,name):
         response = urllib2.urlopen(req)
         link=response.read()
         response.close()
-        match=re.compile('width="530" height="325" src="(.+?)rel=0&amp;iv_load_policy=3"').findall(link)
+        match=re.compile('width=".+?" height=".+?" src="(.+?)rel=0.+?"').findall(link)
         for url in match:
-                if 'youtube' in url:
-                 url = 'http:'+url
-                 url = url.replace('embed/','embed?v=')
+                if 'http:'in url:
+                   url = url.replace('embed/','embed?v=')
                     
-                 RESOLVE(name,url,'')
+                   RESOLVE(name,url,'')
 
-                 AUTO_VIEW('movies')
-#for YouTube Secondary listings
-                   
-        
-              
-        
-                match=re.compile('width="100%" height="325" src="(.+?)rel=0&amp;iv_load_policy=3"').findall(link)
-                for url in match:
-                        if 'youtube' in url:
-                         url = url.replace('embed/','embed?v=')
-                         RESOLVE(name,url,'')
+                   AUTO_VIEW('movies')
+                else:
+                 
+                   url = 'http:'+url
+                   url = url.replace('embed/','embed?v=')
+                    
+                   RESOLVE(name,url,'')
 
-                         AUTO_VIEW('movies')
-#for Vimeo first page 
+                   AUTO_VIEW('movies')
+
+#for odd YT and Vimeo first page 
         if len(match)<1:
-              
-        
                 match=re.compile('width="530" height="325" src="(.+?)"').findall(link)
                 for url in match:
-                        
+                      if 'youtube' in url:
+                         url = 'http:'+url
+                         url = url.replace('/embed/videoseries?list=','embed?=')
+                         RESOLVE(name,url,'')
+
+                         AUTO_VIEW('movies') 
+        
+                
+                
+                      if 'vimeo' in url:  
                          TDVIMEO(name,url,'')
 
                          AUTO_VIEW('movies')
+
+              
+        
+                                
 
 #Scrape and Play TD Vimeo url
 def TDVIMEO(name,url,iconimage):
@@ -614,9 +626,14 @@ elif mode=='docnetvidpage':
         print ""+url
         DOCNETVIDPAGE(url,name)        
 
-elif mode==7:
+elif mode=='videolinksyt':
         print ""+url
-        VIDEOLINKSYT(url,name)        
+        VIDEOLINKSYT(url,name)
+
+        
+elif mode=='resolverSettings':
+        print ""+url
+        urlresolver.display_settings()        
 
        
 #For Search Function
