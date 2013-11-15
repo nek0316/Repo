@@ -1,7 +1,7 @@
 import urllib,urllib2,re,xbmcplugin,xbmcgui,xbmc, xbmcaddon, os, sys
 import urlresolver
 
-#from meta import TheTVDBInfo, set_movie_meta, download_movie_meta, set_tv_show_meta, download_tv_show_meta, meta_exist
+
 
 #Popcorn Flix - Blazetamer.
 addon = xbmcaddon.Addon ('plugin.video.popcornflix')
@@ -15,6 +15,18 @@ fanartPath = addonPath + '/art/'
 
 #HOOKS
 settings = xbmcaddon.Addon(id='plugin.video.popcornflix')
+
+def AUTO_VIEW(content):
+        if content:
+                xbmcplugin.setContent(int(sys.argv[1]), content)
+                if settings.getSetting('auto-view') == 'true':
+                        if content == 'movies':
+                                xbmc.executebuiltin("Container.SetViewMode(%s)" % settings.getSetting('movies-view') )
+                        if content == 'list':
+                                xbmc.executebuiltin("Container.SetViewMode(%s)" % settings.getSetting('list-view') )
+                else:
+                        xbmc.executebuiltin("Container.SetViewMode(%s)" % settings.getSetting('default-view') )
+
 
 
 
@@ -34,7 +46,8 @@ def CATEGORIES():
     addDir('[COLOR orange]Documentary/Shorts[/COLOR]','http://popcornflix.com/Documentary/Shorts-movies',3,artPath+'documentary.png')
     addDir('[COLOR blue]Bollywood[/COLOR]','http://popcornflix.com/Bollywood-movies',3,artPath+'bollywood.png')
     addDir('[COLOR red][B]Search[/B] >>>[/COLOR]','http://www.popcornflix.com/search?query=',10,artPath+'search.png')
-
+    AUTO_VIEW('list')
+        
 def INDEX(url):
         req = urllib2.Request(url)
         req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
@@ -44,6 +57,7 @@ def INDEX(url):
         match=re.compile('<a href="(.+?)">\n\t\t  <img width="184" height="256" src="(.+?)" alt="(.+?)"/>').findall(link)
         for url,iconimage,name in match:
                 addDir(name,URL+url,2,iconimage)
+                AUTO_VIEW('movies')
                 
 def VIDEOLINKS(url,name):
         req = urllib2.Request(url)
@@ -56,6 +70,7 @@ def VIDEOLINKS(url,name):
         for url in match:
             for year in matchyear:
                  addLink(name+year,url,'')
+                 AUTO_VIEW('list')
 
 
 def INDEX_DEEP(url):
@@ -67,12 +82,8 @@ def INDEX_DEEP(url):
         match=re.compile('<a href="(.+?)"><img width="184" height="256" src="(.+?)" alt="(.+?)">').findall(link)
         for url,iconimage,name in match:
                 addDir(name,URL+url,2,iconimage)
+                AUTO_VIEW('movies')
                 
-#Set View Function
-def set_view(content='none',view_mode=50,do_sort=False):
-	h=int(sys.argv[1])
-	if (content is not 'none'): xbmcplugin.setContent(h, content)
-	if (tfalse(addst("auto-view"))==True): xbmc.executebuiltin("Container.SetViewMode(%s)" % str(view_mode))
 
 	
 #Start Ketboard Function                

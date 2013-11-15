@@ -1,3 +1,6 @@
+V1.7.5
+Added Auto View
+
 V1.7.0
 Fixed Video Name not in Player
 
