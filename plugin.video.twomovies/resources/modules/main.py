@@ -89,7 +89,12 @@ def addDir(name,url,mode,thumb,labels,favtype):
 
 
 
+#Host directory function for  Host Dir , hthumb =  host thumb and should be grabbed using the 'GETHOSTTHUMB(host)' function before 
+def addHDir(name,url,mode,thumb,hthumb):
+     
 
+     params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'year':year, 'types':types, 'season':season, 'episode':episode, 'show':show}
+     addon.add_directory(params, {'title':name}, img=hthumb, fanart=fanart)
 
 
 
@@ -101,24 +106,39 @@ def RESOLVE(name,url,iconimage):
          ok=True
          liz=xbmcgui.ListItem(name, iconImage=iconimage,thumbnailImage=iconimage); liz.setInfo( type="Video", infoLabels={ "Title": name } )
          ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=str(url),listitem=liz)
-         #xbmc.executebuiltin("XBMC.Notification(Attempting..., to Play Your Video,3000)")
          xbmc.sleep(1000)
          xbmc.Player ().play(str(url), liz, False)
 
          AUTO_VIEW('')
 
-#Resolve 2 forYouTube
+#Resolve 2 
 
-def RESOLVEYT(name,url,iconimage):
-         url = urlresolver.HostedMediaFile(url=url).resolve()
-         ok=True
-         liz=xbmcgui.ListItem(name, iconImage=iconimage, thumbnailImage=iconimage); liz.setInfo( type="Video", infoLabels={ "Title": name } )
-         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=liz)
-         xbmc.executebuiltin("XBMC.Notification(Attempting..., to Play Your Video,3000)")
-         xbmc.sleep(1000)
-         xbmc.Player ().play(url, liz, False)         
+def RESOLVE2(name,url,thumb):
+         
+     data=0
+     try:
+          data = GRABMETA(movie_name,year)
+     except:
+           data=0
+     hmf = urlresolver.HostedMediaFile(url)
+     host = ''
+     if hmf:
+          url = urlresolver.resolve(url)
+          host = hmf.get_host() 
+             
+     params = {'url':url, 'name':name, 'thumb':thumb}
+     if data == 0:
+          addon.add_video_item(params, {'title':name}, img=thumb)
+          liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumb)
 
-         AUTO_VIEW('')
+     else:
+          addon.add_video_item(params, {'title':name}, img=meta['cover_url'])
+          liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=data['cover_url'])
+          liz.setInfo('video',infoLabels=data)
+
+     xbmc.sleep(1000)
+        
+     xbmc.Player ().play(url, liz, False)
 
 #AutoView
 def AUTO_VIEW(content):
@@ -133,3 +153,37 @@ def AUTO_VIEW(content):
                         xbmc.executebuiltin("Container.SetViewMode(%s)" % settings.getSetting('default-view') )
 
         
+
+
+     
+
+#Returns the host thumbnail so that you can pass it as and argument 
+def GETHOSTTHUMB(host):
+     if host.endswith('.com'):
+          host = host[:-4]
+     if host.endswith('.org'):
+          host = host[:-4]
+     if host.endswith('.eu'):
+          host = host[:-3]
+     if host.endswith('.ch'):
+          host = host[:-3]
+     if host.endswith('.in'):
+          host = host[:-3]
+     if host.endswith('.es'):
+          host = host[:-3]
+     if host.endswith('.tv'):
+          host = host[:-3]
+     if host.endswith('.net'):
+          host = host[:-4]
+     if host.endswith('.me'):
+          host = host[:-3]
+     if host.endswith('.ws'):
+          host = host[:-3]
+     if host.endswith('.sx'):
+          host = host[:-3]
+     if host.startswith('www.'):
+             host = host[4:]
+     
+     
+     host = artwork + '/hosts/' + host +'.png'
+     return(host)

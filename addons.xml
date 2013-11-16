@@ -65,7 +65,7 @@
 </extension>
 </addon>
 
-<addon id="plugin.video.twomovies" version="1.0.1" name="[COLOR gold]2 Movies[/COLOR]" provider-name="[COLOR red]Blazetamer[/COLOR]with Artwork by Marquerite">
+<addon id="plugin.video.twomovies" version="1.5.1" name="[COLOR gold]2 Movies[/COLOR]" provider-name="[COLOR red]Blazetamer[/COLOR] GFX by :Marquerite">
 <requires>
 <import addon="xbmc.python" version="2.1.0"/>
 <import addon="script.module.urlresolver"  version="2.0.9"/>
@@ -80,7 +80,7 @@
 <provides>video</provides>
 </extension>
 <extension point="xbmc.addon.metadata">
-<summary>[COLOR gold]Content from the 2Movies website[/COLOR]</summary>
+<summary>Movies from 2Movies.name</summary>
 <description>A deep database of movies and other content from 2Movies, This addon has multiple ways to search and find movies "TV Shows Coming soon" </description>
 
 <platform>all</platform>

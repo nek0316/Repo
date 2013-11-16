@@ -1,5 +1,17 @@
-V1.0.1
-Gfx Fix
+V1.5.1
+BIG CHANGES !!!
+Added full graphics Suite from Marqurite!!!!
+Added Adult Section with passcode protection.
+Added Better Auto View
+Added ability to turn on/off the following:
+   Adult Section
+   Search by Tags
+   Movies by Tags	
+Bug Fixes
+Addded Cosmetic Enhancements 
+Prepared Auto View and code for future addition of TV Shows
+and for Log-in support "Coming Soon" 
+
 
 V1.0.0
 Initial Release

@@ -1,15 +1,22 @@
 <settings>
 	<category label="Auto-View">
-		<setting id="auto-view" type="bool" label="Enable 			Autoview" 			
-		default="false"/>
-	<setting id="movies-view" type="number" label="Movies View" 				default="500" enable="!eq(-1,false)"/>
-     <setting id="list-view" type="number" label="List View" 				default="50" enable="!eq(-1,false)"/>
-	<setting id="default-view" type="number" label="Default 			View" 			
-		default="50"/>
-   </category>
-<category label="Enable / Disable Sections">
+		<setting id="auto-view" type="bool" label="Enable Auto View" default="false"/>
+		<setting id="movies-view" type="number" label="Movie View" default="503" enable="!eq(-1,false)"/>
+		<setting id="tvshows-view" type="number" label="TV Show View" default="503" enable="!eq(-2,false)"/>
+		<setting id="seasons-view" type="number" label="Seasons View" default="504" enable="!eq(-3,false)"/>	
+		<setting id="episodes-view" type="number" label="Episode View" default="504" enable="!eq(-4,false)"/>
+		<setting id="default-view" type="number" label="Default View" default="50" enable="!eq(-5,false)"/>
+   	</category>
 
-<setting id="resolver" type="bool" label="Resolver Settings" default="true"/>
+
+<category label="Enable / Disable Sections">
+<setting id="adult" type="bool" label="[COLOR red]Adult Section[/COLOR]" default="false"/>
+
+<setting id="tvshows" type="bool" label="[COLOR gold]TV Shows[/COLOR]" default="true"/>
+
+<setting id="movietags" type="bool" label="[COLOR gold]Movie Tag Search[/COLOR]" default="true"/>
+
+<setting id="resolver" type="bool" label="[COLOR gold]Resolver Settings[/COLOR]" default="true"/>
 </category>
 
 </settings>
