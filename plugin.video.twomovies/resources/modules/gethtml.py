@@ -24,7 +24,7 @@ import urllib,urllib2,xbmc
 import cookielib
 import os
 import re
-cookiepath = xbmc.translatePath(os.path.join('special://home/addons/plugin.video.twomovies/resources/modules/', ''))
+cookiepath = xbmc.translatePath(os.path.join('http://github.com/Blazetamer/Repo/tree/master/art/', ''))
 
 #!!!!!!!!!!! Please set the compatible_urllist
 #set the list of URLs you want to load with cookies.

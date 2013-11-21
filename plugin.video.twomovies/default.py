@@ -21,7 +21,7 @@ base_url = 'http://www.twomovies.name'
 
 
 #PATHS
-artwork = xbmc.translatePath(os.path.join('special://home/addons/plugin.video.twomovies/art/', ''))
+artwork = xbmc.translatePath(os.path.join('http://rowthreemedia.com/xbmchub/2movies/art/', ''))
 settings = xbmcaddon.Addon(id='plugin.video.twomovies')
 addon_path = os.path.join(xbmc.translatePath('special://home/addons'), '')
 

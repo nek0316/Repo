@@ -28,7 +28,7 @@ cache = StorageServer.StorageServer("Two Movies", 0)
 
 # Global Stuff
 settings = xbmcaddon.Addon(id=addon_id)
-artwork = xbmc.translatePath(os.path.join('special://home/addons/plugin.video.twomovies/art/', ''))
+artwork = xbmc.translatePath(os.path.join('http://rowthreemedia.com/xbmchub/2movies/art/', ''))
 grab=metahandlers.MetaData()
 net = Net()
 def LogNotify(title,message,times,icon):
