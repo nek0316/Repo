@@ -1,0 +1,45 @@
+[COLOR cyan][B]
+V2.0.0
+My biggest update yet!
+**NEW**
+Added Ability to Download Content
+Added Help Section
+Added TV Show Section
+Added ability to Search Tv Shows by name
+Added TV Shows by Popularity
+Added TV Shows by Rating
+Added TV Shows by Genre
+Added  Movie A-Z Index listings
+Added Movies by Popularity
+Added Movies by Rating
+Small Bug Fixes
+Cleaned up Code
+
+**FUTURE UPDATES  PLANNED**
+User Log In
+
+**IMPROVEMENTS**
+Improved Fanart image resolution
+Improved  Thumbnail Image Resolution
+More great Graphics updates by Marquerite
+
+
+V1.5.1
+BIG CHANGES !!!
+Added full graphics Suite from Marquerite!!!!
+Added Adult Section with passcode protection.
+Added Better Auto View
+Added ability to turn on/off the following:
+   Adult Section
+   Search by Tags
+   Movies by Tags	
+Bug Fixes
+Addded Cosmetic Enhancements 
+Prepared Auto View and code for future addition of TV Shows
+and for Log-in support "Coming Soon" 
+
+
+V1.0.0
+Initial Release[/B][/COLOR]
+
+

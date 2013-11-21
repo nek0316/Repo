@@ -1,0 +1,11 @@
+Adult Passcode Controls allow you to lock Adult Rated videos. Enabling this function means that,
+depending on your settings, you will be asked for a PIN before entering an Adult Rated Section.
+
+Adult Sections can be disabled all together in the Addon Settings area. 
+
+This DOES NOT mean that all ADULT videos will be blocked, as this addon
+pulls videos and information from public websites where videos are submitted by 
+random users and the information connected to a video may not be accurate,
+Therefore it is impossible to be 100% sure all Adult content willbe filtered.
+
+

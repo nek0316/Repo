@@ -8,6 +8,10 @@
 		<setting id="default-view" type="number" label="Default View" default="50" enable="!eq(-5,false)"/>
    	</category>
 
+<category label="Downloads">>
+<setting id="download_folder" type="folder" label="Downloads Folder" default="" />
+</category>
+
 
 <category label="Enable / Disable Sections">
 <setting id="adult" type="bool" label="[COLOR red]Adult Section[/COLOR]" default="false"/>
@@ -17,6 +21,11 @@
 <setting id="movietags" type="bool" label="[COLOR gold]Movie Tag Search[/COLOR]" default="true"/>
 
 <setting id="resolver" type="bool" label="[COLOR gold]Resolver Settings[/COLOR]" default="true"/>
+
+<setting id="metadata" type="bool" label="[COLOR gold]Tv Show Episode MetaData[/COLOR]" default="true"/>
+
+<setting id="banners" type="bool" label="Use Banners For TV Shows" default="false" enable="!eq(-1,false)"/>
+
 </category>
 
 </settings>

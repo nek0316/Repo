@@ -8,7 +8,7 @@ import cookielib
 from resources.modules import gethtml
 from resources.modules import weblogin
 import setup
-
+from resources.modules import tvshow
 from metahandler import metahandlers
 from resources.modules import main
 addon_id = 'plugin.video.twomovies'
@@ -25,6 +25,51 @@ artwork = xbmc.translatePath(os.path.join('special://home/addons/plugin.video.tw
 settings = xbmcaddon.Addon(id='plugin.video.twomovies')
 addon_path = os.path.join(xbmc.translatePath('special://home/addons'), '')
 
+#****************************Info and Help  ****************************
+
+
+def HELP(text):
+    header = "[B][COLOR red]" + text + "[/B][/COLOR]"
+    text1 = text.replace(' ', '_').lower() + '.txt'
+    msg = xbmc.translatePath(os.path.join('special://home/addons/plugin.video.twomovies/resources/messages/', text1))
+    TextBoxes(header,msg)
+
+
+def HELPMENU():
+    main.addDir('Version Information','none','help list menu',artwork +'helpversioninformation.png','','')
+    main.addDir('Adult Section Passcode','none','help list menu',artwork +'helpadultsection.png','','')
+    main.addDir('Bug Reporting','none','help list menu',artwork +'helpbugreporting.png','','')
+    main.addDir('Disclaimer','none','help list menu',artwork +'helpdisclaimer.png','','')
+
+
+def TextBoxes(heading,anounce):
+        class TextBox():
+            WINDOW = 10147
+            CONTROL_LABEL = 1
+            CONTROL_TEXTBOX = 5
+
+            def __init__( self, *args, **kwargs):
+                # activate the text viewer window
+                xbmc.executebuiltin( "ActivateWindow(%d)" % ( self.WINDOW, ) )
+                # get window
+                self.win = xbmcgui.Window( self.WINDOW )
+                # give window time to initialize
+                xbmc.sleep( 500 )
+                self.setControls()
+
+
+            def setControls( self ):
+                # set heading
+                self.win.getControl( self.CONTROL_LABEL ).setLabel(heading)
+                try:
+                        f = open(anounce)
+                        text = f.read()
+                except:
+                        text=anounce
+                self.win.getControl( self.CONTROL_TEXTBOX ).setText(text)
+                return
+        TextBox()	    
+#********************END HELPINFO***************************************************************************
 #******************NEWLOGIN ATTEMPT*************************************************************************
 
 TMUSER = settings.getSetting('tmovies_user')
@@ -98,20 +143,14 @@ def STARTUP():
                 LOGIN(username,password,'')             
         else:  
                        CATEGORIES()
-
-#Main Links 
+#************************End Login****************************************************************************
+#Main Links
 def CATEGORIES():
         
-        main.addDir('[COLOR gold]Popular and Trending Movies[/COLOR]','http://twomovies.name/','movieindex1',artwork +'Icon_Menu_Movies_Popularandtrending.png','','dir')     
-        main.addDir('[COLOR gold]Movies by Year[/COLOR] ','none','byyear',artwork +'Icon_Menu_Movies_Byyear.png','','dir')
-        main.addDir('[COLOR gold]Movie Genres[/COLOR] ','http://twomovies.name/','genres',artwork +'Icon_Menu_Movies_Genre.png','','dir')
-        if settings.getSetting('movietags') == 'true':
-                main.addDir('[COLOR gold]Movies by Tags[/COLOR] ','http://twomovies.name/tags/','movietags',artwork +'Icon_Menu_Movies_ByTag.png','','dir')
-        main.addDir('[COLOR gold]Search by Movie Name[/COLOR] ','http://twomovies.name/search/?search_query=','searchm',artwork +'Icon_Menu_Movies_SearchName.png','','dir')
-        if settings.getSetting('movietags') == 'true':
-                main.addDir('[COLOR gold]Search by Custom Tag[/COLOR] ','http://twomovies.name/search/?search_query=','searcht',artwork +'Icon_Menu_Movies_SearchCustomTag.png','','dir')
+        main.addDir('[COLOR gold]Movies[/COLOR]','none','moviecat',artwork +'Icon_Menu_Movies_Menu.png','','dir')     
+        
         if settings.getSetting('tvshows') == 'true':
-                main.addDir('TV Shows [COLOR red] Coming SOON [/COLOR] ','none','',artwork +'Icon_Menu_TVSHows_ComingSoon.png','','dir')
+                main.addDir('[COLOR gold]TV Shows [/COLOR] ','none','tvcats',artwork +'Icon_Menu_TVShows_Menu.png','','dir')
         if settings.getSetting('adult') == 'true':
                 text_file = None
                 if not os.path.exists(xbmc.translatePath("special://home/userdata/addon_data/plugin.video.twomovies/")):
@@ -137,9 +176,58 @@ def CATEGORIES():
         
         if settings.getSetting('resolver') == 'true':
                 main.addDir('[COLOR gold]Resolver Settings[/COLOR]','none','resolverSettings',artwork +'Icon_Menu_Settings_ResolverSettings.png','','dir')
-        
+        main.addDir('[COLOR red]Help Menu[/COLOR]','none','helpmenu',artwork +'help.png','','dir')
         
         main.AUTO_VIEW('')
+
+
+
+                       
+def MOVIECAT():
+        main.addDir('[COLOR gold]Movies by Popularity[/COLOR]','http://twomovies.name/browse_movies/all/byViews/all/','playyear',artwork +'moviespopularity.png','','dir')
+        main.addDir('[COLOR gold]Movies by Rating[/COLOR]','http://twomovies.name/browse_movies/all/byRating/all/','playyear',artwork +'moviesrating.png','','dir')
+        main.addDir('[COLOR gold]Trending Movies[/COLOR]','http://twomovies.name/','movieindex1',artwork +'Icon_Menu_Movies_Popularandtrending.png','','dir')
+        main.addDir('[COLOR gold]Newly Added Movies[/COLOR]','http://twomovies.name/new_release/','movieindex1',artwork +'moviesnewlyadded.png','','dir')
+        main.addDir('[COLOR gold]Movies by Year[/COLOR] ','none','byyear',artwork +'Icon_Menu_Movies_Byyear.png','','dir')
+        main.addDir('[COLOR gold]Movie Genres[/COLOR] ','http://twomovies.name/','genres',artwork +'Icon_Menu_Movies_Genre.png','','dir')
+        main.addDir('[COLOR gold]A-Z Index[/COLOR]','none','mazindex',artwork +'moviesa-z.png','','dir')
+        if settings.getSetting('movietags') == 'true':
+                main.addDir('[COLOR gold]Movies by Tags[/COLOR] ','http://twomovies.name/tags/','movietags',artwork +'Icon_Menu_ByTag.png','','dir')
+        main.addDir('[COLOR gold]Search by Movie Name[/COLOR] ','http://twomovies.name/search/?search_query=','searchm',artwork +'Icon_Menu_Movies_SearchName.png','','dir')
+        if settings.getSetting('movietags') == 'true':
+                main.addDir('[COLOR gold]Search by Custom Tag[/COLOR] ','http://twomovies.name/search/?search_query=','searcht',artwork +'Icon_Menu_Movies_SearchCustomTag.png','','dir')
+        main.AUTO_VIEW('')
+        
+def MAZINDEX():
+     main.addDir('#','http://twomovies.name/letter/0/','azindex',artwork +'/movieaz/hash.png','','dir')
+     main.addDir('A','http://twomovies.name/letter/A/','azindex',artwork +'/movieaz/a.png','','dir')
+     main.addDir('B','http://twomovies.name/letter/B/','azindex',artwork +'/movieaz/b.png','','dir')
+     main.addDir('C','http://twomovies.name/letter/C/','azindex',artwork +'/movieaz/c.png','','dir')
+     main.addDir('D','http://twomovies.name/letter/D/','azindex',artwork +'/movieaz/d.png','','dir')
+     main.addDir('E','http://twomovies.name/letter/E/','azindex',artwork +'/movieaz/e.png','','dir')
+     main.addDir('F','http://twomovies.name/letter/F/','azindex',artwork +'/movieaz/f.png','','dir')
+     main.addDir('G','http://twomovies.name/letter/G/','azindex',artwork +'/movieaz/g.png','','dir')
+     main.addDir('H','http://twomovies.name/letter/H/','azindex',artwork +'/movieaz/h.png','','dir')
+     main.addDir('I','http://twomovies.name/letter/I/','azindex',artwork +'/movieaz/i.png','','dir')
+     main.addDir('J','http://twomovies.name/letter/J/','azindex',artwork +'/movieaz/j.png','','dir')
+     main.addDir('K','http://twomovies.name/letter/K/','azindex',artwork +'/movieaz/k.png','','dir')
+     main.addDir('L','http://twomovies.name/letter/L/','azindex',artwork +'/movieaz/l.png','','dir')
+     main.addDir('M','http://twomovies.name/letter/M/','azindex',artwork +'/movieaz/m.png','','dir')
+     main.addDir('N','http://twomovies.name/letter/N/','azindex',artwork +'/movieaz/n.png','','dir')
+     main.addDir('O','http://twomovies.name/letter/O/','azindex',artwork +'/movieaz/o.png','','dir')
+     main.addDir('P','http://twomovies.name/letter/P/','azindex',artwork +'/movieaz/p.png','','dir')
+     main.addDir('Q','http://twomovies.name/letter/Q/','azindex',artwork +'/movieaz/q.png','','dir')
+     main.addDir('R','http://twomovies.name/letter/R/','azindex',artwork +'/movieaz/r.png','','dir')
+     main.addDir('S','http://twomovies.name/letter/S/','azindex',artwork +'/movieaz/s.png','','dir')
+     main.addDir('T','http://twomovies.name/letter/T/','azindex',artwork +'/movieaz/t.png','','dir')
+     main.addDir('U','http://twomovies.name/letter/U/','azindex',artwork +'/movieaz/u.png','','dir')
+     main.addDir('V','http://twomovies.name/letter/V/','azindex',artwork +'/movieaz/v.png','','dir')
+     main.addDir('W','http://twomovies.name/letter/W/','azindex',artwork +'/movieaz/w.png','','dir')
+     main.addDir('X','http://twomovies.name/letter/X/','azindex',artwork +'/movieaz/x.png','','dir')
+     main.addDir('Y','http://twomovies.name/letter/Y/','azindex',artwork +'/movieaz/y.png','','dir')
+     main.addDir('Z','http://twomovies.name/letter/Z/','azindex',artwork +'/movieaz/z.png','','dir')
+     main.AUTO_VIEW('')
+                       
 
 def ADULTALLOW():
         text_file = open(xbmc.translatePath("special://home/userdata/addon_data/plugin.video.twomovies/apc.24"), "r")
@@ -204,7 +292,28 @@ def GENRES():
         
         main.AUTO_VIEW('')
 
-
+def AZINDEX(url):
+        link = net.http_GET(url).content
+        match=re.compile('<a href="(.+?)">\n        <img src=".+?" data-original="(.+?)"  class=".+?" style=".+?"  border=".+?" height=".+?" width=".+?" alt="Watch (.+?) Online for Free">\n').findall(link)
+        if len(match) > 0:
+         for url,sitethumb,name in match:
+          matchyear=re.compile('<a class="filmyar" href=".+?">(.+?)</a>').findall(link)
+          #if len(matchyear) > 0:
+          for year in matchyear:        
+                 data = main.GRABMETA(name,year)
+                 thumb = data['cover_url']               
+                 yeargrab = data['year']
+                 year = str(yeargrab)
+          favtype = 'movie'
+          if 'watch_movie' in url:
+               
+                main.addDir(name+ ' (' + year +')',url,'linkpage',thumb,data,favtype)
+                
+          nmatch=re.compile('<a id="next" class=".+?" href="(.+?)">Next &raquo</a>\n').findall(link)
+        if len(nmatch) > 0:
+                  main.addDir('Next Page',(nmatch[0]),'azindex',artwork +'Icon_Menu_Movies_nextpage.png','','dir')
+             
+                  main.AUTO_VIEW('movies')
         
 def PLAYYEAR (url):
         link = net.http_GET(url).content
@@ -215,10 +324,12 @@ def PLAYYEAR (url):
           if len(matchyear) > 0:
              for year in matchyear:        
                  data = main.GRABMETA(name,year)
-                 #thumb = data['cover_url']               
+                 thumb = data['cover_url']               
+                 yeargrab = data['year']
+                 year = str(yeargrab)               
                    
              favtype = 'movie'
-             main.addDir(name+' ('+ year +')',url,'linkpage',sitethumb,data,favtype)
+             main.addDir(name+' ('+ year +')',url,'linkpage',thumb,data,favtype)
              nmatch=re.compile('<a id="next" class=".+?" href="(.+?)">Next &raquo</a>\n').findall(link)
         if len(nmatch) > 0:
                   main.addDir('Next Page',(nmatch[0]),'playyear',artwork +'Icon_Menu_Movies_nextpage.png','','dir')
@@ -242,11 +353,13 @@ def MOVIETAGINDEX(url):
           if len(matchyear) > 0:
              for year in matchyear:        
                  data = main.GRABMETA(name,year)
-                 #thumb = data['cover_url']               
+                 thumb = data['cover_url']               
+                 yeargrab = data['year']
+                 year = str(yeargrab)              
                  
                             
              favtype = 'movie'
-             main.addDir(name+' ('+ year +')',url,'linkpage',sitethumb,data,favtype)
+             main.addDir(name+' ('+ year +')',url,'linkpage',thumb,data,favtype)
              
              main.AUTO_VIEW('movies')
 
@@ -259,9 +372,11 @@ def ADULTMOVIEINDEX(url):
           if len(matchyear) > 0:
              for year in matchyear:        
                  data = main.GRABMETA(name,year)
-                 #thumb = data['cover_url']               
+                 thumb = data['cover_url']               
+                 yeargrab = data['year']
+                 year = str(yeargrab)               
              favtype = 'movie'   
-             main.addDir(name+' ('+ year +')',url,'linkpage',sitethumb,data,favtype)
+             main.addDir(name+' ('+ year +')',url,'linkpage',thumb,data,favtype)
              nmatch=re.compile('<a id="next" class=".+?" href="(.+?)">Next &raquo</a>\n').findall(link)
         if len(nmatch) > 0:
                     
@@ -279,9 +394,11 @@ def MOVIEINDEX(url):
           if len(matchyear) > 0:
              for year in matchyear:        
                  data = main.GRABMETA(name,year)
-                 #thumb = data['cover_url']               
+                 thumb = data['cover_url']               
+                 yeargrab = data['year']
+                 year = str(yeargrab)               
              favtype = 'movie'    
-             main.addDir(name+' ('+ year +')',url,'linkpage',sitethumb,data,favtype)
+             main.addDir(name+' ('+ year +')',url,'linkpage',thumb,data,favtype)
              nmatch=re.compile('<a id="next" class=".+?" href="(.+?)">Next &raquo</a>\n').findall(link)
         if len(nmatch) > 0:
                     
@@ -296,14 +413,16 @@ def MOVIEINDEX1(url):
         if len(match) > 0:
          for url,sitethumb,name in match:
           matchyear=re.compile('<a class="filmyar" href=".+?">(.+?)</a>').findall(link)
-          if len(matchyear) > 0:
-             for year in matchyear:        
+          #if len(matchyear) > 0:
+          for year in matchyear:        
                  data = main.GRABMETA(name,year)
-                 #thumb = data['cover_url']               
-                      
-             favtype = 'movie'
-             main.addDir(name+' ('+ year +')',url,'linkpage',sitethumb,data,favtype)
-             nmatch=re.compile('<a id="next" class=".+?" href="(.+?)">Next &raquo</a>\n').findall(link)
+                 thumb = data['cover_url']               
+                 yeargrab = data['year']
+                 year = str(yeargrab)
+          favtype = 'movie'
+          if 'watch_movie' in url:
+                main.addDir(name+ ' (' + year +')',url,'linkpage',thumb,data,favtype)
+                nmatch=re.compile('<a id="next" class=".+?" href="(.+?)">Next &raquo</a>\n').findall(link)
         if len(nmatch) > 0:
                   main.addDir('Next Page',(nmatch[0]),'movieindex1',artwork +'Icon_Menu_Movies_nextpage.png','','dir')
              
@@ -327,12 +446,12 @@ def LINKPAGE(url,name):
                         if hmf:
                                 host = hmf.get_host()
                                 hthumb = main.GETHOSTTHUMB(host)
+                                dlurl = urlresolver.resolve(url)
                                 data = main.GRABMETA(movie_name,year)
                                 thumb = data['cover_url']
+                                favtype = 'links'
                                 try:
-                                        #main.addDir(movie_name + ' /Source =' + linkname ,url,'vidpage',thumb,'','')
-                                        main.addDir(movie_name,url,'vidpage',hthumb,'','')
-                                        #main.addHDir(movie_name,urls,'resolve2',thumb,hthumb)
+                                        main.addDLDir(movie_name,url,'vidpage',hthumb,data,dlurl,favtype)
                                         inc +=1
                                 except:
                                         continue       
@@ -346,6 +465,15 @@ def VIDPAGE(url,name):
         for url in match:
                 
                 main.RESOLVE2(name,url,'')
+
+
+def DLVIDPAGE(url,name):
+        link = net.http_GET(url).content
+        match=re.compile('<iframe.*?src="(http://.+?)".*?>').findall(link)
+        
+        for url in match:
+                
+                main.RESOLVEDL(name,url,'')                
                 
                 
 
@@ -424,6 +552,8 @@ params=get_params()
 url=None
 name=None
 mode=None
+year=None
+imdb_id=None
 
 try:
         url=urllib.unquote_plus(params["url"])
@@ -444,9 +574,16 @@ try:
 except:
         pass
 
+try:
+        year=urllib.unquote_plus(params["year"])
+except:
+        pass
+
 print "Mode: "+str(mode)
 print "URL: "+str(url)
 print "Name: "+str(name)
+print "Year: "+str(year)
+print "Imdb_id: "+str(imdb_id)
 
 
 if mode==None or url==None or len(url)<1:
@@ -457,6 +594,23 @@ elif mode=='categories':
         print ""
         CATEGORIES()
 
+        
+elif mode=='helpmenu':
+        print ""
+        HELPMENU()
+
+elif mode == "help list menu": 
+        items = HELP(name)        
+
+        
+elif mode=='moviecat':
+        print ""
+        MOVIECAT()        
+
+elif mode=='tvcats':
+        print ""
+        tvshow.TVCATS()        
+
 elif mode=='adultallow':
         print ""
         ADULTALLOW()        
@@ -464,16 +618,43 @@ elif mode=='adultallow':
 elif mode=='byyear':
         print ""
         BYYEAR()
+        
+elif mode=='tvbyyear':
+        print ""
+        tvshow.TVBYYEAR()
+        
 
 
 elif mode=='genres':
         print ""
         GENRES()
 
+elif mode=='tvgenres':
+        print ""
+        tvshow.TVGENRES()
+
+        
+elif mode=='mazindex':
+        print ""
+        MAZINDEX() 
+        
+
         
 elif mode=='playyear':
         print ""+url
         PLAYYEAR(url)
+
+
+elif mode=='tvplayyear':
+        print ""+url
+        tvshow.TVPLAYYEAR(url)
+
+        
+
+elif mode=='tvplaygenre':
+        print ""+url
+        tvshow.TVPLAYGENRE(url)        
+
         
 elif mode=='adultmovieindex':
         print ""+url
@@ -484,6 +665,14 @@ elif mode=='movieindex':
         print ""+url
         MOVIEINDEX(url)
 
+elif mode=='lateshow':
+        print ""+url
+        tvshow.LATESHOW(url)
+
+elif mode=='searchshow':
+        print ""+url
+        tvshow.SEARCHSHOW(url)        
+
 elif mode=='movietagindex':
         print ""+url
         MOVIETAGINDEX(url)        
@@ -491,6 +680,10 @@ elif mode=='movietagindex':
 elif mode=='movieindex1':
         print ""+url
         MOVIEINDEX1(url)
+
+elif mode=='azindex':
+        print ""+url
+        AZINDEX(url)        
 
 elif mode=='movietags':
         print ""+url
@@ -501,9 +694,30 @@ elif mode=='vidpage':
         VIDPAGE(url,name)
 
 
+elif mode=='dlvidpage':
+        print ""+url
+        DLVIDPAGE(url,name)        
+
+elif mode=='tvvidpage':
+        print ""+url
+        tvshow.TVVIDPAGE(url,name)        
+
+
 elif mode=='linkpage':
         print ""+url
         LINKPAGE(url,name)
+
+elif mode=='azlinkpage':
+        print ""+url
+        tvshow.AZLINKPAGE(url,name)        
+
+elif mode=='tvlinkpage':
+        print ""+url
+        tvshow.TVLINKPAGE(url,name)        
+
+elif mode=='episodes':
+        print ""+url
+        tvshow.EPISODES(url,name,imdb_id)        
 
 elif mode=='resolve':
         print ""+url
@@ -511,12 +725,24 @@ elif mode=='resolve':
 
 elif mode=='resolve2':
         print ""+url
-        main.RESOLVE2(url,name,thumb)        
+        main.RESOLVE2(url,name,thumb)
+
+elif mode=='resolvedl':
+        print ""+url
+        main.RESOLVEDL(url,name,thumb)        
 
 
 elif mode=='searchm':
         print ""+url
         SEARCHM(url)
+
+elif mode=='searchtv':
+        print ""+url
+        tvshow.SEARCHTV(url)
+
+elif mode=='downloadFile':
+        print ""+url
+        main.downloadFile(url)        
 
 
 elif mode=='searcht':
@@ -527,7 +753,9 @@ elif mode=='resolverSettings':
         print ""+url
         urlresolver.display_settings()
 
-
+elif mode == "dev message":
+    ADDON.setSetting('dev_message', value='run')
+    dev_message()
 
 
 
