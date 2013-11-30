@@ -1,3 +1,13 @@
+V2.1.0
+Added Interactive help section
+and ability to install my repo
+and custom shortcuts to the users homescreen
+IF  and ONLY IF the user wants
+Added Interactive announcments page
+These sections will be updated interactivly 
+without the need for an actual update to
+the addon itself
+ 
 V2.0.0
 My biggest update yet!
 **NEW**

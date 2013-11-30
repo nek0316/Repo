@@ -7,7 +7,12 @@ import urlresolver
 import cookielib
 from resources.modules import gethtml
 from resources.modules import weblogin
+from resources.modules import status
 import setup
+import downloader
+import extract
+import time
+import shutil
 from resources.modules import tvshow
 from metahandler import metahandlers
 from resources.modules import main
@@ -21,55 +26,16 @@ base_url = 'http://www.twomovies.name'
 
 
 #PATHS
+
 artwork = xbmc.translatePath(os.path.join('http://rowthreemedia.com/xbmchub/2movies/art/', ''))
 settings = xbmcaddon.Addon(id='plugin.video.twomovies')
 addon_path = os.path.join(xbmc.translatePath('special://home/addons'), '')
 
-#****************************Info and Help  ****************************
 
 
-def HELP(text):
-    header = "[B][COLOR red]" + text + "[/B][/COLOR]"
-    text1 = text.replace(' ', '_').lower() + '.txt'
-    msg = xbmc.translatePath(os.path.join('special://home/addons/plugin.video.twomovies/resources/messages/', text1))
-    TextBoxes(header,msg)
 
 
-def HELPMENU():
-    main.addDir('Version Information','none','help list menu',artwork +'helpversioninformation.png','','')
-    main.addDir('Adult Section Passcode','none','help list menu',artwork +'helpadultsection.png','','')
-    main.addDir('Bug Reporting','none','help list menu',artwork +'helpbugreporting.png','','')
-    main.addDir('Disclaimer','none','help list menu',artwork +'helpdisclaimer.png','','')
 
-
-def TextBoxes(heading,anounce):
-        class TextBox():
-            WINDOW = 10147
-            CONTROL_LABEL = 1
-            CONTROL_TEXTBOX = 5
-
-            def __init__( self, *args, **kwargs):
-                # activate the text viewer window
-                xbmc.executebuiltin( "ActivateWindow(%d)" % ( self.WINDOW, ) )
-                # get window
-                self.win = xbmcgui.Window( self.WINDOW )
-                # give window time to initialize
-                xbmc.sleep( 500 )
-                self.setControls()
-
-
-            def setControls( self ):
-                # set heading
-                self.win.getControl( self.CONTROL_LABEL ).setLabel(heading)
-                try:
-                        f = open(anounce)
-                        text = f.read()
-                except:
-                        text=anounce
-                self.win.getControl( self.CONTROL_TEXTBOX ).setText(text)
-                return
-        TextBox()	    
-#********************END HELPINFO***************************************************************************
 #******************NEWLOGIN ATTEMPT*************************************************************************
 
 TMUSER = settings.getSetting('tmovies_user')
@@ -176,7 +142,7 @@ def CATEGORIES():
         
         if settings.getSetting('resolver') == 'true':
                 main.addDir('[COLOR gold]Resolver Settings[/COLOR]','none','resolverSettings',artwork +'Icon_Menu_Settings_ResolverSettings.png','','dir')
-        main.addDir('[COLOR red]Help Menu[/COLOR]','none','helpmenu',artwork +'help.png','','dir')
+        main.addDir('[COLOR red]Help and Extras[/COLOR]','http://addonrepo.com/xbmchub/twomovies/messages/addon.txt','statuscategories',artwork +'help.png','','dir')
         
         main.AUTO_VIEW('')
 
@@ -554,7 +520,23 @@ name=None
 mode=None
 year=None
 imdb_id=None
+#------added for Help Section
+try:        
+        fanart=urllib.unquote_plus(params["fanart"])
+except:
+        pass
+try:        
+        description=urllib.unquote_plus(params["description"])
+except:
+        pass
 
+try:        
+        filetype=urllib.unquote_plus(params["filetype"])
+except:
+        pass    
+
+# END OF HelpSection addition ===========================================
+    
 try:
         url=urllib.unquote_plus(params["url"])
 except:
@@ -583,7 +565,6 @@ print "Mode: "+str(mode)
 print "URL: "+str(url)
 print "Name: "+str(name)
 print "Year: "+str(year)
-print "Imdb_id: "+str(imdb_id)
 
 
 if mode==None or url==None or len(url)<1:
@@ -600,7 +581,12 @@ elif mode=='helpmenu':
         HELPMENU()
 
 elif mode == "help list menu": 
-        items = HELP(name)        
+        items = HELP(name)
+
+elif mode == "wizardstatus":
+        print""+url    
+        items = WIZARDSTATUS(url)        
+
 
         
 elif mode=='moviecat':
@@ -742,7 +728,16 @@ elif mode=='searchtv':
 
 elif mode=='downloadFile':
         print ""+url
-        main.downloadFile(url)        
+        main.downloadFile(url)
+
+        
+elif mode=='helpcatagories':
+        print ""+url
+        HELPCATEGORIES(url)
+
+elif mode=='helpstat':
+        HELPSTAT(name,url,description)
+                
 
 
 elif mode=='searcht':
@@ -757,8 +752,14 @@ elif mode == "dev message":
     ADDON.setSetting('dev_message', value='run')
     dev_message()
 
+elif mode=='helpwizard':
+        HELPWIZARD(name,url,description,filetype)
 
-
+        
+elif mode == "statuscategories": print""+url; items=status.STATUSCATEGORIES(url)
+elif mode == "addonstatus": print""+url; items=status.ADDONSTATUS(url)
+elif mode=='addoninstall': status.ADDONINSTALL(name,url,description,filetype)
+elif mode=='addshortcuts': status.ADDSHORTCUTS(name,url,description,filetype)        
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 

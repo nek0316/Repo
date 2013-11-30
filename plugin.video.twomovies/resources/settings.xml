@@ -1,7 +1,7 @@
 <settings>
 	<category label="Auto-View">
-		<setting id="auto-view" type="bool" label="Enable Auto View" default="false"/>
-		<setting id="movies-view" type="number" label="Movie View" default="503" enable="!eq(-1,false)"/>
+		<setting id="auto-view" type="bool" label="Enable Auto View" default="true"/>
+		<setting id="movies-view" type="number" label="Movie View" default="515" enable="!eq(-1,false)"/>
 		<setting id="tvshows-view" type="number" label="TV Show View" default="503" enable="!eq(-2,false)"/>
 		<setting id="seasons-view" type="number" label="Seasons View" default="504" enable="!eq(-3,false)"/>	
 		<setting id="episodes-view" type="number" label="Episode View" default="504" enable="!eq(-4,false)"/>

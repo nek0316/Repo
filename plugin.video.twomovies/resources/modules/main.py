@@ -80,12 +80,7 @@ def addDiralt(name,url,mode,thumb):
      params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'year':year, 'types':'movie'}
      addon.add_directory(params, {'title':name}, img= thumb, fanart= artwork + '/main/fanart.jpg')
 
-def addHELPDir(name,data,mode,imdb_id):
-    u=sys.argv[0]+"?data="+urllib.quote_plus(data)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&imdb_id="+str(imdb_id)
-    ok=True
-    liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=imdb_id)
-    ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False)
-    return ok
+
 
      
 #For Movie/TV Download
@@ -136,8 +131,20 @@ def RESOLVEDL(name,url,thumb):
      xbmc.sleep(1000)
         
      downloadFile(url,name)#.play(url, liz, False)     
-     
+# HELPDIR
 
+
+
+def addHELPDir(name,url,mode,iconimage,fanart,description,filetype):
+        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)+"&fanart="+urllib.quote_plus(fanart)+"&description="+urllib.quote_plus(description)+"&filetype="+urllib.quote_plus(filetype)
+        ok=True
+        liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
+        liz.setInfo( type="Video", infoLabels={ "title": name, "Plot": description } )
+        liz.setProperty( "Fanart_Image", fanart )
+        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False)
+        return ok     
+
+     
 # Standard addDir
 def addDir(name,url,mode,thumb,labels,favtype):
         contextMenuItems = []
@@ -348,6 +355,7 @@ def AUTO_VIEW(content):
         if content:
                 xbmcplugin.setContent(int(sys.argv[1]), content)
                 if settings.getSetting('auto-view') == 'true':
+                        
                         if content == 'movies':
                                 xbmc.executebuiltin("Container.SetViewMode(%s)" % settings.getSetting('movies-view') )
                         if content == 'tvshows':
@@ -358,7 +366,10 @@ def AUTO_VIEW(content):
                         if content == 'season':
                                 xbmc.executebuiltin("Container.SetViewMode(%s)" % settings.getSetting('season-view') )
                         if content == 'list':
-                                xbmc.executebuiltin("Container.SetViewMode(%s)" % settings.getSetting('list-view') )        
+                                xbmc.executebuiltin("Container.SetViewMode(%s)" % settings.getSetting('list-view') )
+                        #if content == 'help':
+                               # content = 'movies'
+                               # xbmc.executebuiltin("Container.SetViewMode(%s)" % settings.getSetting('help-view') )        
                 else:
                         xbmc.executebuiltin("Container.SetViewMode(%s)" % settings.getSetting('default-view') )
 
