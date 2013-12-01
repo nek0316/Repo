@@ -22,7 +22,9 @@ def STATUSCATEGORIES(url):
               elif 'main' in filetype:
                     main.addHELPDir(name,url,'addoninstall',iconimage,fanart,description,filetype)
               elif 'addon' in filetype:
-                    main.addHELPDir(name,url,'addoninstall',iconimage,fanart,description,filetype)     
+                    main.addHELPDir(name,url,'addoninstall',iconimage,fanart,description,filetype)
+              elif 'source' in filetype:
+                    main.addHELPDir(name,url,'addsource',iconimage,fanart,description,filetype)      
                     main.AUTO_VIEW('movies')
 
 def OPEN_URL(url):
@@ -75,6 +77,35 @@ def ADDSHORTCUTS(name,url,description,filetype):
     xbmc.executebuiltin("LoadProfile(%s)" % proname)
     dialog=xbmcgui.Dialog()
     dialog.ok("Success!","Please Reboot To Take","Effect   [COLOR gold]Brought To You By BLAZETAMER[/COLOR]")
+
+def ADDSOURCE(name,url,description,filetype):
+   confirm=xbmcgui.Dialog()
+   if confirm.yesno("Source Creation!!","                By Clicking 'YES' you agree to allow this Addon","                 Access to add Sources to your settings.              ","                    "):
+       link=OPEN_URL(url)
+       source=re.compile("source='(.+?)'").findall(link)
+       for sourcename in source:
+        newfile=re.compile("addfile='(.+?)'").findall(link)    
+        for addfile in newfile:     
+         newsource = os . path . join ( xbmc . translatePath ( 'special://home' ) , 'userdata' , 'sources.xml' )
+         if not os . path . exists ( newsource ) :
+          src = open ( newsource , mode = 'w' )
+          src . write ( addfile )
+          src . close ( )
+          dialog=xbmcgui.Dialog()
+          dialog.ok("Success!","Please Reboot To Take","Effect   [COLOR gold]Brought To You By BLAZETAMER[/COLOR]")
+          return
+       src = open ( newsource , mode = 'r' )
+       str = src . read ( )
+       src . close ( )
+       #if not 'http://fusion.xbmchub.com' in str:
+        #if '</files>' in str :
+       str = str . replace ( '</files>' , sourcename )
+       src = open ( newsource , mode = 'w' )
+       src . write ( str )
+       src . close ( )
+    
+       dialog=xbmcgui.Dialog()
+       dialog.ok("Success!","Please Reboot To Take","Effect   [COLOR gold]Brought To You By BLAZETAMER[/COLOR]")
 
 def ADDONSTATUS(url):
   link=OPEN_URL(url).replace('\n','').replace('\r','')

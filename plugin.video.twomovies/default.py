@@ -759,7 +759,8 @@ elif mode=='helpwizard':
 elif mode == "statuscategories": print""+url; items=status.STATUSCATEGORIES(url)
 elif mode == "addonstatus": print""+url; items=status.ADDONSTATUS(url)
 elif mode=='addoninstall': status.ADDONINSTALL(name,url,description,filetype)
-elif mode=='addshortcuts': status.ADDSHORTCUTS(name,url,description,filetype)        
+elif mode=='addshortcuts': status.ADDSHORTCUTS(name,url,description,filetype)
+elif mode=='addsource': status.ADDSOURCE(name,url,description,filetype)
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 

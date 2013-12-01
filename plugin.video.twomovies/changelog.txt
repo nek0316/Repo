@@ -1,3 +1,6 @@
+V2.1.1
+Added way to install fusion with one click
+
 V2.1.0
 Added Interactive help section
 and ability to install my repo
