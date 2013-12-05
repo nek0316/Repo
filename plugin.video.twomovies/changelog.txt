@@ -1,3 +1,13 @@
+V2.1.5
+
+Rewrote the code due to site changes
+Updated the way the Help Section Functions
+ADDED Chia-Anime Section 
+Name Change of Addon + Evolved
+Removed Colors to speed up processing
+
+
+
 V2.1.1
 Added way to install fusion with one click
 

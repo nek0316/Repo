@@ -1,5 +1,6 @@
 # Status/Help Module By: Blazetamer 2013
 import urllib,urllib2,re,xbmcplugin,xbmcgui,xbmc,xbmcaddon,os,sys,time,shutil
+import urlresolver
 import downloader
 import extract
 from resources.modules import main
@@ -10,21 +11,22 @@ from t0mm0.common.net import Net
 net=Net()
 settings=xbmcaddon.Addon(id='plugin.video.twomovies')
 
-#==========================ADDON REPO=====================================================================================================
 def STATUSCATEGORIES(url):
           link=OPEN_URL(url).replace('\n','').replace('\r','')
           match=re.compile('name="(.+?)".+?rl="(.+?)".+?mg="(.+?)".+?anart="(.+?)".+?escription="(.+?)".+?ype="(.+?)"').findall(link)
           for name,url,iconimage,fanart,description,filetype in match:
               if 'status' in filetype:
                  main.addHELPDir(name,url,'addonstatus',iconimage,fanart,description,filetype)
-              elif 'shortcuts' in filetype:
-                 main.addHELPDir(name,url,'addshortcuts',iconimage,fanart,description,filetype) 
+              elif 'getshorts' in filetype:
+                 main.add2HELPDir(name,url,'getshorts',iconimage,fanart,description,filetype) 
               elif 'main' in filetype:
                     main.addHELPDir(name,url,'addoninstall',iconimage,fanart,description,filetype)
-              elif 'addon' in filetype:
-                    main.addHELPDir(name,url,'addoninstall',iconimage,fanart,description,filetype)
+              elif 'addrepo' in filetype:
+                    main.add2HELPDir(name,url,'getrepolink',iconimage,fanart,description,filetype)
               elif 'source' in filetype:
-                    main.addHELPDir(name,url,'addsource',iconimage,fanart,description,filetype)      
+                    main.addHELPDir(name,url,'addsource',iconimage,fanart,description,filetype)
+              elif 'getvideo' in filetype:
+                    main.add2HELPDir(name,url,'getvideolink',iconimage,fanart,description,filetype)      
                     main.AUTO_VIEW('movies')
 
 def OPEN_URL(url):
@@ -60,7 +62,7 @@ def ADDONINSTALL(name,url,description,filetype):
         print '======================================='
         extract.all(lib,addonfolder,dp)
         dialog=xbmcgui.Dialog()
-        dialog.ok("Success!","Please Reboot To Take Effect","   [COLOR gold]Brought To You By BLAZETAMER[/COLOR]")
+        dialog.ok("Success!","Please Reboot To Take Effect","    Brought To You By BLAZETAMER ")
   else:
       return
 def ADDSHORTCUTS(name,url,description,filetype):
@@ -76,7 +78,7 @@ def ADDSHORTCUTS(name,url,description,filetype):
     xbmc.executebuiltin('ReloadSkin()')
     xbmc.executebuiltin("LoadProfile(%s)" % proname)
     dialog=xbmcgui.Dialog()
-    dialog.ok("Success!","Please Reboot To Take","Effect   [COLOR gold]Brought To You By BLAZETAMER[/COLOR]")
+    dialog.ok("Success!","Please Reboot To Take","Effect    Brought To You By BLAZETAMER ")
 
 def ADDSOURCE(name,url,description,filetype):
    confirm=xbmcgui.Dialog()
@@ -92,7 +94,7 @@ def ADDSOURCE(name,url,description,filetype):
           src . write ( addfile )
           src . close ( )
           dialog=xbmcgui.Dialog()
-          dialog.ok("Success!","Please Reboot To Take","Effect   [COLOR gold]Brought To You By BLAZETAMER[/COLOR]")
+          dialog.ok("Success!","Please Reboot To Take","Effect    Brought To You By BLAZETAMER ")
           return
        src = open ( newsource , mode = 'r' )
        str = src . read ( )
@@ -105,7 +107,7 @@ def ADDSOURCE(name,url,description,filetype):
        src . close ( )
     
        dialog=xbmcgui.Dialog()
-       dialog.ok("Success!","Please Reboot To Take","Effect   [COLOR gold]Brought To You By BLAZETAMER[/COLOR]")
+       dialog.ok("Success!","Please Reboot To Take","Effect    Brought To You By BLAZETAMER ")
 
 def ADDONSTATUS(url):
   link=OPEN_URL(url).replace('\n','').replace('\r','')
@@ -133,3 +135,82 @@ def TextBoxes(heading,anounce):
       return
   TextBox()
 
+
+def VIDEORESOLVE(name,url,iconimage):
+         url= url
+         ok=True
+         liz=xbmcgui.ListItem(name, iconImage=iconimage,thumbnailImage=iconimage); liz.setInfo( type="Video", infoLabels={ "Title": name } )
+         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=str(url),listitem=liz)
+         xbmc.executebuiltin("XBMC.Notification(Please Wait!,Preparing Your Video,3000)")
+         xbmc.sleep(1000)
+         xbmc.Player ().play(str(url), liz, False)
+
+         
+
+def YTVIDEORESOLVE(name,url,iconimage):
+         url = urlresolver.HostedMediaFile(url=url).resolve()
+         ok=True
+         liz=xbmcgui.ListItem(name, iconImage=iconimage,thumbnailImage=iconimage); liz.setInfo( type="Video", infoLabels={ "Title": name } )
+         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=str(url),listitem=liz)
+         xbmc.executebuiltin("XBMC.Notification(Please Wait!,Preparing Your Video,3000)")
+         xbmc.sleep(1000)
+         xbmc.Player ().play(str(url), liz, False)
+
+
+        
+def GETVIDEOLINK(url):
+    link=OPEN_URL(url).replace('\n','').replace('\r','')
+    match=re.compile('name="(.+?)".+?rl="(.+?)".+?mg="(.+?)".+?anart="(.+?)".+?escription="(.+?)".+?ype="(.+?)"').findall(link)
+    for name,url,iconimage,fanart,description,filetype in match:
+        if 'video' in filetype:
+            main.addHELPDir(name,url,'getvideo',iconimage,fanart,description,filetype)
+        elif 'youtube' in filetype:
+           main.addHELPDir(name,url,'getvideo',iconimage,fanart,description,filetype)
+        elif 'stream' in filetype:
+           main.addHELPDir(name,url,'getvideo',iconimage,fanart,description,filetype)   
+    
+
+    main.AUTO_VIEW('movies')
+
+
+def GETVIDEO(name,url,iconimage,description,filetype):
+    if 'video' in filetype:
+            VIDEORESOLVE(name,url,iconimage)
+    elif 'youtube' in filetype:
+            YTVIDEORESOLVE(name,url,iconimage)
+    elif 'stream' in filetype:
+            PLAYSTREAM(name,url,iconimage,description)        
+            
+         
+
+def GETREPOLINK(url):
+    link=OPEN_URL(url).replace('\n','').replace('\r','')
+    match=re.compile('name="(.+?)".+?rl="(.+?)".+?mg="(.+?)".+?anart="(.+?)".+?escription="(.+?)".+?ype="(.+?)"').findall(link)
+    for name,url,iconimage,fanart,description,filetype in match:
+        main.addHELPDir(name,url,'addoninstall',iconimage,fanart,description,filetype)
+                  
+        main.AUTO_VIEW('movies')
+
+def GETSHORTS(url):
+    link=OPEN_URL(url).replace('\n','').replace('\r','')
+    match=re.compile('name="(.+?)".+?rl="(.+?)".+?mg="(.+?)".+?anart="(.+?)".+?escription="(.+?)".+?ype="(.+?)"').findall(link)
+    for name,url,iconimage,fanart,description,filetype in match:
+        main.addHELPDir(name,url,'addshortcuts',iconimage,fanart,description,filetype)
+                  
+        main.AUTO_VIEW('movies')        
+
+
+
+def PLAYSTREAM(name,url,iconimage,description):
+    liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
+    liz.setInfo( type="Video", infoLabels={ "Title": name} )
+    liz.setProperty("IsPlayable","true")
+    pl = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+    pl.clear()
+    pl.add(url, liz)
+    xbmc.Player(xbmc.PLAYER_CORE_MPLAYER).play(pl)
+
+
+
+
+    

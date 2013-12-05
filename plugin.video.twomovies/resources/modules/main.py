@@ -142,7 +142,16 @@ def addHELPDir(name,url,mode,iconimage,fanart,description,filetype):
         liz.setInfo( type="Video", infoLabels={ "title": name, "Plot": description } )
         liz.setProperty( "Fanart_Image", fanart )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False)
-        return ok     
+        return ok
+
+def add2HELPDir(name,url,mode,iconimage,fanart,description,filetype):
+        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)+"&fanart="+urllib.quote_plus(fanart)+"&description="+urllib.quote_plus(description)+"&filetype="+urllib.quote_plus(filetype)
+        ok=True
+        liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
+        liz.setInfo( type="Video", infoLabels={ "title": name, "Plot": description } )
+        liz.setProperty( "Fanart_Image", fanart )
+        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
+        return ok          
 
      
 # Standard addDir

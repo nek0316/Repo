@@ -8,6 +8,7 @@ import cookielib
 from resources.modules import gethtml
 from resources.modules import weblogin
 from resources.modules import status
+from resources.modules import chia
 import setup
 import downloader
 import extract
@@ -70,10 +71,10 @@ def LOGIN():
     loginlink = net.http_POST('http://twomovies.name/login', form_data=form_data, headers=header_dict).content.encode("utf-8").rstrip()
     net.save_cookies(cookie_jar)
     if 'Invalid Username/Email or password' in loginlink:
-        LogNotify('[COLOR red]Not logged in at twomovies.name[/COLOR]', 'Check settings', '5000', '')
+        LogNotify('Not logged in at twomovies.name', 'Check settings', '5000', '')
         CATEGORIES()
     else:
-        LogNotify('[COLOR gold]Logged in at twomovies.name[/COLOR]', '', '5000', '')
+        LogNotify('Logged in at twomovies.name', '', '5000', '')
 
 
   else:  
@@ -113,10 +114,12 @@ def STARTUP():
 #Main Links
 def CATEGORIES():
         
-        main.addDir('[COLOR gold]Movies[/COLOR]','none','moviecat',artwork +'Icon_Menu_Movies_Menu.png','','dir')     
+        main.addDir('Movies','none','moviecat',artwork +'Icon_Menu_Movies_Menu.png','','dir')     
         
         if settings.getSetting('tvshows') == 'true':
-                main.addDir('[COLOR gold]TV Shows [/COLOR] ','none','tvcats',artwork +'Icon_Menu_TVShows_Menu.png','','dir')
+                main.addDir('TV Shows  ','none','tvcats',artwork +'Icon_Menu_TVShows_Menu.png','','dir')
+        if settings.getSetting('chia') == 'true':
+                main.addDir('Chia-Anime','none','chiacats',artwork +'chia.png','','dir')        
         if settings.getSetting('adult') == 'true':
                 text_file = None
                 if not os.path.exists(xbmc.translatePath("special://home/userdata/addon_data/plugin.video.twomovies/")):
@@ -137,12 +140,12 @@ def CATEGORIES():
                                 text_file = open(xbmc.translatePath("special://home/userdata/addon_data/plugin.video.twomovies/apc.24"), "w")
                                 text_file.write(pin)
                                 text_file.close()
-                main.addDir('[COLOR gold]Adults Only Section[/COLOR]','none','adultallow',artwork +'Icon_Menu_Adult.png'  ,'','dir')                                
+                main.addDir('Two Movies Adults Only Section','none','adultallow',artwork +'Icon_Menu_Adult.png'  ,'','dir')                                
         
         
         if settings.getSetting('resolver') == 'true':
-                main.addDir('[COLOR gold]Resolver Settings[/COLOR]','none','resolverSettings',artwork +'Icon_Menu_Settings_ResolverSettings.png','','dir')
-        main.addDir('[COLOR red]Help and Extras[/COLOR]','http://addonrepo.com/xbmchub/twomovies/messages/addon.txt','statuscategories',artwork +'help.png','','dir')
+                main.addDir('Resolver Settings','none','resolverSettings',artwork +'Icon_Menu_Settings_ResolverSettings.png','','dir')
+        main.addDir('Help and Extras','http://addonrepo.com/xbmchub/twomovies/messages/addon.txt','statuscategories',artwork +'help.png','','dir')
         
         main.AUTO_VIEW('')
 
@@ -150,18 +153,18 @@ def CATEGORIES():
 
                        
 def MOVIECAT():
-        main.addDir('[COLOR gold]Movies by Popularity[/COLOR]','http://twomovies.name/browse_movies/all/byViews/all/','playyear',artwork +'moviespopularity.png','','dir')
-        main.addDir('[COLOR gold]Movies by Rating[/COLOR]','http://twomovies.name/browse_movies/all/byRating/all/','playyear',artwork +'moviesrating.png','','dir')
-        main.addDir('[COLOR gold]Trending Movies[/COLOR]','http://twomovies.name/','movieindex1',artwork +'Icon_Menu_Movies_Popularandtrending.png','','dir')
-        main.addDir('[COLOR gold]Newly Added Movies[/COLOR]','http://twomovies.name/new_release/','movieindex1',artwork +'moviesnewlyadded.png','','dir')
-        main.addDir('[COLOR gold]Movies by Year[/COLOR] ','none','byyear',artwork +'Icon_Menu_Movies_Byyear.png','','dir')
-        main.addDir('[COLOR gold]Movie Genres[/COLOR] ','http://twomovies.name/','genres',artwork +'Icon_Menu_Movies_Genre.png','','dir')
-        main.addDir('[COLOR gold]A-Z Index[/COLOR]','none','mazindex',artwork +'moviesa-z.png','','dir')
+        main.addDir('Movies by Popularity','http://twomovies.name/browse_movies/all/byViews/all/','playyear',artwork +'moviespopularity.png','','dir')
+        main.addDir('Movies by Rating','http://twomovies.name/browse_movies/all/byRating/all/','playyear',artwork +'moviesrating.png','','dir')
+        main.addDir('Trending Movies','http://twomovies.name/','movieindex1',artwork +'Icon_Menu_Movies_Popularandtrending.png','','dir')
+        main.addDir('Newly Added Movies','http://twomovies.name/new_release/','movieindex1',artwork +'moviesnewlyadded.png','','dir')
+        main.addDir('Movies by Year ','none','byyear',artwork +'Icon_Menu_Movies_Byyear.png','','dir')
+        main.addDir('Movie Genres ','http://twomovies.name/','genres',artwork +'Icon_Menu_Movies_Genre.png','','dir')
+        main.addDir('A-Z Index','none','mazindex',artwork +'moviesa-z.png','','dir')
         if settings.getSetting('movietags') == 'true':
-                main.addDir('[COLOR gold]Movies by Tags[/COLOR] ','http://twomovies.name/tags/','movietags',artwork +'Icon_Menu_ByTag.png','','dir')
-        main.addDir('[COLOR gold]Search by Movie Name[/COLOR] ','http://twomovies.name/search/?search_query=','searchm',artwork +'Icon_Menu_Movies_SearchName.png','','dir')
+                main.addDir('Movies by Tags ','http://twomovies.name/tags/','movietags',artwork +'Icon_Menu_ByTag.png','','dir')
+        main.addDir('Search by Movie Name ','http://twomovies.name/search/?search_query=','searchm',artwork +'Icon_Menu_Movies_SearchName.png','','dir')
         if settings.getSetting('movietags') == 'true':
-                main.addDir('[COLOR gold]Search by Custom Tag[/COLOR] ','http://twomovies.name/search/?search_query=','searcht',artwork +'Icon_Menu_Movies_SearchCustomTag.png','','dir')
+                main.addDir('Search by Custom Tag ','http://twomovies.name/search/?search_query=','searcht',artwork +'Icon_Menu_Movies_SearchCustomTag.png','','dir')
         main.AUTO_VIEW('')
         
 def MAZINDEX():
@@ -207,7 +210,7 @@ def ADULTALLOW():
         
         if pin == line:
                 
-                main.addDir('[COLOR gold]View Adult Movies[/COLOR]','http://twomovies.name/browse_movies/Adult/byViews/all/','adultmovieindex',artwork +'Icon_Menu_Adult.png','','dir')
+                main.addDir('View Adult Movies','http://twomovies.name/browse_movies/Adult/byViews/all/','adultmovieindex',artwork +'Icon_Menu_Adult.png','','dir')
         else:
                 notice = xbmcgui.Dialog().ok('Wrong Passcode','The passcode you entered is incorrect')        
 
@@ -260,7 +263,7 @@ def GENRES():
 
 def AZINDEX(url):
         link = net.http_GET(url).content
-        match=re.compile('<a href="(.+?)">\n        <img src=".+?" data-original="(.+?)"  class=".+?" style=".+?"  border=".+?" height=".+?" width=".+?" alt="Watch (.+?) Online for Free">\n').findall(link)
+        match=re.compile('<a href="(.+?)">\r\n        <img src=".+?" data-original="(.+?)"  class=".+?" style=".+?"  border=".+?" height=".+?" width=".+?" alt="Watch (.+?) Online for Free">\r\n').findall(link)
         if len(match) > 0:
          for url,sitethumb,name in match:
           matchyear=re.compile('<a class="filmyar" href=".+?">(.+?)</a>').findall(link)
@@ -283,7 +286,7 @@ def AZINDEX(url):
         
 def PLAYYEAR (url):
         link = net.http_GET(url).content
-        match=re.compile('<a href="(.+?)" title=".+?">\n                        <img src="(.+?)" class=".+?" style=".+?"  border=".+?" height="147px" width="102px" alt="Watch (.+?) Online for Free">\n').findall(link)
+        match=re.compile('<a href="(.+?)" title=".+?">\r\n                        <img src="(.+?)" class=".+?" style=".+?"  border=".+?" height="147px" width="102px" alt="Watch (.+?) Online for Free">\r\n').findall(link)
         if len(match) > 0:
          for url,sitethumb,name in match:
           matchyear=re.compile('<a class="filmyar" href="http://twomovies.name/browse_movies/all/byViews/(.+?)/">').findall(link)
@@ -312,7 +315,7 @@ def MOVIETAGS(url):
                 
 def MOVIETAGINDEX(url):
         link = net.http_GET(url).content
-        match=re.compile('<a href="(.+?)">\n        <img src=".+?" data-original="(.+?)"  class=".+?" style=".+?"  border=".+?" height=".+?" width=".+?" alt="Watch (.+?) Online for Free">\n').findall(link)
+        match=re.compile('<a href="(.+?)">\r\n        <img src=".+?" data-original="(.+?)"  class=".+?" style=".+?"  border=".+?" height=".+?" width=".+?" alt="Watch (.+?) Online for Free">\r\n').findall(link)
         if len(match) > 0:
          for url,sitethumb,name in match:
           matchyear=re.compile('<a class="filmyar" href="http://twomovies.name/browse_movies/all/byViews/(.+?)/">').findall(link)
@@ -331,7 +334,7 @@ def MOVIETAGINDEX(url):
 
 def ADULTMOVIEINDEX(url):
         link = net.http_GET(url).content
-        match=re.compile('<a href="(.+?)" title=".+?">\n                        <img src="(.+?)" class=".+?" style=".+?"  border=".+?" height="147px" width="102px" alt="Watch (.+?) Online for Free">\n').findall(link)
+        match=re.compile('<a href="(.+?)" title=".+?">\r\n                        <img src="(.+?)" class=".+?" style=".+?"  border=".+?" height="147px" width="102px" alt="Watch (.+?) Online for Free">\r\n').findall(link)
         if len(match) > 0:
          for url,sitethumb,name in match:
           matchyear=re.compile('<a class="filmyar" href="http://twomovies.name/browse_movies/all/byViews/(.+?)/">').findall(link)
@@ -353,7 +356,7 @@ def ADULTMOVIEINDEX(url):
              
 def MOVIEINDEX(url):
         link = net.http_GET(url).content
-        match=re.compile('<a href="(.+?)" title=".+?">\n                        <img src="(.+?)" class=".+?" style=".+?"  border=".+?" height="147px" width="102px" alt="Watch (.+?) Online for Free">\n').findall(link)
+        match=re.compile('<a href="(.+?)" title=".+?">\r\n                        <img src="(.+?)" class=".+?" style=".+?"  border=".+?" height="147px" width="102px" alt="Watch (.+?) Online for Free">\r\n').findall(link)
         if len(match) > 0:
          for url,sitethumb,name in match:
           matchyear=re.compile('<a class="filmyar" href="http://twomovies.name/browse_movies/all/byViews/(.+?)/">').findall(link)
@@ -375,7 +378,7 @@ def MOVIEINDEX(url):
                  
 def MOVIEINDEX1(url):
         link = net.http_GET(url).content
-        match=re.compile('<a href="(.+?)">\n        <img src=".+?" data-original="(.+?)"  class=".+?" style=".+?"  border=".+?" height=".+?" width=".+?" alt="Watch (.+?) Online for Free">\n').findall(link)
+        match=re.compile('<a href="(.+?)">\r\n        <img src=".+?" data-original="(.+?)"  class=".+?" style=".+?"  border=".+?" height=".+?" width=".+?" alt="Watch (.+?) Online for Free">\r\n').findall(link)
         if len(match) > 0:
          for url,sitethumb,name in match:
           matchyear=re.compile('<a class="filmyar" href=".+?">(.+?)</a>').findall(link)
@@ -522,6 +525,16 @@ year=None
 imdb_id=None
 #------added for Help Section
 try:        
+        iconimage=urllib.unquote_plus(params["iconimage"])
+except:
+        pass
+
+try:        
+        thumb=urllib.unquote_plus(params["thumb"])
+except:
+        pass
+
+try:        
         fanart=urllib.unquote_plus(params["fanart"])
 except:
         pass
@@ -595,7 +608,11 @@ elif mode=='moviecat':
 
 elif mode=='tvcats':
         print ""
-        tvshow.TVCATS()        
+        tvshow.TVCATS()
+
+elif mode=='chiacats':
+        print ""
+        chia.CHIACATS()        
 
 elif mode=='adultallow':
         print ""
@@ -618,6 +635,10 @@ elif mode=='genres':
 elif mode=='tvgenres':
         print ""
         tvshow.TVGENRES()
+
+elif mode=='chiaalph':
+        print ""
+        chia.CHIAALPH()        
 
         
 elif mode=='mazindex':
@@ -686,7 +707,11 @@ elif mode=='dlvidpage':
 
 elif mode=='tvvidpage':
         print ""+url
-        tvshow.TVVIDPAGE(url,name)        
+        tvshow.TVVIDPAGE(url,name)
+
+elif mode=='chiavidpage':
+        print ""+url
+        chia.CHIAVIDPAGE(url,name)        
 
 
 elif mode=='linkpage':
@@ -699,15 +724,52 @@ elif mode=='azlinkpage':
 
 elif mode=='tvlinkpage':
         print ""+url
-        tvshow.TVLINKPAGE(url,name)        
+        tvshow.TVLINKPAGE(url,name)
+
+elif mode=='chialinkpage':
+        print ""+url
+        chia.CHIALINKPAGE(url,name)
+
+elif mode=='chialatest':
+        print ""+url
+        chia.CHIALATEST(url)
+        
+elif mode=='chiaalphmain':
+        print ""+url
+        chia.CHIAALPHMAIN(url)
+
+elif mode=='chiagenremain':
+        print ""+url
+        chia.CHIAGENREMAIN(url)
+        
+
+elif mode=='chiagenres':
+        print ""+url
+        chia.CHIAGENRES(url)        
 
 elif mode=='episodes':
         print ""+url
-        tvshow.EPISODES(url,name,imdb_id)        
+        tvshow.EPISODES(url,name,imdb_id)
+
+elif mode=='chiaepisodes':
+        print ""+url
+        chia.CHIAEPISODES(url,name,imdb_id)        
 
 elif mode=='resolve':
         print ""+url
         main.RESOLVE(url,name,iconimage)
+
+elif mode=='chiaresolve':
+        print ""+url
+        chia.CHIARESOLVE(url,name,iconimage)
+
+elif mode=='videoresolve':
+        print ""+url
+        status.VIDEORESOLVE(url,name,iconimage)
+
+elif mode=='ytvideoresolve':
+        print ""+url
+        status.YTVIDEORESOLVE(url,name,iconimage)        
 
 elif mode=='resolve2':
         print ""+url
@@ -758,9 +820,15 @@ elif mode=='helpwizard':
         
 elif mode == "statuscategories": print""+url; items=status.STATUSCATEGORIES(url)
 elif mode == "addonstatus": print""+url; items=status.ADDONSTATUS(url)
+elif mode=='getrepolink': print""+url; items=status.GETREPOLINK(url)
+elif mode=='getshorts': print""+url; items=status.GETSHORTS(url)
+elif mode=='getrepo': status.GETREPO(name,url,description,filetype)
+elif mode=='getvideolink': print""+url; items=status.GETVIDEOLINK(url)
+elif mode=='getvideo': status.GETVIDEO(name,url,iconimage,description,filetype)
 elif mode=='addoninstall': status.ADDONINSTALL(name,url,description,filetype)
 elif mode=='addshortcuts': status.ADDSHORTCUTS(name,url,description,filetype)
 elif mode=='addsource': status.ADDSOURCE(name,url,description,filetype)
+elif mode=='playstream': status.PLAYSTREAM(name,url,iconimage,description)
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 

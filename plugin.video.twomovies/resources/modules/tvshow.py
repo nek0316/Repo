@@ -38,11 +38,11 @@ def LogNotify(title,message,times,icon):
 def TVCATS():
 
     
-          main.addDir('[COLOR gold]TV Shows by Year[/COLOR]','none','tvbyyear',artwork +'Icon_Menu_TVShows_ByYear.png','','dir')
-          main.addDir('[COLOR gold]Search TV Shows[/COLOR]','http://twomovies.name/search/?search_query=','searchtv',artwork + 'Icon_Menu_TVShows_Search.png','','dir')
-          main.addDir('[COLOR gold]TV Shows by Genre[/COLOR]','none','tvgenres',artwork + '/tvshows/tvshowsgenre.png','','dir')
-          main.addDir('[COLOR gold]TV Shows by Rating[/COLOR]','http://twomovies.name/browse_tv_shows/all/byRating/all/','tvplayyear',artwork + '/tvshows/tvshowsrating.png','','dir')
-          main.addDir('[COLOR gold]TV Shows by Poplularity[/COLOR]','http://twomovies.name/browse_tv_shows/all/byViews/all/','tvplayyear',artwork + '/tvshows/tvshowspopularity.png','','dir')
+          main.addDir('TV Shows by Year','none','tvbyyear',artwork +'Icon_Menu_TVShows_ByYear.png','','dir')
+          main.addDir('Search TV Shows','http://twomovies.name/search/?search_query=','searchtv',artwork + 'Icon_Menu_TVShows_Search.png','','dir')
+          main.addDir('TV Shows by Genre','none','tvgenres',artwork + '/tvshows/tvshowsgenre.png','','dir')
+          main.addDir('TV Shows by Rating','http://twomovies.name/browse_tv_shows/all/byRating/all/','tvplayyear',artwork + '/tvshows/tvshowsrating.png','','dir')
+          main.addDir('TV Shows by Poplularity','http://twomovies.name/browse_tv_shows/all/byViews/all/','tvplayyear',artwork + '/tvshows/tvshowspopularity.png','','dir')
           
           main.AUTO_VIEW('')    
 
@@ -100,10 +100,10 @@ def TVGENRES():
         
 def TVPLAYYEAR (url):
         link = net.http_GET(url).content
-        match=re.compile('<a href="(.+?)" title=".+?">\n                        <img src="(.+?)" class=".+?" style=".+?"  border=".+?" height=".+?" width=".+?" alt="Watch (.+?) Online for Free">\n').findall(link)
+        match=re.compile('<a href="(.+?)" title=".+?">\r\n                        <img src="(.+?)" class=".+?" style=".+?"  border=".+?" height=".+?" width=".+?" alt="Watch (.+?) Online for Free">\r\n').findall(link)
         if len(match) > 0:
          for url,sitethumb,name in match:
-          matchyear=re.compile('<a class="filmyar" href="http://twomovies.name/browse_tv_shows/all/byViews/(.+?)/">\n').findall(link)
+          matchyear=re.compile('<a class="filmyar" href="http://twomovies.name/browse_tv_shows/all/byViews/(.+?)/">\r\n').findall(link)
           if len(matchyear) > 0:
            for year in matchyear:        
                  data = main.GRABTVMETA(name,year)
@@ -119,10 +119,10 @@ def TVPLAYYEAR (url):
                     main.AUTO_VIEW('')        
 def TVPLAYGENRE (url):
         link = net.http_GET(url).content
-        match=re.compile('<a href="(.+?)" title=".+?">\n                        <img src="(.+?)" class=".+?" style=".+?"  border=".+?" height=".+?" width=".+?" alt="Watch (.+?) Online for Free">\n').findall(link)
+        match=re.compile('<a href="(.+?)" title=".+?">\r\n                        <img src="(.+?)" class=".+?" style=".+?"  border=".+?" height=".+?" width=".+?" alt="Watch (.+?) Online for Free">\r\n').findall(link)
         if len(match) > 0:
          for url,sitethumb,name in match:
-          matchyear=re.compile('<a class="filmyar" href="http://twomovies.name/browse_tv_shows/all/byViews/(.+?)/">\n').findall(link)
+          matchyear=re.compile('<a class="filmyar" href="http://twomovies.name/browse_tv_shows/all/byViews/(.+?)/">\r\n').findall(link)
           if len(matchyear) > 0:
              for year in matchyear:        
                  data = main.GRABTVMETA(name,year)
@@ -142,7 +142,7 @@ def TVPLAYGENRE (url):
 
 def SEARCHSHOW(url):
              link = net.http_GET(url).content
-             match=re.compile('<a href="(.+?)">\n        <img src=".+?" data-original="(.+?)"  class=".+?" style=".+?"  border=".+?" height=".+?" width=".+?" alt="Watch (.+?) Online for Free">\n').findall(link)
+             match=re.compile('<a href="(.+?)">\r\n        <img src=".+?" data-original="(.+?)"  class=".+?" style=".+?"  border=".+?" height=".+?" width=".+?" alt="Watch (.+?) Online for Free">\r\n').findall(link)
              if len(match) > 0:
               for url,sitethumb,name in match:
                matchyear=re.compile('<div class="filmyar"><a class="filmyar" href="http://twomovies.name/browse_tv_shows/all/byViews/.+?/">(.+?)</a>').findall(link)

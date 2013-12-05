@@ -14,15 +14,17 @@
 
 
 <category label="Enable / Disable Sections">
-<setting id="adult" type="bool" label="[COLOR red]Adult Section[/COLOR]" default="false"/>
+<setting id="adult" type="bool" label="Adult Section" default="false"/>
 
-<setting id="tvshows" type="bool" label="[COLOR gold]TV Shows[/COLOR]" default="true"/>
+<setting id="tvshows" type="bool" label="TV Shows" default="true"/>
 
-<setting id="movietags" type="bool" label="[COLOR gold]Movie Tag Search[/COLOR]" default="true"/>
+<setting id="chia" type="bool" label="Chia-Anime" default="true"/>
 
-<setting id="resolver" type="bool" label="[COLOR gold]Resolver Settings[/COLOR]" default="true"/>
+<setting id="movietags" type="bool" label="Movie Tag Search" default="true"/>
 
-<setting id="metadata" type="bool" label="[COLOR gold]Tv Show Episode MetaData[/COLOR]" default="true"/>
+<setting id="resolver" type="bool" label="Resolver Settings" default="true"/>
+
+<setting id="metadata" type="bool" label="Tv Show Episode MetaData" default="true"/>
 
 <setting id="banners" type="bool" label="Use Banners For TV Shows" default="false" enable="!eq(-1,false)"/>
 
