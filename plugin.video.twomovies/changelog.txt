@@ -1,3 +1,11 @@
+V2.2.5
+Added a new Download Queue
+and Download Function
+
+This new function is a joint effort 
+between myself, and o9r1sh1
+and is a ever evolving project!
+
 V2.1.5
 
 Rewrote the code due to site changes

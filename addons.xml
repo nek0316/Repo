@@ -65,7 +65,7 @@
 </extension>
 </addon>
 
-<addon id="plugin.video.twomovies" version="2.1.5a" name="2 Movies Evolved" provider-name="Blazetamer- GFX by :Marquerite">
+<addon id="plugin.video.twomovies" version="2.2.5" name="2 Movies Evolved" provider-name="Blazetamer- GFX by :Marquerite">
 <requires>
 <import addon="xbmc.python" version="2.1.0"/>
 <import addon="script.module.urlresolver"  version="2.0.9"/>
@@ -84,8 +84,8 @@
 <provides>video</provides>
 </extension>
 <extension point="xbmc.addon.metadata">
-<summary>Movies/TV from 2Movies.name</summary>
-<description>A deep database of Movies , TV Shows and Anime. This addon will be ever evolving, Thus, The Name!! </description>
+<summary>Movies/TV/Anime</summary>
+<description>A deep database of Movies , TV Shows and Anime. This addon will be ever evolving, Thus, The Name...and now downloading to your library has never been easier.</description>
 
 <platform>all</platform>
 </extension>

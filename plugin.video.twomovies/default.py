@@ -12,7 +12,8 @@ from resources.modules import chia
 import setup
 import downloader
 import extract
-import time
+import time,re
+import datetime
 import shutil
 from resources.modules import tvshow
 from metahandler import metahandlers
@@ -32,7 +33,28 @@ artwork = xbmc.translatePath(os.path.join('http://rowthreemedia.com/xbmchub/2mov
 settings = xbmcaddon.Addon(id='plugin.video.twomovies')
 addon_path = os.path.join(xbmc.translatePath('special://home/addons'), '')
 
+#========================DLStuff=======================
+mode = addon.queries['mode']
+url = addon.queries.get('url', '')
+name = addon.queries.get('name', '')
+thumb = addon.queries.get('thumb', '')
+ext = addon.queries.get('ext', '')
+console = addon.queries.get('console', '')
+dlfoldername = addon.queries.get('dlfoldername', '')
+favtype = addon.queries.get('favtype', '')
+mainimg = addon.queries.get('mainimg', '')
 
+print 'Mode is: ' + mode
+print 'Url is: ' + url
+print 'Name is: ' + name
+print 'Thumb is: ' + thumb
+print 'Extension is: ' + ext
+print 'Filetype is: ' + console
+print 'DL Folder is: ' + dlfoldername
+print 'Favtype is: ' + favtype
+print 'Main Image is: ' + mainimg
+
+#================DL END==================================
 
 
 
@@ -114,12 +136,12 @@ def STARTUP():
 #Main Links
 def CATEGORIES():
         
-        main.addDir('Movies','none','moviecat',artwork +'Icon_Menu_Movies_Menu.png','','dir')     
+        main.addDir('[COLOR white]Movies[/COLOR]','none','moviecat',artwork +'Icon_Menu_Movies_Menu.png','','dir')     
         
         if settings.getSetting('tvshows') == 'true':
-                main.addDir('TV Shows  ','none','tvcats',artwork +'Icon_Menu_TVShows_Menu.png','','dir')
+                main.addDir('[COLOR white]TV Shows[/COLOR]','none','tvcats',artwork +'Icon_Menu_TVShows_Menu.png','','dir')
         if settings.getSetting('chia') == 'true':
-                main.addDir('Chia-Anime','none','chiacats',artwork +'chia.png','','dir')        
+                main.addDir('[COLOR white]Chia-Anime[/COLOR]','none','chiacats',artwork +'anime/Anime_Chia_Anime.png','','dir')        
         if settings.getSetting('adult') == 'true':
                 text_file = None
                 if not os.path.exists(xbmc.translatePath("special://home/userdata/addon_data/plugin.video.twomovies/")):
@@ -140,13 +162,13 @@ def CATEGORIES():
                                 text_file = open(xbmc.translatePath("special://home/userdata/addon_data/plugin.video.twomovies/apc.24"), "w")
                                 text_file.write(pin)
                                 text_file.close()
-                main.addDir('Two Movies Adults Only Section','none','adultallow',artwork +'Icon_Menu_Adult.png'  ,'','dir')                                
+                main.addDir('[COLOR white]Two Movies Adults Only Section[/COLOR]','none','adultallow',artwork +'Icon_Menu_Adult.png'  ,'','dir')                                
         
         
         if settings.getSetting('resolver') == 'true':
-                main.addDir('Resolver Settings','none','resolverSettings',artwork +'Icon_Menu_Settings_ResolverSettings.png','','dir')
-        main.addDir('Help and Extras','http://addonrepo.com/xbmchub/twomovies/messages/addon.txt','statuscategories',artwork +'help.png','','dir')
-        
+                main.addDir('[COLOR white]Resolver Settings[/COLOR]','none','resolverSettings',artwork +'Icon_Menu_Settings_ResolverSettings.png','','dir')
+        main.addDir('[COLOR white]Help and Extras[/COLOR]','http://addonrepo.com/xbmchub/twomovies/messages/addon.txt','statuscategories',artwork +'help.png','','dir')
+        main.addDir('[COLOR gold]Manage Downloads[/COLOR]','none','viewQueue',artwork +'downloads/Downloads_Manage.png','','')
         main.AUTO_VIEW('')
 
 
@@ -162,9 +184,9 @@ def MOVIECAT():
         main.addDir('A-Z Index','none','mazindex',artwork +'moviesa-z.png','','dir')
         if settings.getSetting('movietags') == 'true':
                 main.addDir('Movies by Tags ','http://twomovies.name/tags/','movietags',artwork +'Icon_Menu_ByTag.png','','dir')
-        main.addDir('Search by Movie Name ','http://twomovies.name/search/?search_query=','searchm',artwork +'Icon_Menu_Movies_SearchName.png','','dir')
+        main.addDir('[COLOR gold]Search by Movie Name[/COLOR] ','http://twomovies.name/search/?search_query=','searchm',artwork +'Icon_Menu_Movies_SearchName.png','','dir')
         if settings.getSetting('movietags') == 'true':
-                main.addDir('Search by Custom Tag ','http://twomovies.name/search/?search_query=','searcht',artwork +'Icon_Menu_Movies_SearchCustomTag.png','','dir')
+                main.addDir('[COLOR gold]Search by Custom Tag[/COLOR] ','http://twomovies.name/search/?search_query=','searcht',artwork +'Icon_Menu_Movies_SearchCustomTag.png','','dir')
         main.AUTO_VIEW('')
         
 def MAZINDEX():
@@ -403,8 +425,10 @@ def LINKPAGE(url,name):
         movie_name = name[:-6]
         year = name[-6:]
         movie_name = movie_name.decode('UTF-8','ignore')
+        dlfoldername = name
         link = net.http_GET(url).content
         match=re.compile('href="(.+?)" target=".+?" rel=".+?" onclick=".+? = \'.+?">Watch Movie!</a>\n                                                       </div>\n                        </td>\n                        <td valign=.+? style=.+?>\n                          <span class=.+?>&nbsp;Site:&nbsp;</span><span class=.+?>(.+?)</span>').findall(link)
+
         for url,linkname in match:
                  
           if inc < 50:
@@ -418,9 +442,10 @@ def LINKPAGE(url,name):
                                 dlurl = urlresolver.resolve(url)
                                 data = main.GRABMETA(movie_name,year)
                                 thumb = data['cover_url']
-                                favtype = 'links'
+                                favtype = 'movie'
+                                mainimg = thumb
                                 try:
-                                        main.addDLDir(movie_name,url,'vidpage',hthumb,data,dlurl,favtype)
+                                        main.addDLDir(movie_name,url,'vidpage',hthumb,data,dlfoldername,favtype,mainimg)
                                         inc +=1
                                 except:
                                         continue       
@@ -437,12 +462,14 @@ def VIDPAGE(url,name):
 
 
 def DLVIDPAGE(url,name):
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername,}
         link = net.http_GET(url).content
         match=re.compile('<iframe.*?src="(http://.+?)".*?>').findall(link)
         
         for url in match:
                 
-                main.RESOLVEDL(name,url,'')                
+                
+                main.RESOLVEDL(name,url,thumb)                
                 
                 
 
@@ -523,6 +550,7 @@ name=None
 mode=None
 year=None
 imdb_id=None
+
 #------added for Help Section
 try:        
         iconimage=urllib.unquote_plus(params["iconimage"])
@@ -703,7 +731,15 @@ elif mode=='vidpage':
 
 elif mode=='dlvidpage':
         print ""+url
-        DLVIDPAGE(url,name)        
+        DLVIDPAGE(url,name)
+
+elif mode=='dltvvidpage':
+        print ""+url
+        tvshow.DLTVVIDPAGE(url,name)        
+
+elif mode=='chiadlvidpage':
+        print ""+url
+        chia.CHIADLVIDPAGE(url,name)        
 
 elif mode=='tvvidpage':
         print ""+url
@@ -724,11 +760,11 @@ elif mode=='azlinkpage':
 
 elif mode=='tvlinkpage':
         print ""+url
-        tvshow.TVLINKPAGE(url,name)
+        tvshow.TVLINKPAGE(url,name,thumb,mainimg)
 
 elif mode=='chialinkpage':
         print ""+url
-        chia.CHIALINKPAGE(url,name)
+        chia.CHIALINKPAGE(url,name,thumb)
 
 elif mode=='chialatest':
         print ""+url
@@ -749,11 +785,11 @@ elif mode=='chiagenres':
 
 elif mode=='episodes':
         print ""+url
-        tvshow.EPISODES(url,name,imdb_id)
+        tvshow.EPISODES(url,name,thumb)
 
 elif mode=='chiaepisodes':
         print ""+url
-        chia.CHIAEPISODES(url,name,imdb_id)        
+        chia.CHIAEPISODES(url,name,year,thumb)        
 
 elif mode=='resolve':
         print ""+url
@@ -777,12 +813,25 @@ elif mode=='resolve2':
 
 elif mode=='resolvedl':
         print ""+url
-        main.RESOLVEDL(url,name,thumb)        
+        main.RESOLVEDL(url,name,thumb,favetype)
+        
+elif mode=='resolvetvdl':
+        print ""+url
+        main.RESOLVETVDL(url,name,thumb,favetype)
+
 
 
 elif mode=='searchm':
         print ""+url
         SEARCHM(url)
+
+elif mode=='searchanime':
+        print ""+url
+        chia.SEARCHANIME(url)
+
+elif mode=='chiasearch':
+        print ""+url
+        chia.CHIASEARCH(url)        
 
 elif mode=='searchtv':
         print ""+url
@@ -817,6 +866,30 @@ elif mode == "dev message":
 elif mode=='helpwizard':
         HELPWIZARD(name,url,description,filetype)
 
+#=================ForDL===========================
+elif mode=='viewQueue':
+        print ""+url
+        main.viewQueue()
+
+elif mode=='download':
+        print ""+url
+        main.download()
+
+elif mode=='removeFromQueue':
+        print ""+url
+        main.removeFromQueue(name,url,thumb,ext,console)
+
+elif mode=='killsleep':
+        print ""+url
+        main.KILLSLEEP()        
+
+elif mode=='chiaresolvedl':
+        print ""+url
+        chia.CHIARESOLVEDL(url,name,thumb,favetype)        
+
+#==================END DL=====================================
+        
+#==================Start Status/Help==========================
         
 elif mode == "statuscategories": print""+url; items=status.STATUSCATEGORIES(url)
 elif mode == "addonstatus": print""+url; items=status.ADDONSTATUS(url)

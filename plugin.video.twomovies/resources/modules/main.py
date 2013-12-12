@@ -3,31 +3,226 @@
 
 import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,urlresolver,xbmc,os,xbmcaddon,mechanize
 from metahandler import metahandlers
-import SimpleDownloader as downloader
-downloader = downloader.SimpleDownloader()
 
 from t0mm0.common.addon import Addon
 from t0mm0.common.net import Net
+
+import threading
 
 try:
      import StorageServer
 except:
      import storageserverdummy as StorageServer
+import time
 
-
-
-#Define common.addon
+# Cache  
+cache = StorageServer.StorageServer("TwoMovies", 0)
+#=========Download Thread Module by: Blazetamer and o9r1sh1=========================
+settings = xbmcaddon.Addon(id='plugin.video.twomovies')     
 addon_id = 'plugin.video.twomovies'
 addon = Addon(addon_id, sys.argv)
+mode = addon.queries['mode']
+url = addon.queries.get('url', '')
+name = addon.queries.get('name', '')
+thumb = addon.queries.get('thumb', '')
+ext = addon.queries.get('ext', '')
+console = addon.queries.get('console', '')
+dlfoldername = addon.queries.get('dlfoldername', '')
+favtype = addon.queries.get('favtype', '')
+mainimg = addon.queries.get('mainimg', '')
 
-# Cache for favorites  Whenever i do them 
-cache = StorageServer.StorageServer("Two Movies", 0)
+print 'Mode is: ' + mode
+print 'Url is: ' + url
+print 'Name is: ' + name
+print 'Thumb is: ' + thumb
+print 'Extension is: ' + ext
+print 'File Type is: ' + console
+print 'DL Folder is: ' + dlfoldername
+print 'Favtype is: ' + favtype
+print 'Main Image is: ' + mainimg
+
+
+download_path = settings.getSetting('download_folder')
+artwork = xbmc.translatePath(os.path.join('http://rowthreemedia.com/xbmchub/2movies/art/', ''))
+#================Threading===========================================
+
+
+class downloadThread (threading.Thread):
+    def __init__(self, name, url, thumb, console, ext):
+        threading.Thread.__init__(self)
+        self.thumb = thumb
+          
+    def run(self):
+     queue = cache.get('queue')
+  
+     if queue:
+          queue_items = sorted(eval(queue), key=lambda item: item[1])
+          for item in queue_items:
+               self.name = item[0]
+               self.url = item[1]
+               self.ext = item[3]
+               self.console = item[4]
+               thumb = item[2]
+                                
+               self.path = download_path + self.console
+               if not os.path.exists(self.path):
+                    os.makedirs(self.path)
+  
+               self.file_name = self.name + self.ext
+  
+               addon.show_small_popup(title='[COLOR gold]Downloads Started[/COLOR]', msg=self.name + ' Is Downloading', delay=int(7000), image=thumb)
+               u = urllib.urlopen(self.url)
+               f = open(os.path.join(self.path,self.file_name), 'wb')
+               meta = u.info()
+               file_size = int(meta.getheaders("Content-Length")[0])
+  
+               file_size_dl = 0
+               block_sz = 8192
+  
+               
+                 
+               while True:
+                   buffer = u.read(block_sz)
+                   if not buffer:
+                       break
+  
+                   file_size_dl += len(buffer)
+                   f.write(buffer)
+                   status = int( file_size_dl * 1000. / file_size)
+                  
+                   if status > 99 and status < 101:
+                         addon.show_small_popup(title=self.name, msg='10% Complete',delay=int(10), image=thumb)
+
+                   elif status > 199 and status < 201:
+                         addon.show_small_popup(title=self.name, msg='20% Complete',delay=int(10), image=thumb)
+                         
+                   elif status > 299 and status < 301:
+                         addon.show_small_popup(title=self.name, msg='30% Complete',delay=int(10), image=thumb)
+
+                   elif status > 399 and status < 401:
+                         addon.show_small_popup(title=self.name, msg='40% Complete',delay=int(10), image=thumb)
+
+                   elif status > 499 and status < 501:
+                         addon.show_small_popup(title=self.name, msg='50% Complete',delay=int(10), image=thumb)
+
+                   elif status > 599 and status < 601:
+                         addon.show_small_popup(title=self.name, msg='60% Complete',delay=int(10), image=thumb)      
+                   
+                   elif status > 699 and status < 701:
+                         addon.show_small_popup(title=self.name, msg='70% Complete',delay=int(10), image=thumb)
+
+                   elif status > 799 and status < 801:
+                         addon.show_small_popup(title=self.name, msg='80% Complete',delay=int(10), image=thumb)
+
+                   elif status > 899 and status < 901:
+                         addon.show_small_popup(title=self.name, msg='90% Complete',delay=int(10), image=thumb)
+
+                   elif status > 994 and status < 996:
+                         addon.show_small_popup(title=self.name, msg='95% Complete',delay=int(10), image=thumb)       
+                   
+                   
+               f.close()
+  
+               removeFromQueue(self.name,self.url,thumb,self.ext,self.console)
+  
+  
+               try:
+                    addon.show_small_popup(title='[COLOR gold]Download Complete[/COLOR]', msg=self.name + ' Completed', delay=int(5000), image=thumb)
+               except:
+                    addon.show_small_popup(title='Error', msg=self.name + ' Failed To Download File', delay=int(5000), image=thumb)
+                    print 'ERROR - File Failed To Download'
+  
+                 
+               addon.show_small_popup(title='[COLOR gold]Process Complete[/COLOR]', msg=self.name + ' is in your downloads folder', delay=int(5000), image=thumb) 
+
+               
+
+
+############## End DownloadThread Class ################
+
+def addQDir(name,url,mode,thumb,console):
+     contextMenuItems = []
+
+     params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb,'console':console, 'ext':ext}
+
+     contextMenuItems.append(('[COLOR red]Remove From Queue[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removeFromQueue', 'name': name,'url': url,'thumb': thumb,'ext': ext,'console': console})))
+
+     addon.add_directory(params, {'title':name}, contextMenuItems, img= thumb)
+     
+def addToQueue(name,url,thumb,ext,console):
+     queue = cache.get('queue')
+     queue_items = []
+     if queue:
+          queue_items = eval(queue)
+          if queue_items:
+               if (name,url,thumb,ext,console) in queue_items:
+                    addon.show_small_popup(title='[COLOR red]Item Already In Your Queue[/COLOR]', msg=name + ' Is Already In Your Download Queue', delay=int(5000), image=thumb)
+                    return
+     queue_items.append((name,url,thumb,ext,console))         
+     cache.set('queue', str(queue_items))
+     addon.show_small_popup(title='[COLOR gold]Item Added To Your Queue [/COLOR]', msg=name + ' Was Added To Your Download Queue', delay=int(5000), image=thumb)
+
+def viewQueue():
+     addDir('[COLOR blue]Start Downloads[/COLOR]','none','download',artwork +'downloads/Downloads_Start.png','','')
+     queue = cache.get('queue')
+     if queue:
+          queue_items = sorted(eval(queue), key=lambda item: item[1])
+          print queue_items
+          for item in queue_items:
+               addQDir(item[0],item[1],'viewQueue',item[2],item[4])
+
+def KILLSLEEP(self):
+     queue = cache.get('queue')
+     if queue:
+          queue_items = sorted(eval(queue), key=lambda item: item[1])
+          for item in queue_items:
+               self.name = item[0]
+               self.url = item[1]
+               self.ext = item[3]
+               self.console = item[4]
+               self.thumb = item[2]
+
+               time.sleep(3)
+     removeFromQueue(self.name,self.url,self.thumb,self.ext,self.console)
+     
+     
+          
+def removeFromQueue(name,url,thumb,ext,console):
+     queue = cache.get('queue')
+     if queue:
+          queue_items = sorted(eval(queue), key=lambda item: item[1])
+          print queue_items
+          try:
+               queue_items.remove((name,url,thumb,'.mp4',console))
+          except:
+               try:
+                    queue_items.remove((name,url,thumb,'.flv',console))
+               except:
+                    queue_items.remove((name,url,thumb,'.avi',console))
+          cache.set('queue', str(queue_items))
+          xbmc.executebuiltin("XBMC.Container.Refresh")
+
+
+def download():
+     download_path = settings.getSetting('download_folder')
+     if download_path == '':
+          addon.show_small_popup(title='File Not Downloadable', msg='You need to set your download folder in addon settings first', delay=int(5000), image='')
+     else:
+          #viewQueue()
+          dlThread = downloadThread(name, url, thumb, console, ext)
+          dlThread.start() 
+
+                   
+
+#=============END DLFUNCTION======================================================================================================================
+
+
+     
 
 
 
 # Global Stuff
 settings = xbmcaddon.Addon(id=addon_id)
-artwork = xbmc.translatePath(os.path.join('http://rowthreemedia.com/xbmchub/2movies/art/', ''))
 net = Net()
 
 
@@ -63,7 +258,6 @@ def GRABTVMETA(name,year):
 
 def GRABEPISODEMETA(name,imdb_id,season,episode):
         meta = grab.get_episode_meta('tvshow',name,imdb_id,season,episode)
-        #meta = grab.get_episode_meta('tvshow',name,year,None,None)
         infoLabels = {'rating': meta['rating'],'duration': meta['duration'],'genre': meta['genre'],'mpaa':"rated %s"%meta['mpaa'],
         'plot': meta['plot'],'title': meta['title'],'writer': meta['writer'],'cover_url': meta['cover_url'],
         'director': meta['director'],'backdrop_url': meta['backdrop_url'],'imdb_id': meta['imdb_id']}
@@ -83,29 +277,66 @@ def addDiralt(name,url,mode,thumb):
 
 
      
-#For Movie/TV Download
-def addDLDir(name,url,mode,thumb,labels,dlurl,favtype):
+#******************For Movie Download*********************************
+def addDLDir(name,url,mode,thumb,labels,dlfoldername,favtype,mainimg):
         contextMenuItems = []
         
-                
-        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
-        ok=True
-        liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumb)
-        liz.setInfo( type="Video", infoLabels=labels )   
-        #if favtype == 'links':
-        contextMenuItems.append(('Download This File', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'url':url, 'mode':'dlvidpage', 'name':name, 'thumb':thumb, 'types':favtype})))
-                    
-                          
-        liz.addContextMenuItems(contextMenuItems, replaceItems=False)
-        try:
-             liz.setProperty( "Fanart_Image", labels['backdrop_url'] )
-        except:
-             pass
-        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
-        return ok
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername, 'favtype':favtype, 'mainimg':mainimg}
+        contextMenuItems.append(('[COLOR gold]Download This File[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'url':url, 'mode':'dlvidpage', 'name':name, 'thumb':mainimg, 'console':console, 'dlfoldername':dlfoldername,'favtype':favtype})))
+        addon.add_directory(params, {'title':name}, contextMenuItems, img= thumb)                             
+       
 
-#Resolve DL Links******************************************
-def RESOLVEDL(name,url,thumb):
+#********************TV DOWNLOAD DIR***************************
+def addTVDLDir(name,url,mode,thumb,labels,dlfoldername,favtype,mainimg):
+        contextMenuItems = []
+        
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername, 'favtype':favtype,'mainimg':mainimg}
+        contextMenuItems.append(('[COLOR gold]Download This File[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'url':url, 'mode':'dltvvidpage', 'name':name, 'thumb':mainimg, 'console':console, 'dlfoldername':dlfoldername,'favtype':favtype})))
+        addon.add_directory(params, {'title':name}, contextMenuItems, img= thumb)
+     
+#*******************For Chia DownloadDir***********************
+def addCHIADLDir(name,url,mode,thumb,labels,dlfoldername,favtype,mainimg):
+        contextMenuItems = []
+        
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername, 'favtype':favtype,'mainimg':mainimg}
+        contextMenuItems.append(('[COLOR gold]Download This File[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'url':url, 'mode':'chiadlvidpage', 'name':name, 'thumb':mainimg, 'console':console, 'dlfoldername':dlfoldername,'favtype':favtype})))
+        addon.add_directory(params, {'title':name}, contextMenuItems, img= thumb)
+
+
+
+     
+#Resolve Movie DL Links******************************************
+def RESOLVEDL(name,url,thumb):  
+     data=0
+     try:
+          data = GRABMETA(movie_name,year)
+     except:
+           data=0
+     hmf = urlresolver.HostedMediaFile(url)
+     host = ''
+     if hmf:
+          url = urlresolver.resolve(url)
+          host = hmf.get_host()
+          if '.mp4' in url:
+                    ext = '.mp4'
+          elif '.flv' in url:
+                    ext = '.flv'
+          elif '.avi' in url:
+                    ext = '.avi'
+          if not ext == '':
+          
+          
+               console = 'Downloads/Movies/'+ dlfoldername
+               params = {'url':url, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername} 
+             
+
+               xbmc.sleep(1000)
+        
+               addToQueue(name,url,thumb,ext,console)
+
+#********Resolve TV DL Links*****************************************
+
+def RESOLVETVDL(name,url,thumb):
          
      data=0
      try:
@@ -116,21 +347,23 @@ def RESOLVEDL(name,url,thumb):
      host = ''
      if hmf:
           url = urlresolver.resolve(url)
-          host = hmf.get_host() 
-             
-     params = {'url':url, 'name':name, 'thumb':thumb}
-     if data == 0:
-          addon.add_video_item(params, {'title':name}, img=thumb)
-          liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumb)
-
-     else:
-          addon.add_video_item(params, {'title':name}, img=data['cover_url'])
-          liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=data['cover_url'])
-          liz.setInfo('video',infoLabels=data)
-
-     xbmc.sleep(1000)
+          host = hmf.get_host()
+          if '.mp4' in url:
+                    ext = '.mp4'
+          elif '.flv' in url:
+                    ext = '.flv'
+          elif '.avi' in url:
+                    ext = '.avi'
+          if not ext == '':
+          
+               console = 'Downloads/TV Shows/'+ dlfoldername
+               params = {'url':url, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername} 
+     
+               xbmc.sleep(1000)
         
-     downloadFile(url,name)#.play(url, liz, False)     
+               addToQueue(name,url,thumb,ext,console)
+        
+     
 # HELPDIR
 
 
@@ -174,11 +407,11 @@ def addDir(name,url,mode,thumb,labels,favtype):
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumb)
         liz.setInfo( type="Video", infoLabels=labels )
         if favtype == 'movie':
-                contextMenuItems.append(('Movie Information', 'XBMC.Action(Info)'))
+                contextMenuItems.append(('[COLOR gold]Movie Information[/COLOR]', 'XBMC.Action(Info)'))
         elif favtype == 'tvshow':
-                contextMenuItems.append(('TV Show  Information', 'XBMC.Action(Info)'))
+                contextMenuItems.append(('[COLOR gold]TV Show  Information[/COLOR]', 'XBMC.Action(Info)'))
         elif favtype == 'episode':
-                contextMenuItems.append(('TV Show  Information', 'XBMC.Action(Info)'))       
+                contextMenuItems.append(('[COLOR gold]Episode  Information[/COLOR]', 'XBMC.Action(Info)'))       
                 
         liz.addContextMenuItems(contextMenuItems, replaceItems=False)
         try:
@@ -190,7 +423,6 @@ def addDir(name,url,mode,thumb,labels,favtype):
 # AddDir for TV SHows to add a year forpass
 
 def addTVDir(name,url,mode,thumb,labels,favtype,year):
-        #params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'year':year}
         contextMenuItems = []
         sitethumb = thumb
         sitename = name 
@@ -209,11 +441,11 @@ def addTVDir(name,url,mode,thumb,labels,favtype,year):
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumb)
         liz.setInfo( type="Video", infoLabels=labels )
         if favtype == 'movie':
-                contextMenuItems.append(('Movie Information', 'XBMC.Action(Info)'))
+                contextMenuItems.append(('[COLOR gold]Movie Information[/COLOR]', 'XBMC.Action(Info)'))
         elif favtype == 'tvshow':
-                contextMenuItems.append(('TV Show  Information', 'XBMC.Action(Info)'))
-        elif favtype == 'episodes':
-                contextMenuItems.append(('Episode  Information', 'XBMC.Action(Info)'))       
+                contextMenuItems.append(('[COLOR gold]TV Show  Information[/COLOR]', 'XBMC.Action(Info)'))
+        elif favtype == 'episode':
+                contextMenuItems.append(('[COLOR gold]Episode  Information[/COLOR]', 'XBMC.Action(Info)'))       
                 
         liz.addContextMenuItems(contextMenuItems, replaceItems=False)
         try:
@@ -252,7 +484,7 @@ def addSDir(name,url,mode,thumb,year,types):
      if thumb == '':
           thumb = artwork + '/main/noepisode.png'
      
-     contextMenuItems.append(('Tv Show Information', 'XBMC.Action(Info)'))
+     contextMenuItems.append(('[COLOR gold]Tv Show Information[/COLOR]', 'XBMC.Action(Info)'))
 
      
      if settings.getSetting('metadata') == 'true':
@@ -263,7 +495,7 @@ def addSDir(name,url,mode,thumb,year,types):
 
 
 # Episode add DirFunction 
-def addEPDir(name,url,thumb,mode,show):
+def addEPDir(name,url,thumb,mode,show,dlfoldername,mainimg):
         contextMenuItems = []
         ep_meta = None
         show_id = None
@@ -291,7 +523,7 @@ def addEPDir(name,url,thumb,mode,show):
           if thumb == '':
                thumb = artwork + '/tvshows/icon.png'
      
-        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'season':s, 'episode':e, 'show':show, 'types':'episode'}        
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'season':s, 'episode':e, 'show':show, 'types':'episode','dlfoldername':dlfoldername, 'mainimg':mainimg}        
         if settings.getSetting('metadata') == 'true':
 
           if ep_meta==None:
@@ -376,9 +608,7 @@ def AUTO_VIEW(content):
                                 xbmc.executebuiltin("Container.SetViewMode(%s)" % settings.getSetting('season-view') )
                         if content == 'list':
                                 xbmc.executebuiltin("Container.SetViewMode(%s)" % settings.getSetting('list-view') )
-                        #if content == 'help':
-                               # content = 'movies'
-                               # xbmc.executebuiltin("Container.SetViewMode(%s)" % settings.getSetting('help-view') )        
+                                
                 else:
                         xbmc.executebuiltin("Container.SetViewMode(%s)" % settings.getSetting('default-view') )
 
@@ -420,7 +650,6 @@ def GETHOSTTHUMB(host):
 
 #Episode directory function to be used when adding a Episode, all metadata scrapes and context menu items are handled within_________
 def addEDir(name,url,mode,thumb,show):
-     #name =
      ep_meta = None
      show_id = None
      meta = None
@@ -428,7 +657,7 @@ def addEDir(name,url,mode,thumb,show):
                 
      if settings.getSetting('metadata') == 'true':
           data = GRABTVMETA('tvshow',show)
-          #show_id = data['tmdb_id']
+          
 
      else:
           fanart = artwork + '/main/fanart.jpg'
@@ -546,30 +775,7 @@ def GET_EPISODE_NUMBERS(ep_name):
 
 
 
-def downloadFile(url,name):
-     download_folder = settings.getSetting('download_folder')
-     if download_folder == '':
-          addon.show_small_popup(title='File Not Downloadable', msg='You need to set your download folder in addon settings first', delay=int(5000), image='')
-     else:     
-          #if resolvable(url):
-               #url = resolve(url)
-               ext = ''
-               if '.mp4' in url:
-                    ext = '.mp4'
-               elif '.flv' in url:
-                    ext = '.flv'
-               elif '.avi' in url:
-                    ext = '.avi'
-               if not ext == '':
-                    if not os.path.exists(download_folder):
-                         os.makedirs(download_folder)
 
-                    params = {"url":url, "download_path":download_folder}
-                    downloader.download(name + ext, params)
-               else:
-                    addon.show_small_popup(title='Can Not Download File', msg='Unsupported Host', delay=int(5000), image='')
-          #else:
-               #addon.show_small_popup(title='Can Not Download File', msg='Unable To Resolve Url', delay=int(5000), image='')
                               
 
 

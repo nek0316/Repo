@@ -21,10 +21,28 @@ except:
 addon_id = 'plugin.video.twomovies'
 addon = Addon(addon_id, sys.argv)
 
-# Cache for favorites  Whenever  do them 
+# Cache  
 cache = StorageServer.StorageServer("Two Movies", 0)
 
+mode = addon.queries['mode']
+url = addon.queries.get('url', '')
+name = addon.queries.get('name', '')
+thumb = addon.queries.get('thumb', '')
+ext = addon.queries.get('ext', '')
+console = addon.queries.get('console', '')
+dlfoldername = addon.queries.get('dlfoldername', '')
+favtype = addon.queries.get('favtype', '')
+mainimg = addon.queries.get('mainimg', '')
 
+print 'Mode is: ' + mode
+print 'Url is: ' + url
+print 'Name is: ' + name
+print 'Thumb is: ' + thumb
+print 'Extension is: ' + ext
+print 'File Type is: ' + console
+print 'DL Folder is: ' + dlfoldername
+print 'Favtype is: ' + favtype
+print 'Main Image is: ' + mainimg
 
 # Global Stuff
 settings = xbmcaddon.Addon(id=addon_id)
@@ -39,10 +57,10 @@ def TVCATS():
 
     
           main.addDir('TV Shows by Year','none','tvbyyear',artwork +'Icon_Menu_TVShows_ByYear.png','','dir')
-          main.addDir('Search TV Shows','http://twomovies.name/search/?search_query=','searchtv',artwork + 'Icon_Menu_TVShows_Search.png','','dir')
           main.addDir('TV Shows by Genre','none','tvgenres',artwork + '/tvshows/tvshowsgenre.png','','dir')
           main.addDir('TV Shows by Rating','http://twomovies.name/browse_tv_shows/all/byRating/all/','tvplayyear',artwork + '/tvshows/tvshowsrating.png','','dir')
-          main.addDir('TV Shows by Poplularity','http://twomovies.name/browse_tv_shows/all/byViews/all/','tvplayyear',artwork + '/tvshows/tvshowspopularity.png','','dir')
+          main.addDir('TV Shows by Popularity','http://twomovies.name/browse_tv_shows/all/byViews/all/','tvplayyear',artwork + '/tvshows/tvshowspopularity.png','','dir')
+          main.addDir('[COLOR gold]Search TV Shows[/COLOR]','http://twomovies.name/search/?search_query=','searchtv',artwork + 'Icon_Menu_TVShows_Search.png','','dir')
           
           main.AUTO_VIEW('')    
 
@@ -154,12 +172,13 @@ def SEARCHSHOW(url):
                     if 'watch_tv_show' in url:
                               main.addTVDir(name,url,'episodes',thumb,data,types,'')
                               main.AUTO_VIEW('tvshows')
-                                #else:
-                                        #LogNotify('No Match Found',' Please try again!','4000','')
-                                        #SEARCHTV(url)               
 
-               
-def EPISODES(url,name,year):
+
+                                
+def EPISODES(url,name,thumb):
+    params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb,} 
+    dlfoldername = name
+    mainimg = thumb
     show = name
     link = net.http_GET(url).content
     matchurl=re.compile('<a class="linkname" href="(.+?)">.+? - (.+?)</a>').findall(link)             
@@ -171,12 +190,13 @@ def EPISODES(url,name,year):
               se = s+e
               name = se + ' ' + epname
               favtype = 'episodes'
-              main.addEPDir(name,url,'','tvlinkpage',show)
+              main.addEPDir(name,url,thumb,'tvlinkpage',show,dlfoldername,mainimg)
              
               main.AUTO_VIEW('episode')
 
 
-def TVLINKPAGE(url,name):
+def TVLINKPAGE(url,name,thumb,mainimg):
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername,'mainimg':mainimg}
         inc = 0
         showname = name
         link = net.http_GET(url).content
@@ -195,15 +215,20 @@ def TVLINKPAGE(url,name):
                                 data = main.GRABMETA(showname,'')
                                 thumb = data['cover_url']
                                 favtype = 'links'
-                                try:
-                                        
-                                        #main.addDir(showname,url,'tvvidpage',hthumb,'','')
-                                        main.addDLDir(showname,url,'vidpage',hthumb,data,dlurl,favtype)
-
+                                try:    
+                                        main.addTVDLDir(showname,url,'vidpage',hthumb,data,dlfoldername,favtype,mainimg)
                                         inc +=1
                                 except:
                                         continue
-
+                                   
+def DLTVVIDPAGE(url,name):
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername,}
+        link = net.http_GET(url).content
+        match=re.compile('<iframe.*?src="(http://.+?)".*?>').findall(link)
+        
+        for url in match:
+                
+                main.RESOLVETVDL(name,url,thumb)
 
 def TVVIDPAGE(url,name):
         link = net.http_GET(url).content
