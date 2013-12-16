@@ -4,8 +4,21 @@
 import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,urlresolver,xbmc,os,xbmcaddon,mechanize
 from metahandler import metahandlers
 
-from t0mm0.common.addon import Addon
-from t0mm0.common.net import Net
+try:
+        from addon.common import Addon
+
+except:
+        from t0mm0.common.addon import Addon
+addon_id = 'plugin.video.twomovies'
+
+addon = Addon(addon_id, sys.argv)
+try:
+        from addon.common import Net
+
+except:  
+        from t0mm0.common.net import Net
+net = Net()
+        
 
 import threading
 
@@ -19,7 +32,6 @@ import time
 cache = StorageServer.StorageServer("TwoMovies", 0)
 #=========Download Thread Module by: Blazetamer and o9r1sh1=========================
 settings = xbmcaddon.Addon(id='plugin.video.twomovies')     
-addon_id = 'plugin.video.twomovies'
 addon = Addon(addon_id, sys.argv)
 mode = addon.queries['mode']
 url = addon.queries.get('url', '')
@@ -223,13 +235,14 @@ def download():
 
 # Global Stuff
 settings = xbmcaddon.Addon(id=addon_id)
-net = Net()
+
 
 
 def nameCleaner(name):
           name = name.replace('&#8211;','')
           name = name.replace("&#8217;","")
           name = name.replace("&#039;s","'s")
+          name = name.replace("à","")
           return(name)
      
 

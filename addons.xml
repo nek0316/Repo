@@ -67,27 +67,26 @@
 </extension>
 </addon>
 
-<addon id="plugin.video.twomovies" version="2.2.5" name="2 Movies Evolved" provider-name="Blazetamer- GFX by :Marquerite">
+<addon id="plugin.video.twomovies" version="2.3.0" name="2 Movies Evolved" provider-name="Blazetamer">
 <requires>
 <import addon="xbmc.python" version="2.1.0"/>
-<import addon="script.module.urlresolver"  version="2.0.9"/>
-<import addon="script.module.metahandler" version="1.0.0" />
+<import addon="script.module.urlresolver"  version="2.1.2"/>
+<import addon="script.module.metahandler" version="2.3.1" />
 <import addon="script.module.t0mm0.common" version="1.1.0"/>
-<import addon="script.module.mechanize" version="0.2.6"/>
-<import addon="script.common.plugin.cache" version="0.9.1"/>
+<import addon="script.common.plugin.cache" version="2.5.2"/>
 <import addon="script.module.simple.downloader" version="1.9.4" />
 
 
 </requires>
 
-<forum>http://www.xbmchub.com/forums/blazetamers-repository/15351-%5Brelease%5D-2-movies.html</forum>
-<website>http://www.xbmchub.com/</website>
 <extension point="xbmc.python.pluginsource" library="default.py">
 <provides>video</provides>
 </extension>
 <extension point="xbmc.addon.metadata">
 <summary>Movies/TV/Anime</summary>
-<description>A deep database of Movies , TV Shows and Anime. This addon will be ever evolving, Thus, The Name...and now downloading to your library has never been easier.</description>
+<description>- GFX by :Marquerite  A deep database of Movies , TV Shows and Anime. This addon will be ever evolving, Thus, The Name...and now downloading to your library has never been easier.</description>
+<forum>http://www.xbmchub.com/forums/blazetamers-repository/15351-%5Brelease%5D-2-movies.html</forum>
+<website>http://www.xbmchub.com/</website>
 
 <platform>all</platform>
 </extension>

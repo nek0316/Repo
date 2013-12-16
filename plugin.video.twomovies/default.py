@@ -18,10 +18,21 @@ import shutil
 from resources.modules import tvshow
 from metahandler import metahandlers
 from resources.modules import main
+
+try:
+        from addon.common import Addon
+
+except:
+        from t0mm0.common.addon import Addon
 addon_id = 'plugin.video.twomovies'
-from t0mm0.common.addon import Addon
 addon = main.addon
-from t0mm0.common.net import Net
+
+
+try:
+        from addon.common import Net
+
+except:  
+        from t0mm0.common.net import Net
 net = Net()
 
 base_url = 'http://www.twomovies.name'
@@ -380,7 +391,7 @@ def MOVIEINDEX(url):
         link = net.http_GET(url).content
         match=re.compile('<a href="(.+?)" title=".+?">\r\n                        <img src="(.+?)" class=".+?" style=".+?"  border=".+?" height="147px" width="102px" alt="Watch (.+?) Online for Free">\r\n').findall(link)
         if len(match) > 0:
-         for url,sitethumb,name in match:
+         for url,sitethumb,name in match:   
           matchyear=re.compile('<a class="filmyar" href="http://twomovies.name/browse_movies/all/byViews/(.+?)/">').findall(link)
           if len(matchyear) > 0:
              for year in matchyear:        
@@ -402,22 +413,30 @@ def MOVIEINDEX1(url):
         link = net.http_GET(url).content
         match=re.compile('<a href="(.+?)">\r\n        <img src=".+?" data-original="(.+?)"  class=".+?" style=".+?"  border=".+?" height=".+?" width=".+?" alt="Watch (.+?) Online for Free">\r\n').findall(link)
         if len(match) > 0:
-         for url,sitethumb,name in match:
-          matchyear=re.compile('<a class="filmyar" href=".+?">(.+?)</a>').findall(link)
-          #if len(matchyear) > 0:
-          for year in matchyear:        
-                 data = main.GRABMETA(name,year)
-                 thumb = data['cover_url']               
-                 yeargrab = data['year']
-                 year = str(yeargrab)
-          favtype = 'movie'
-          if 'watch_movie' in url:
-                main.addDir(name+ ' (' + year +')',url,'linkpage',thumb,data,favtype)
-                nmatch=re.compile('<a id="next" class=".+?" href="(.+?)">Next &raquo</a>\n').findall(link)
-        if len(nmatch) > 0:
-                  main.addDir('Next Page',(nmatch[0]),'movieindex1',artwork +'Icon_Menu_Movies_nextpage.png','','dir')
+         for url,sitethumb,name in match: 
+           matchyear=re.compile('<a class="filmyar" href=".+?">(.+?)</a>').findall(link)
+           if len(matchyear) > 0:
+              for year in matchyear:
+                 try:     
+                         data = main.GRABMETA(name,year)
+                         thumb = data['cover_url']               
+                         yeargrab = data['year']
+                         year = str(yeargrab)
+                 except:
+                         data = ''
+                         thumb = sitethumb
+                         year = year
+              favtype = 'movie'
+                  #if 'watch_movie' in url:
+              try:        
+                   main.addDir(name+ ' (' + year +')',url,'linkpage',thumb,data,favtype)
+              except:
+                   pass
+              nmatch=re.compile('<a id="next" class=".+?" href="(.+?)">Next &raquo</a>\n').findall(link)
+              if len(nmatch) > 0:
+                     main.addDir('Next Page',(nmatch[0]),'movieindex1',artwork +'Icon_Menu_Movies_nextpage.png','','dir')
              
-                  main.AUTO_VIEW('movies')
+                     main.AUTO_VIEW('movies')
 
              
 def LINKPAGE(url,name):

@@ -7,9 +7,22 @@ import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,urlresolver,xbmc,os,xbmcaddon,me
 from metahandler import metahandlers
 
 
-from t0mm0.common.addon import Addon
-from t0mm0.common.net import Net
+try:
+        from addon.common import Addon
+
+except:
+        from t0mm0.common.addon import Addon
+addon_id = 'plugin.video.twomovies'
+addon = Addon(addon_id, sys.argv)
+
+
+try:
+        from addon.common import Net
+
+except:  
+        from t0mm0.common.net import Net
 net = Net()
+
 try:
      import StorageServer
 except:
@@ -17,9 +30,8 @@ except:
 
 
 
-#Define common.addon
-addon_id = 'plugin.video.twomovies'
-addon = Addon(addon_id, sys.argv)
+
+
 
 # Cache  
 cache = StorageServer.StorageServer("Two Movies", 0)

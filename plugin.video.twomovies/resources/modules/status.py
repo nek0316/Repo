@@ -1,14 +1,27 @@
 # Status/Help Module By: Blazetamer 2013
-import urllib,urllib2,re,xbmcplugin,xbmcgui,xbmc,xbmcaddon,os,sys,time,shutil
+import urllib,urllib2,re,xbmcplugin,xbmcgui,xbmc,xbmcaddon,os,sys,time,shutil,main
 import urlresolver
 import downloader
 import extract
-from resources.modules import main
-addon_id='plugin.video.twomovies'
-from t0mm0.common.addon import Addon
-addon=main.addon
-from t0mm0.common.net import Net
-net=Net()
+
+
+try:
+        from addon.common import Addon
+
+except:
+        from t0mm0.common.addon import Addon
+addon_id = 'plugin.video.twomovies'
+addon = Addon(addon_id, sys.argv)
+
+
+try:
+        from addon.common import Net
+
+except:  
+        from t0mm0.common.net import Net
+net = Net()
+
+
 settings=xbmcaddon.Addon(id='plugin.video.twomovies')
 
 def STATUSCATEGORIES(url):
