@@ -1,3 +1,11 @@
+V1.8.5
+Complete Re-Write of addon
+Better Resolution videos
+Repaired Broken video links Due to Site changes
+Added Download function to allow Streams to be add to library
+Added MetaData, Can be turned on in Addon Settings
+Added Help and Extra Section
+
 V1.7.6
 Small Bug fix
 Removed Color Text in title

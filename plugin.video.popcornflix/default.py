@@ -1,89 +1,182 @@
 import urllib,urllib2,re,xbmcplugin,xbmcgui,xbmc, xbmcaddon, os, sys
 import urlresolver
+from metahandler import metahandlers
+try:
+        from addon.common import Addon
 
+except:
+        from t0mm0.common.addon import Addon
+
+
+
+
+try:
+        from addon.common import Net
+
+except:  
+        from t0mm0.common.net import Net
+net = Net()
+
+from resources.modules import status
+from resources.modules import dlthreadmod
+from resources.modules import main
+import threading
+
+try:
+     import StorageServer
+except:
+     import storageserverdummy as StorageServer
+import time
+
+# Global Stuff
+addon_id = 'plugin.video.popcornflix'
+net = Net()
+
+# Cache  
+cache = StorageServer.StorageServer("PopcornFlix", 0)
+#=====================NEW DL======================================
+settings = xbmcaddon.Addon(id='plugin.video.popcornflix')     
+addon = Addon('plugin.video.popcornflix', argv=sys.argv)
+mode = addon.queries['mode']
+url = addon.queries.get('url', '')
+name = addon.queries.get('name', '')
+thumb = addon.queries.get('thumb', '')
+ext = addon.queries.get('ext', '')
+console = addon.queries.get('console', '')
+dlfoldername = addon.queries.get('dlfoldername', '')
+favtype = addon.queries.get('favtype', '')
+mainimg = addon.queries.get('mainimg', '')
+
+print 'Mode is: ' + mode
+print 'Url is: ' + url
+print 'Name is: ' + name
+print 'Thumb is: ' + thumb
+print 'Extension is: ' + ext
+print 'File Type is: ' + console
+print 'DL Folder is: ' + dlfoldername
+print 'Favtype is: ' + favtype
+print 'Main Image is: ' + mainimg
+
+
+download_path = settings.getSetting('download_folder')
 
 
 #Popcorn Flix - Blazetamer.
 addon = xbmcaddon.Addon ('plugin.video.popcornflix')
 URL= 'http://popcornflix.com'
-#_plugin = xbmcaddon.Addon(id=addon_id)
-#PATHS
 
 addonPath = addon.getAddonInfo('path')
-artPath = addonPath + '/art/'
-fanartPath = addonPath + '/art/'
+artPath = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/popcornflix/images/', ''))
+fanartPath = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/popcornflix/images/fanart/', ''))
+
 
 #HOOKS
 settings = xbmcaddon.Addon(id='plugin.video.popcornflix')
 
-def AUTO_VIEW(content):
-        if content:
-                xbmcplugin.setContent(int(sys.argv[1]), content)
-                if settings.getSetting('auto-view') == 'true':
-                        if content == 'movies':
-                                xbmc.executebuiltin("Container.SetViewMode(%s)" % settings.getSetting('movies-view') )
-                        if content == 'list':
-                                xbmc.executebuiltin("Container.SetViewMode(%s)" % settings.getSetting('list-view') )
-                else:
-                        xbmc.executebuiltin("Container.SetViewMode(%s)" % settings.getSetting('default-view') )
+
 
 
 
 
 def CATEGORIES():
     
-    addDir('[COLOR blue]New Arrivals[/COLOR]','http://popcornflix.com/New-Arrivals-movies/',1,artPath+'newarrival.png')
-    addDir('[COLOR orange]Most Popular[/COLOR]','http://popcornflix.com/most-popular-movies/',1,artPath+'mostpopular.png')
-    addDir('[COLOR blue]Rock Stars[/COLOR]','http://popcornflix.com/Rock-Star-movies',3,artPath+'rockstars.png')
-    addDir('[COLOR orange]Action/Thriller[/COLOR]','http://popcornflix.com/Action/Thriller-movies',3,artPath+'thriller.png')
-    addDir('[COLOR blue]Comedy[/COLOR]','http://www.popcornflix.com/Comedy-movies',3,artPath+'comedy.png')
-    addDir('[COLOR orange]Horror Movies[/COLOR]','http://popcornflix.com/Horror-movies',3,artPath+'horror.png')
-    addDir('[COLOR blue]Drama[/COLOR]','http://popcornflix.com/Drama-movies',3,artPath+'drama.png')
-    addDir('[COLOR orange]Romance[/COLOR]','http://popcornflix.com/Romance-movies',3,artPath+'romance.png')
-    addDir('[COLOR blue]Kids/Family[/COLOR]','http://popcornflix.com/Family/Kids-movies',3,artPath+'kidfamily.png')
-    addDir('[COLOR orange]TV Series[/COLOR]','http://popcornflix.com/TV-Series',3,artPath+'tvseries.png')
-    addDir('[COLOR blue]Urban Movies[/COLOR]','http://popcornflix.com/Urban-movies',3,artPath+'urbanmovies.png')
-    addDir('[COLOR orange]Documentary/Shorts[/COLOR]','http://popcornflix.com/Documentary/Shorts-movies',3,artPath+'documentary.png')
-    addDir('[COLOR blue]Bollywood[/COLOR]','http://popcornflix.com/Bollywood-movies',3,artPath+'bollywood.png')
-    addDir('[COLOR red][B]Search[/B] >>>[/COLOR]','http://www.popcornflix.com/search?query=',10,artPath+'search.png')
-    AUTO_VIEW('list')
+    main.addDir('[COLOR blue]New Arrivals[/COLOR]','http://popcornflix.com/New-Arrivals-movies/','index',artPath+'newarrival.png','','movies')
+    main.addDir('[COLOR orange]Most Popular[/COLOR]','http://popcornflix.com/most-popular-movies/','index',artPath+'mostpopular.png','','movies')
+    main.addDir('[COLOR blue]Rock Stars[/COLOR]','http://popcornflix.com/Rock-Star-movies','indexdeep',artPath+'rockstars.png','','other')
+    main.addDir('[COLOR orange]Action/Thriller[/COLOR]','http://popcornflix.com/Action/Thriller-movies','indexdeep',artPath+'thriller.png','','movies')
+    main.addDir('[COLOR blue]Comedy[/COLOR]','http://www.popcornflix.com/Comedy-movies','indexdeep',artPath+'comedy.png','','movies')
+    main.addDir('[COLOR orange]Horror Movies[/COLOR]','http://popcornflix.com/Horror-movies','indexdeep',artPath+'horror.png','','movies')
+    main.addDir('[COLOR blue]Drama[/COLOR]','http://popcornflix.com/Drama-movies','indexdeep',artPath+'drama.png','','movies')
+    main.addDir('[COLOR orange]Romance[/COLOR]','http://popcornflix.com/Romance-movies','indexdeep',artPath+'romance.png','','movies')
+    main.addDir('[COLOR blue]Kids/Family[/COLOR]','http://popcornflix.com/Family/Kids-movies','indexdeep',artPath+'kidfamily.png','','movies')
+    main.addDir('[COLOR orange]TV Series[/COLOR]','http://popcornflix.com/TV-Series','indexdeep',artPath+'tvseries.png','','tv')
+    main.addDir('[COLOR blue]Urban Movies[/COLOR]','http://popcornflix.com/Urban-movies','indexdeep',artPath+'urbanmovies.png','','movies')
+    main.addDir('[COLOR orange]Documentary/Shorts[/COLOR]','http://popcornflix.com/Documentary/Shorts-movies','indexdeep',artPath+'documentary.png','','movies')
+    main.addDir('[COLOR blue]Bollywood[/COLOR]','http://popcornflix.com/Bollywood-movies','indexdeep',artPath+'bollywood.png','','movies')
+    main.addDir('[COLOR red][B]Search[/B] >>>[/COLOR]','http://www.popcornflix.com/search?query=','searchit',artPath+'search.png','','')
+    main.addDir('[COLOR gold]Manage Downloads[/COLOR]','none','viewQueue',artPath +'downloads.png','','')
+    main.addDir('[COLOR white]Help and Extras[/COLOR]','none','statuscats',artPath +'help.png','','')
+    main.AUTO_VIEW('')
         
-def INDEX(url):
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
-        match=re.compile('<a href="(.+?)">\n\t\t  <img width="184" height="256" src="(.+?)" alt="(.+?)"/>').findall(link)
-        for url,iconimage,name in match:
-                addDir(name,URL+url,2,iconimage)
-                AUTO_VIEW('movies')
+def INDEX(url,favtype):
+          params = {'url':url, 'favtype':favtype}
+          link = net.http_GET(url).content
+          match=re.compile('<a href="(.+?)">\n\t\t  <img width="184" height="256" src="(.+?)" alt="(.+?)"/>').findall(link)
+          for url,thumb,name in match:
+               url = URL + url
+               if settings.getSetting('metadata') == 'true':
+                    data = main.GRABMETA(name,year)
+                    thumb = data['cover_url'] 
+                    #addDir(name,url,'videolinks',thumb)
+                    main.addDir(name,url,'videolinks',thumb,data,favtype)
+                    main.AUTO_VIEW('movies')
+               else:
+                    main.addDir(name,url,'videolinks',thumb,'',favtype)
+                    main.AUTO_VIEW('movies')
+                    
+
                 
-def VIDEOLINKS(url,name):
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
-        match=re.compile('"flashContent" data-videosrc="(.+?)" data-videodata="').findall(link)
+def VIDEOLINKS(name,url,thumb,favtype):
+        params = {'url':url, 'name':name, 'thumb':thumb, 'favtype':favtype}  
+        link = net.http_GET(url).content
+        match=re.compile('id="flashContent" data-videosrc="(.+?)" data-videodata="(.+?)"></div>').findall(link)
         matchyear=re.compile('<span class="year">(.+?)</span>').findall(link)
-        for url in match:
-            for year in matchyear:
-                 addLink(name+year,url,'')
-                 AUTO_VIEW('list')
+        for url,url2 in match:
+             #if 'undefined' in url:
+                  url = url2
+                  for year in matchyear:
+                       link = net.http_GET(url).content
+                       url = URL + url
+                       match4=re.compile('"poster":"(.+?)","slider":".+?","duration":.+?,"rating":"(.+?)","language":".+?","cuepoints":".+?","urls":{".+?":"(.+?)"}}').findall(link)
+                       for thumb,rating,url in match4:
+                              #replace odd strings
+                              thumb = thumb.replace("\\","")
+                              url = url.replace("\\","")
+                              mainimg = thumb
+                              
+                              link = net.http_GET(url).content
+                              match3=re.compile('RESOLUTION=864x480\r\n(.+?)\r\n#').findall(link)
+                              for url in match3:
+                                   print 'Thumb is' +thumb
+                                   print 'Playurl is' +url
+                                   print 'Name is' +name
+                                   #addLink(name,url,thumb)
+                                   #addlinkDir(name + year,url,'addlink',thumb)
+                                   main.addDLDir(name + year + ' Rated- ' +rating,url,'addlink',thumb,'',name + year,favtype,mainimg)
+                                   main.AUTO_VIEW('movies')
+            
+             
+def _SaveFile(path,data):
+	file=open(path,'w')
+	file.write(data)
+	file.close()
+             
+def OPEN_URL(url):
+  req=urllib2.Request(url)
+  req.add_header('User-Agent','Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+  response=urllib2.urlopen(req)
+  link=response.read()
+  response.close()
+  return link
 
 
-def INDEX_DEEP(url):
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
-        match=re.compile('<a href="(.+?)"><img width="184" height="256" src="(.+?)" alt="(.+?)">').findall(link)
-        for url,iconimage,name in match:
-                addDir(name,URL+url,2,iconimage)
-                AUTO_VIEW('movies')
-                
+
+def INDEX_DEEP(url,favtype):
+        params = {'url':url,'favtype':favtype}  
+        link = net.http_GET(url).content
+        match=re.compile('<a href="(.+?)"><img width="184" height="256" src="(.+?)" alt="(.+?)"></a>').findall(link)
+        for url,thumb,name in match:
+               url = URL + url
+               if settings.getSetting('metadata') == 'true':
+                    data = main.GRABMETA(name,year)
+                    thumb = data['cover_url'] 
+                    #addDir(name,url,'videolinks',thumb)
+                    main.addDir(name,url,'videolinks',thumb,data,favtype)
+                    #addDir(name,url,'videolinks',thumb)
+                    main.AUTO_VIEW('movies')
+               else:
+                    main.addDir(name,url,'videolinks',thumb,'',favtype)
+                    main.AUTO_VIEW('movies')
 
 	
 #Start Ketboard Function                
@@ -106,7 +199,7 @@ def SEARCH(url):
 	title = urllib.quote_plus(vq)
 	searchUrl += title 
 	print "Searching URL: " + searchUrl 
-	INDEX,INDEX_DEEP(searchUrl)
+	INDEX,INDEX_DEEP(searchUrl,'')
         
 
                 
@@ -128,34 +221,75 @@ def get_params():
                                 
         return param
 
+def addLink(name,url,thumb):
+         #params = {'url':url, 'name':name, 'thumb':thumb}      
+         url= url
+         ok=True
+         liz=xbmcgui.ListItem(name, iconImage=thumb,thumbnailImage=thumb); liz.setInfo( type="Video", infoLabels={ "Title": name } )
+         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=liz)
+         xbmc.executebuiltin("XBMC.Notification(Building Video File!,Please Wait,3000)")
+         xbmc.sleep(1000)
+         xbmc.Player ().play(url, liz, False)
 
+         
+             
 
-
-def addLink(name,url,iconimage):
-        ok=True
-        liz=xbmcgui.ListItem(name,iconImage=iconimage, thumbnailImage=iconimage); liz.setInfo('video',{'Title':name,'Genre':'Live','Studio':name})
-        #liz.setInfo( type="Video", infoLabels={ "Title": name } )
-        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=liz)
-        xbmc.sleep(1000)
-        xbmc.Player (xbmc.PLAYER_CORE_PAPLAYER).play(url, liz, False)
-        return ok
-
-
-def addDir(name,url,mode,iconimage):
+def addDir(name,url,mode,thumb):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
         ok=True
-        liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
+        liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumb)
         liz.setInfo( type="Video", infoLabels={ "Title": name } )
-        xbmc.executebuiltin("Container.SetViewMode(500)")
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok
-        
+
+
+def addlinkDir(name,url,mode,thumb):
+     u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&thumb="+urllib.quote_plus(thumb)
+     liz = xbmcgui.ListItem(name, iconImage=thumb, thumbnailImage=thumb)
+     liz.setProperty("IsPlayable","true")
+     xbmcplugin.addDirectoryItem(handle = int(sys.argv[1]), url = u, listitem = liz, isFolder = False)
+
+     
               
 params=get_params()
 url=None
 name=None
 mode=None
+year=None
+imdb_id=None
 
+#------added for Help Section
+try:        
+        favtype=urllib.unquote_plus(params["favtype"])
+except:
+        pass
+
+try:        
+        iconimage=urllib.unquote_plus(params["iconimage"])
+except:
+        pass
+
+try:        
+        thumb=urllib.unquote_plus(params["thumb"])
+except:
+        pass
+
+try:        
+        fanart=urllib.unquote_plus(params["fanart"])
+except:
+        pass
+try:        
+        description=urllib.unquote_plus(params["description"])
+except:
+        pass
+
+try:        
+        filetype=urllib.unquote_plus(params["filetype"])
+except:
+        pass    
+
+# END OF HelpSection addition ===========================================
+    
 try:
         url=urllib.unquote_plus(params["url"])
 except:
@@ -164,38 +298,104 @@ try:
         name=urllib.unquote_plus(params["name"])
 except:
         pass
+#May need toremove
+#try:
+ #       mode=int(params["mode"])
+#except:
+ #       pass
+
 try:
-        mode=int(params["mode"])
+        mode=urllib.unquote_plus(params["mode"])
+except:
+        pass
+
+try:
+        year=urllib.unquote_plus(params["year"])
 except:
         pass
 
 print "Mode: "+str(mode)
 print "URL: "+str(url)
 print "Name: "+str(name)
+print "Year: "+str(year)
 
 if mode==None or url==None or len(url)<1:
         print ""
         CATEGORIES()
        
-elif mode==1:
+elif mode=='index':
         print ""+url
-        INDEX(url)
+        INDEX(url,favtype)
         
 
-elif mode==2:
+elif mode=='videolinks':
         print ""+url
-        VIDEOLINKS(url,name)
+        VIDEOLINKS(name,url,thumb,favtype)
+
+elif mode=='addlink':
+        print ""+url
+        addLink(name,url,thumb)                                   
 
 
-elif mode==3:
+elif mode=='indexdeep':
         print ""+url
-        INDEX_DEEP(url)
+        INDEX_DEEP(url,favtype)
        
 #For Search Function
-elif mode==10:
+elif mode=='searchit':
         print ""+url
         SEARCH(url)
+#****************DL FUNCTIONS******************
+if mode=='viewQueue':
+        print ""+url
+        dlthreadmod.viewQueue()
 
+elif mode=='download':
+        print ""+url
+        dlthreadmod.download()
+
+elif mode=='removeFromQueue':
+        print ""+url
+        dlthreadmod.removeFromQueue(name,url,thumb,ext,console)
+
+elif mode=='killsleep':
+        print ""+url
+        dlthreadmod.KILLSLEEP()
+
+elif mode=='resolvedl':
+        print ""+url
+        dlthreadmod.RESOLVEDL(url,name,thumb,favtype)
+        
+elif mode=='resolvetvdl':
+        print ""+url
+        dlthreadmod.RESOLVETVDL(url,name,thumb)
+
+elif mode=='resolve2':
+        print ""+url
+        main.RESOLVE2(name,url,thumb)
+
+elif mode=='resolve':
+        print ""+url
+        main.RESOLVE(name,url,thumb)        
+
+elif mode=='directresolvedl':
+        print ""+url
+        dlthreadmod.DIRECTRESOLVEDL(name,url,thumb,favtype)
+
+
+#==================Start Status/Help==========================
+        
+elif mode == "statuscats": print""; items=status.STATUSCATS()
+elif mode == "addonstatus": print""+url; items=status.ADDONSTATUS(url)
+elif mode=='getrepolink': print""+url; items=status.GETREPOLINK(url)
+elif mode=='getshorts': print""+url; items=status.GETSHORTS(url)
+elif mode=='getrepo': status.GETREPO(name,url,description,filetype)
+elif mode=='getvideolink': print""+url; items=status.GETVIDEOLINK(url)
+elif mode=='getvideo': status.GETVIDEO(name,url,iconimage,description,filetype)
+elif mode=='addoninstall': status.ADDONINSTALL(name,url,description,filetype)
+elif mode=='addshortcuts': status.ADDSHORTCUTS(name,url,description,filetype)
+elif mode=='addsource': status.ADDSOURCE(name,url,description,filetype)
+elif mode=='playstream': status.PLAYSTREAM(name,url,iconimage,description)        
 
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
