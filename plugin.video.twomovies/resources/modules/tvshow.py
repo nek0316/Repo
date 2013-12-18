@@ -210,45 +210,75 @@ def EPISODES(url,name,thumb):
 def TVLINKPAGE(url,name,thumb,mainimg):
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername,'mainimg':mainimg}
         inc = 0
+        mainimg = mainimg
         showname = name
         link = net.http_GET(url).content
         match=re.compile('href="(.+?)" target=".+?" rel=".+?" onclick=".+?">Full Movie</a>').findall(link)
         for url in match:
                  
-          if inc < 50:
+          '''if inc < 50:
                         link = net.http_GET(url).content
                         urls=re.compile('<iframe.*?src="(http://.+?)".*?>').findall(link)
 
-                        hmf = urlresolver.HostedMediaFile(urls[0])
-                        if hmf:
+                        hmf = urlresolver.HostedMediaFile(urls[0])'''
+          if inc < 50:
+                  #This gets around the Continue Button
+                  br = mechanize.Browser()
+  
+                  response1 = br.open(url)        
+                  br.select_form(nr=0)
+                  response2 = br.submit()
+                  link=response2.read()
+                  response2.close()
+                  #This gets around the Continue Button
+  
+                  urls=re.compile('go=(.+?)"').findall(link)
+                  #print 'MY LINK URL IS '+ urls
+                  
+  ################srting conversion########################
+                  urls = str(urls[0])
+                  print 'LINK URL AFTER STRING is' +urls
+##################Try to replace urlparts##################
+                 
+                  urls = urls.replace('&rel=nofollow','')
+                  
+                  ##########################################      
+                  #returns true or false media file resolve  
+                  hmf = urlresolver.HostedMediaFile(urls)
+                  ##########################################
+                  if hmf:
                                 host = hmf.get_host()
                                 hthumb = main.GETHOSTTHUMB(host)
-                                dlurl = urlresolver.resolve(url)
+                                #dlurl = urlresolver.resolve(url)
                                 data = main.GRABMETA(showname,'')
                                 thumb = data['cover_url']
-                                favtype = 'links'
+                                favtype = 'tvshows'
                                 try:    
-                                        main.addTVDLDir(showname,url,'vidpage',hthumb,data,dlfoldername,favtype,mainimg)
+                                        main.addTVDLDir(showname,urls,'vidpage',hthumb,data,dlfoldername,favtype,mainimg)
                                         inc +=1
                                 except:
                                         continue
                                    
 def DLTVVIDPAGE(url,name):
-        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername,}
-        link = net.http_GET(url).content
-        match=re.compile('<iframe.*?src="(http://.+?)".*?>').findall(link)
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':mainimg, 'dlfoldername':dlfoldername,}
+        #link = net.http_GET(url).content
+        #match=re.compile('<iframe.*?src="(http://.+?)".*?>').findall(link)
         
-        for url in match:
+        #for url in match:
+         
                 
-                main.RESOLVETVDL(name,url,thumb)
+        main.RESOLVETVDL(name,url,thumb)
 
 def TVVIDPAGE(url,name):
-        link = net.http_GET(url).content
-        match=re.compile('<iframe.*?src="(http://.+?)".*?>').findall(link)
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':mainimg, 'dlfoldername':dlfoldername,} 
+        #link = net.http_GET(url).content
+        #match=re.compile('<iframe.*?src="(http://.+?)".*?>').findall(link)
         
-        for url in match:
+        #for url in match:
+        url = url
+        name =name
                 
-                main.RESOLVE2(name,url,'')
+        main.RESOLVE2(name,url,thumb)
 
 #Start Search Function
 def _get_keyboard( default="", heading="", hidden=False ):

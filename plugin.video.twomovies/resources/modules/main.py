@@ -242,7 +242,6 @@ def nameCleaner(name):
           name = name.replace('&#8211;','')
           name = name.replace("&#8217;","")
           name = name.replace("&#039;s","'s")
-          name = name.replace("à","")
           return(name)
      
 
@@ -575,20 +574,22 @@ def RESOLVE(name,url,iconimage):
 
          AUTO_VIEW('')
 
-#Resolve 2 
+#Resolve 2
+
+    
 
 def RESOLVE2(name,url,thumb):
          
+     #data=0
+     #try:
+     #data = GRABMETA(movie_name,year)
+     #except:
      data=0
-     try:
-          data = GRABMETA(movie_name,year)
-     except:
-           data=0
-     hmf = urlresolver.HostedMediaFile(url)
-     host = ''
-     if hmf:
-          url = urlresolver.resolve(url)
-          host = hmf.get_host() 
+     #hmf = urlresolver.HostedMediaFile(url)
+     #host = ''
+     #if hmf:
+     url = urlresolver.resolve(url)
+          #host = hmf.get_host() 
              
      params = {'url':url, 'name':name, 'thumb':thumb}
      if data == 0:
@@ -603,6 +604,8 @@ def RESOLVE2(name,url,thumb):
      xbmc.sleep(1000)
         
      xbmc.Player ().play(url, liz, False)
+
+     
 
 #AutoView
 def AUTO_VIEW(content):

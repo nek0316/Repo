@@ -15,6 +15,7 @@ import extract
 import time,re
 import datetime
 import shutil
+import mechanize 
 from resources.modules import tvshow
 from metahandler import metahandlers
 from resources.modules import main
@@ -439,7 +440,7 @@ def MOVIEINDEX1(url):
                      main.AUTO_VIEW('movies')
 
              
-def LINKPAGE(url,name):
+'''def LINKPAGE(url,name):
         inc = 0
         movie_name = name[:-6]
         year = name[-6:]
@@ -452,7 +453,7 @@ def LINKPAGE(url,name):
                  
           if inc < 50:
                         link = net.http_GET(url).content
-                        urls=re.compile('<iframe.*?src="(http://.+?)".*?>').findall(link)
+                        urls=re.compile('<a rel="nofollow" href="(.+?)" target="_blank">').findall(link)
 
                         hmf = urlresolver.HostedMediaFile(urls[0])
                         if hmf:
@@ -467,28 +468,85 @@ def LINKPAGE(url,name):
                                         main.addDLDir(movie_name,url,'vidpage',hthumb,data,dlfoldername,favtype,mainimg)
                                         inc +=1
                                 except:
-                                        continue       
+                                        continue    '''
+
+def LINKPAGE(url,name):
+        inc = 0
+        movie_name = name[:-6]
+        year = name[-6:]
+        movie_name = movie_name.decode('UTF-8','ignore')
+        dlfoldername = name
+        link = net.http_GET(url).content
+        match=re.compile('href="(.+?)" target=".+?" rel=".+?" onclick=".+? = \'.+?">Watch Movie!</a>\n                                                       </div>\n                        </td>\n                        <td valign=.+? style=.+?>\n                          <span class=.+?>&nbsp;Site:&nbsp;</span><span class=.+?>(.+?)</span>').findall(link)
+  
+        for url,linkname in match:
+            
+                   
+          if inc < 50:
+                  #This gets around the Continue Button
+                  br = mechanize.Browser()
+  
+                  response1 = br.open(url)        
+                  br.select_form(nr=0)
+                  response2 = br.submit()
+                  link=response2.read()
+                  response2.close()
+                  #This gets around the Continue Button
+  
+                  urls=re.compile('go=(.+?)"').findall(link)
+                  #print 'MY LINK URL IS '+ urls
+                  
+  ################srting conversion########################
+                  urls = str(urls[0])
+                  print 'LINK URL AFTER STRING is' +urls
+##################Try to replace urlparts##################
+                 
+                  urls = urls.replace('&rel=nofollow','')
+                  
+                  ##########################################      
+                  #returns true or false media file resolve  
+                  hmf = urlresolver.HostedMediaFile(urls)
+                  ##########################################
+                  if hmf:
+                          #try:
+                                  host = hmf.get_host()
+                                  hthumb = main.GETHOSTTHUMB(host)
+                                  #dlurl = urlresolver.resolve(vidUrl)
+                                  data = main.GRABMETA(movie_name,year)
+                                  thumb = data['cover_url']
+                                  favtype = 'movie'
+                                  mainimg = thumb
+                                  try:
+                                          main.addDLDir(movie_name,urls,'vidpage',hthumb,data,dlfoldername,favtype,mainimg)
+                                          inc +=1
+                                  except:
+                                          continue
+                          #except:
+                                  #pass
                    
 
 
 def VIDPAGE(url,name):
-        link = net.http_GET(url).content
-        match=re.compile('<iframe.*?src="(http://.+?)".*?>').findall(link)
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':mainimg, 'dlfoldername':dlfoldername,}
+       #link = net.http_GET(url).content
+       # match=re.compile('<iframe.*?src="(http://.+?)".*?>').findall(link)
         
-        for url in match:
+        #for url in match:
+        url = url
+        name = name
                 
-                main.RESOLVE2(name,url,'')
+        main.RESOLVE2(name,url,thumb)
 
 
 def DLVIDPAGE(url,name):
-        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername,}
-        link = net.http_GET(url).content
-        match=re.compile('<iframe.*?src="(http://.+?)".*?>').findall(link)
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':mainimg, 'dlfoldername':dlfoldername,}
+        #link = net.http_GET(url).content
+        #match=re.compile('<iframe.*?src="(http://.+?)".*?>').findall(link)
         
-        for url in match:
+        #for url in match:
                 
                 
-                main.RESOLVEDL(name,url,thumb)                
+        main.RESOLVEDL(name,url,thumb)                
                 
                 
 
@@ -828,15 +886,15 @@ elif mode=='ytvideoresolve':
 
 elif mode=='resolve2':
         print ""+url
-        main.RESOLVE2(url,name,thumb)
+        main.RESOLVE2(name,url,thumb)
 
 elif mode=='resolvedl':
         print ""+url
-        main.RESOLVEDL(url,name,thumb,favetype)
+        main.RESOLVEDL(url,name,thumb,favtype)
         
 elif mode=='resolvetvdl':
         print ""+url
-        main.RESOLVETVDL(url,name,thumb,favetype)
+        main.RESOLVETVDL(name,url,thumb,favtype)
 
 
 
