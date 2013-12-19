@@ -1,7 +1,7 @@
 # -*- coding: cp1252 -*-
 # Main Module by: Blazetamer
 
-import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,urlresolver,xbmc,os,xbmcaddon,mechanize
+import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,urlresolver,xbmc,os,xbmcaddon
 from metahandler import metahandlers
 
 try:

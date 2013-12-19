@@ -15,7 +15,7 @@ import extract
 import time,re
 import datetime
 import shutil
-import mechanize 
+#import mechanize 
 from resources.modules import tvshow
 from metahandler import metahandlers
 from resources.modules import main
@@ -484,30 +484,38 @@ def LINKPAGE(url,name):
                    
           if inc < 50:
                   #This gets around the Continue Button
-                  br = mechanize.Browser()
+                '''try:   
+                        br = mechanize.Browser()
   
-                  response1 = br.open(url)        
-                  br.select_form(nr=0)
-                  response2 = br.submit()
-                  link=response2.read()
-                  response2.close()
+                        response1 = br.open(url)        
+                        br.select_form(nr=0)
+                        response2 = br.submit()
+                        link=response2.read()
+                        response2.close()
+                except:
+                        pass'''
                   #This gets around the Continue Button
-  
-                  urls=re.compile('go=(.+?)"').findall(link)
-                  #print 'MY LINK URL IS '+ urls
+                link = net.http_GET(url).content  
+                matchurl=re.compile('go=(.+?)"').findall(link)
+                for urls in matchurl:
+                
                   
   ################srting conversion########################
-                  urls = str(urls[0])
-                  print 'LINK URL AFTER STRING is' +urls
+                
+                 urls = str(urls)
+                 print 'First urls is ' +urls       
+                
 ##################Try to replace urlparts##################
                  
-                  urls = urls.replace('&rel=nofollow','')
-                  
+                 urls = urls.replace('&rel=nofollow','')
+                        #hmf = urlresolver.HostedMediaFile(urls[0])  
                   ##########################################      
-                  #returns true or false media file resolve  
-                  hmf = urlresolver.HostedMediaFile(urls)
+                  #returns true or false media file resolve
+                 print 'Pre HMF url is  ' +urls
+                 hmf = urlresolver.HostedMediaFile(urls)
                   ##########################################
-                  if hmf:
+                 print 'URLS is ' +urls
+                 if hmf:
                           #try:
                                   host = hmf.get_host()
                                   hthumb = main.GETHOSTTHUMB(host)

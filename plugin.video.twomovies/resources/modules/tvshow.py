@@ -2,7 +2,7 @@
 # 2Movies TV SHOW Module by: Blazetamer
 
 
-import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,urlresolver,xbmc,os,xbmcaddon,mechanize,main
+import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,urlresolver,xbmc,os,xbmcaddon,main
 
 from metahandler import metahandlers
 
@@ -223,30 +223,30 @@ def TVLINKPAGE(url,name,thumb,mainimg):
                         hmf = urlresolver.HostedMediaFile(urls[0])'''
           if inc < 50:
                   #This gets around the Continue Button
-                  br = mechanize.Browser()
+                  '''br = mechanize.Browser()
   
                   response1 = br.open(url)        
                   br.select_form(nr=0)
                   response2 = br.submit()
                   link=response2.read()
-                  response2.close()
+                  response2.close()'''
                   #This gets around the Continue Button
-  
-                  urls=re.compile('go=(.+?)"').findall(link)
+                  link = net.http_GET(url).content  
+                  matchurl=re.compile('go=(.+?)"').findall(link)
                   #print 'MY LINK URL IS '+ urls
-                  
+                  for urls in matchurl:
   ################srting conversion########################
-                  urls = str(urls[0])
-                  print 'LINK URL AFTER STRING is' +urls
+                   urls = str(urls)
+                   print 'LINK URL AFTER STRING is' +urls
 ##################Try to replace urlparts##################
                  
-                  urls = urls.replace('&rel=nofollow','')
+                   urls = urls.replace('&rel=nofollow','')
                   
                   ##########################################      
                   #returns true or false media file resolve  
-                  hmf = urlresolver.HostedMediaFile(urls)
+                   hmf = urlresolver.HostedMediaFile(urls)
                   ##########################################
-                  if hmf:
+                   if hmf:
                                 host = hmf.get_host()
                                 hthumb = main.GETHOSTTHUMB(host)
                                 #dlurl = urlresolver.resolve(url)
