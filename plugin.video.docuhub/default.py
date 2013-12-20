@@ -215,8 +215,10 @@ def STORMVIDPAGE(url,name):
         response = urllib2.urlopen(req)
         link=response.read()
         response.close()
-        match=re.compile('<p><iframe src="(.+?)" .+?" .+?"').findall(link)
-        for url in match:
+        #match=re.compile('<p><iframe src="(.+?)" .+?" .+?"').findall(link)==========old links
+        match=re.compile('<p><iframe width=".+?" height=".+?" src="(.+?)" frameborder=".+?" ').findall(link)
+        if len(match) > 0:
+           for url in match:
                 if 'youtube' in url:
                         if 'http:' in url:
                                 url = url.replace('http:','')
@@ -243,7 +245,15 @@ def STORMVIDPAGE(url,name):
                         
                          TDVIMEO(name,url,'')
 
-                         AUTO_VIEW('movies')                
+                         AUTO_VIEW('movies')
+
+        else:
+                match=re.compile('<iframe class=".+?" width=".+?" src="(.+?)" frameborder=').findall(link)
+                for url in match:
+                        TDVIMEO(name,url,'')
+
+                        AUTO_VIEW('movies')
+                
             
 def DOCLOGCAT(url):
 #link = net.http_GET(url).content
