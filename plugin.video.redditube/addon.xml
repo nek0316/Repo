@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.redditube" version="1.2.0c" name="Reddi Tube" provider-name="[COLOR red]Blazetamer[/COLOR]">
+<addon id="plugin.video.redditube" version="1.2.5a" name="Reddi Tube" provider-name="[COLOR red]Blazetamer[/COLOR]">
 <requires>
 <import addon="xbmc.python" version="2.1.0"/>
 <import addon="script.module.urlresolver"  version="2.1.2"/>
@@ -10,8 +10,8 @@
 <provides>video</provides>
 </extension>
 <extension point="xbmc.addon.metadata">
-<summary>Reddi Tube Addon</summary>
-<description>Coding Assistance provided by **Rodrigo**[COLOR blue]ReddiTube give you Full length movies and videos from YouTube,Putlocker, Sockshare and more![/COLOR][COLOR red]***For Official support visit XBMCHUB.COM***[/COLOR]</description>
+<summary>Full Length Feature Movies</summary>
+<description>ReddiTube give you Full length movies and videos from YouTube,Putlocker, Sockshare and more!***For Official support visit XBMCHUB.COM***</description>
 
 <platform>all</platform>
 </extension>

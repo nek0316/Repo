@@ -43,10 +43,10 @@ def AUTO_VIEW(content):
 
 #Main Links 
 def CATEGORIES():
-    addDir('[COLOR orange] Search Putlocker by Genres>>>[/COLOR]','none',4,artPath+'putlocker.png','','dir')
-    addDir('[COLOR red]New Putlocker Arrivals[/COLOR]','http://www.reddit.com/domain/putlocker.com/new/',11,artPath+'putlocker.png','','dir')
-    addDir('[COLOR red]Whats Hot on Putlocker[/COLOR]','http://www.reddit.com/domain/putlocker.com/',11,artPath+'putlocker.png','','dir')
-    addDir('[COLOR red]Top Putlocker Movies[/COLOR]','http://www.reddit.com/domain/putlocker.com/top/',11,artPath+'putlocker.png','','dir')
+    #addDir('[COLOR orange] Search Putlocker by Genres>>>[/COLOR]','none',4,artPath+'putlocker.png','','dir')
+    addDir('[COLOR red]New Putlocker Arrivals[/COLOR]','http://www.reddit.com/r/PegLeg/new/',11,artPath+'putlocker.png','','dir')
+    addDir('[COLOR red]Whats Hot on Putlocker[/COLOR]','http://www.reddit.com/r/PegLeg/',11,artPath+'putlocker.png','','dir')
+    addDir('[COLOR red]Top Putlocker Movies[/COLOR]','http://www.reddit.com/r/PegLeg/top/',11,artPath+'putlocker.png','','dir')
     addDir('[COLOR orange] Search Sockshare by Genres>>>[/COLOR]','none',9,artPath+'sockshare.png','','dir')
     addDir('[COLOR red]New SockShare Arrivals[/COLOR]','http://www.reddit.com/r/FullMoviesonSockshare/new/',12,artPath+'sockshare.png','','dir')
     addDir('[COLOR red]Whats Hot on SockShare[/COLOR]','http://www.reddit.com/r/fullmoviesonsockshare',12,artPath+'sockshare.png','','dir')
@@ -192,7 +192,7 @@ def INDEXPL(url):
         match=re.compile('<div class="nav-buttons"><span class="nextprev">view more:&#32;<a href="(.+?)" rel="nofollow').findall(link)
         if len(match) > 0:
                 addDir('Next Page',(match[0]),11,artPath+'next.png','','dir')
-        match=re.compile('<div class=".+?"><p class=".+?"><a class=".+?" href="(.+?)" tabindex=".+?" rel=".+?" >(.+?)</a>').findall(link)
+        match=re.compile('<a class="title " href="(.+?)" tabindex="1" >(.+?)</a>.+?<span class="domain">.+?href="/domain/putlocker.com/"').findall(link)
         inc = 0
         if len(match) > 0:
          for url,name in match:        
