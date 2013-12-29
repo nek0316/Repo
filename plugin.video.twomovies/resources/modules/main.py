@@ -5,7 +5,7 @@ import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,urlresolver,xbmc,os,xbmcaddon
 from metahandler import metahandlers
 
 try:
-        from addon.common import Addon
+        from addon.common.addon import Addon
 
 except:
         from t0mm0.common.addon import Addon
@@ -13,7 +13,7 @@ addon_id = 'plugin.video.twomovies'
 
 addon = Addon(addon_id, sys.argv)
 try:
-        from addon.common import Net
+        from addon.common.net import Net
 
 except:  
         from t0mm0.common.net import Net
@@ -32,7 +32,6 @@ import time
 cache = StorageServer.StorageServer("TwoMovies", 0)
 #=========Download Thread Module by: Blazetamer and o9r1sh1=========================
 settings = xbmcaddon.Addon(id='plugin.video.twomovies')     
-addon = Addon(addon_id, sys.argv)
 mode = addon.queries['mode']
 url = addon.queries.get('url', '')
 name = addon.queries.get('name', '')
@@ -159,7 +158,7 @@ def addQDir(name,url,mode,thumb,console):
 
      contextMenuItems.append(('[COLOR red]Remove From Queue[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removeFromQueue', 'name': name,'url': url,'thumb': thumb,'ext': ext,'console': console})))
 
-     addon.add_directory(params, {'title':name}, contextMenuItems, img= thumb)
+     addon.add_directory(params, {'title':name}, contextmenu_items=contextMenuItems, img= thumb)
      
 def addToQueue(name,url,thumb,ext,console):
      queue = cache.get('queue')
@@ -295,7 +294,7 @@ def addDLDir(name,url,mode,thumb,labels,dlfoldername,favtype,mainimg):
         
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername, 'favtype':favtype, 'mainimg':mainimg}
         contextMenuItems.append(('[COLOR gold]Download This File[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'url':url, 'mode':'dlvidpage', 'name':name, 'thumb':mainimg, 'console':console, 'dlfoldername':dlfoldername,'favtype':favtype})))
-        addon.add_directory(params, {'title':name}, contextMenuItems, img= thumb)                             
+        addon.add_directory(params, {'title':name}, contextmenu_items=contextMenuItems, img= thumb)                             
        
 
 #********************TV DOWNLOAD DIR***************************
@@ -304,7 +303,7 @@ def addTVDLDir(name,url,mode,thumb,labels,dlfoldername,favtype,mainimg):
         
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername, 'favtype':favtype,'mainimg':mainimg}
         contextMenuItems.append(('[COLOR gold]Download This File[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'url':url, 'mode':'dltvvidpage', 'name':name, 'thumb':mainimg, 'console':console, 'dlfoldername':dlfoldername,'favtype':favtype})))
-        addon.add_directory(params, {'title':name}, contextMenuItems, img= thumb)
+        addon.add_directory(params, {'title':name}, contextmenu_items=contextMenuItems, img= thumb)
      
 #*******************For Chia DownloadDir***********************
 def addCHIADLDir(name,url,mode,thumb,labels,dlfoldername,favtype,mainimg):
@@ -312,7 +311,7 @@ def addCHIADLDir(name,url,mode,thumb,labels,dlfoldername,favtype,mainimg):
         
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername, 'favtype':favtype,'mainimg':mainimg}
         contextMenuItems.append(('[COLOR gold]Download This File[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'url':url, 'mode':'chiadlvidpage', 'name':name, 'thumb':mainimg, 'console':console, 'dlfoldername':dlfoldername,'favtype':favtype})))
-        addon.add_directory(params, {'title':name}, contextMenuItems, img= thumb)
+        addon.add_directory(params, {'title':name}, contextmenu_items=contextMenuItems, img= thumb)
 
 
 
@@ -500,9 +499,9 @@ def addSDir(name,url,mode,thumb,year,types):
 
      
      if settings.getSetting('metadata') == 'true':
-          addon.add_directory(params, meta, contextMenuItems, img=thumb, fanart=fanart)          
+          addon.add_directory(params, meta, contextmenu_items=contextMenuItems, img=thumb, fanart=fanart)          
      else:
-          addon.add_directory(params, {'title':name}, contextMenuItems, img= thumb, fanart=fanart)     
+          addon.add_directory(params, {'title':name}, contextmenu_items=contextMenuItems, img= thumb, fanart=fanart)     
 
 
 

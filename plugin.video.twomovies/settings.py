@@ -35,7 +35,7 @@ def subscription_file():
     return create_file(DATA_PATH, "subscriptions.list")
 		
 def cookie_jar():
-    return create_file(TMPATH, "cookiejar.lwp")
+    return create_file(TMPATH, "cookies.lwp")
 	
 def create_directory(dir_path, dir_name=None):
     if dir_name:

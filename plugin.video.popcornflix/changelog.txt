@@ -1,3 +1,7 @@
+V1.8.6
+Fixed Ouya/Android Bug
+Prepared for Gotham
+
 V1.8.5
 Complete Re-Write of addon
 Better Resolution videos

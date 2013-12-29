@@ -8,16 +8,16 @@ from metahandler import metahandlers
 
 
 try:
-        from addon.common import Addon
+        from addon.common.addon import Addon
 
 except:
         from t0mm0.common.addon import Addon
 addon_id = 'plugin.video.twomovies'
-addon = Addon(addon_id, sys.argv)
-
+#addon = Addon(addon_id, sys.argv)
+addon = main.addon
 
 try:
-        from addon.common import Net
+        from addon.common.net import Net
 
 except:  
         from t0mm0.common.net import Net
@@ -57,6 +57,8 @@ print 'Favtype is: ' + favtype
 print 'Main Image is: ' + mainimg
 
 # Global Stuff
+cookiejar = addon.get_profile()
+cookiejar = os.path.join(cookiejar,'cookies.lwp')
 settings = xbmcaddon.Addon(id=addon_id)
 artwork = xbmc.translatePath(os.path.join('http://rowthreemedia.com/xbmchub/2movies/art/', ''))
 grab=metahandlers.MetaData()
@@ -129,6 +131,8 @@ def TVGENRES():
 
         
 def TVPLAYYEAR (url):
+        if settings.getSetting('tmovies_account') == 'true':  
+              net.set_cookies(cookiejar)
         link = net.http_GET(url).content
         match=re.compile('<a href="(.+?)" title=".+?">\r\n                        <img src="(.+?)" class=".+?" style=".+?"  border=".+?" height=".+?" width=".+?" alt="Watch (.+?) Online for Free">\r\n').findall(link)
         if len(match) > 0:
@@ -148,6 +152,8 @@ def TVPLAYYEAR (url):
              
                     main.AUTO_VIEW('')        
 def TVPLAYGENRE (url):
+        if settings.getSetting('tmovies_account') == 'true':  
+              net.set_cookies(cookiejar)
         link = net.http_GET(url).content
         match=re.compile('<a href="(.+?)" title=".+?">\r\n                        <img src="(.+?)" class=".+?" style=".+?"  border=".+?" height=".+?" width=".+?" alt="Watch (.+?) Online for Free">\r\n').findall(link)
         if len(match) > 0:
@@ -171,6 +177,8 @@ def TVPLAYGENRE (url):
 
 
 def SEARCHSHOW(url):
+             if settings.getSetting('tmovies_account') == 'true':  
+              net.set_cookies(cookiejar)
              link = net.http_GET(url).content
              match=re.compile('<a href="(.+?)">\r\n        <img src=".+?" data-original="(.+?)"  class=".+?" style=".+?"  border=".+?" height=".+?" width=".+?" alt="Watch (.+?) Online for Free">\r\n').findall(link)
              if len(match) > 0:
@@ -192,6 +200,8 @@ def EPISODES(url,name,thumb):
     dlfoldername = name
     mainimg = thumb
     show = name
+    if settings.getSetting('tmovies_account') == 'true':  
+              net.set_cookies(cookiejar)
     link = net.http_GET(url).content
     matchurl=re.compile('<a class="linkname" href="(.+?)">.+? - (.+?)</a>').findall(link)             
     for url,epname in matchurl:
@@ -212,6 +222,8 @@ def TVLINKPAGE(url,name,thumb,mainimg):
         inc = 0
         mainimg = mainimg
         showname = name
+        if settings.getSetting('tmovies_account') == 'true':  
+              net.set_cookies(cookiejar)
         link = net.http_GET(url).content
         match=re.compile('href="(.+?)" target=".+?" rel=".+?" onclick=".+?">Full Movie</a>').findall(link)
         for url in match:

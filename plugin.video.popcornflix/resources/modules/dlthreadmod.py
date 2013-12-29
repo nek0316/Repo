@@ -6,7 +6,7 @@ import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,urlresolver,xbmc,os,xbmcaddon
 from metahandler import metahandlers
 from resources.modules import main
 try:
-        from addon.common import Addon
+        from addon.common.addon import Addon
 
 except:
         from t0mm0.common.addon import Addon
@@ -14,7 +14,7 @@ except:
 
 
 try:
-        from addon.common import Net
+        from addon.common.net import Net
 
 except:  
         from t0mm0.common.net import Net
@@ -161,7 +161,7 @@ def addQDir(name,url,mode,thumb,console):
 
      contextMenuItems.append(('Remove From Queue', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removeFromQueue', 'name': name,'url': url,'thumb': thumb,'ext': ext,'console': console})))
 
-     addon.add_directory(params, {'title':name}, contextMenuItems, img= thumb)
+     addon.add_directory(params, {'title':name}, contextmenu_items=contextMenuItems, img= thumb)
      
 def addToQueue(name,url,thumb,ext,console):
      queue = cache.get('queue')

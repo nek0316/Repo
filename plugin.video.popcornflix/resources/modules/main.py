@@ -5,7 +5,7 @@ import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,urlresolver,xbmc,os,xbmcaddon
 from metahandler import metahandlers
 
 try:
-        from addon.common import Addon
+        from addon.common.addon import Addon
 
 except:
         from t0mm0.common.addon import Addon
@@ -13,7 +13,7 @@ except:
 
 
 try:
-        from addon.common import Net
+        from addon.common.net import Net
 
 except:  
         from t0mm0.common.net import Net
@@ -65,7 +65,7 @@ download_path = settings.getSetting('download_folder')
 
 # Global Stuff
 settings = xbmcaddon.Addon(id=addon_id)
-net = Net()
+
 
 
 def nameCleaner(name):
@@ -102,7 +102,7 @@ def addDLDir(name,url,mode,thumb,labels,dlfoldername,favtype,mainimg):
         
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername, 'favtype':favtype, 'mainimg':mainimg}
         contextMenuItems.append(('[COLOR gold]Download Stream File[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'url':url, 'mode':'directresolvedl', 'name':name, 'thumb':mainimg, 'console':console, 'dlfoldername':dlfoldername,'favtype':favtype})))
-        addon.add_directory(params, {'title':name}, contextMenuItems, img= thumb)                             
+        addon.add_directory(params, {'title':name}, contextmenu_items=contextMenuItems, img= thumb)                             
        
 
 
@@ -169,7 +169,7 @@ def addDir(name,url,mode,thumb,labels,favtype):
              pass
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername, 'favtype':favtype, 'mainimg':mainimg}
-        #addon.add_directory(params, {'title':name}, contextMenuItems, img= thumb, fanart=fanart) 
+        #addon.add_directory(params, {'title':name}, contextmenu_items=contextMenuItems, img= thumb, fanart=fanart) 
   
         #Changed return from ok to 0
         return ok

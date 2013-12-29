@@ -12,6 +12,13 @@
 <setting id="download_folder" type="folder" label="Downloads Folder" default="" />
 </category>
 
+<category label="2 Movies Account">>
+<setting id="tmovies_account" type="bool" label="Enable Log in" default="false"/>
+		<setting id="tmovies_user" type="text" label="Username" default="" enable="!eq(-1,false)"/>
+		<setting id="tmovies_pass" type="text" option="hidden" label="Password" default="" enable="!eq(-2,false)"/>
+</category>
+
+
 
 <category label="Enable / Disable Sections">
 <setting id="adult" type="bool" label="Adult Section" default="false"/>

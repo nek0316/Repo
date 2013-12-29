@@ -2,7 +2,7 @@ import urllib,urllib2,re,xbmcplugin,xbmcgui,xbmc, xbmcaddon, os, sys
 import urlresolver
 from metahandler import metahandlers
 try:
-        from addon.common import Addon
+        from addon.common.addon import Addon
 
 except:
         from t0mm0.common.addon import Addon
@@ -11,7 +11,7 @@ except:
 
 
 try:
-        from addon.common import Net
+        from addon.common.net import Net
 
 except:  
         from t0mm0.common.net import Net
@@ -30,7 +30,6 @@ import time
 
 # Global Stuff
 addon_id = 'plugin.video.popcornflix'
-net = Net()
 
 # Cache  
 cache = StorageServer.StorageServer("PopcornFlix", 0)

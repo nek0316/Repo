@@ -1,3 +1,12 @@
+V2.4.6
+Offical Login Ready Release
+
+V2.4.5+
+Added 2Movie Login
+Get an Account at twomovies.name
+You will get LOTS more quality sources In Movie and TV Section
+Attempted Android/Ouya Fix
+
 V2.3.5
 Fixed Blockpage error with help from o9r1sh1
 and lots of Soda.

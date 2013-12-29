@@ -5,10 +5,18 @@ import downloader
 import extract
 from resources.modules import main
 addon_id='plugin.video.popcornflix'
-from t0mm0.common.addon import Addon
+try:
+        from addon.common.addon import Addon
+
+except:
+        from t0mm0.common.addon import Addon
 addon=main.addon
-from t0mm0.common.net import Net
-net=Net()
+try:
+        from addon.common.net import Net
+
+except:  
+        from t0mm0.common.net import Net
+net = Net()
 settings=xbmcaddon.Addon(id='plugin.video.popcornflix')
 
 def STATUSCATS():

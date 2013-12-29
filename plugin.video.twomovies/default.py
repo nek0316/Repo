@@ -5,11 +5,8 @@
 import urllib,urllib2,re,xbmcplugin,xbmcgui,xbmc, xbmcaddon, os, sys
 import urlresolver
 import cookielib
-from resources.modules import gethtml
-from resources.modules import weblogin
 from resources.modules import status
 from resources.modules import chia
-import setup
 import downloader
 import extract
 import time,re
@@ -21,7 +18,7 @@ from metahandler import metahandlers
 from resources.modules import main
 
 try:
-        from addon.common import Addon
+        from addon.common.addon import Addon
 
 except:
         from t0mm0.common.addon import Addon
@@ -30,17 +27,18 @@ addon = main.addon
 
 
 try:
-        from addon.common import Net
+        from addon.common.net import Net
 
 except:  
         from t0mm0.common.net import Net
-net = Net()
+net = Net(http_debug=True)
+newagent ='Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36'
+net.set_user_agent(newagent)
 
 base_url = 'http://www.twomovies.name'
 
 
 #PATHS
-
 artwork = xbmc.translatePath(os.path.join('http://rowthreemedia.com/xbmchub/2movies/art/', ''))
 settings = xbmcaddon.Addon(id='plugin.video.twomovies')
 addon_path = os.path.join(xbmc.translatePath('special://home/addons'), '')
@@ -55,6 +53,8 @@ console = addon.queries.get('console', '')
 dlfoldername = addon.queries.get('dlfoldername', '')
 favtype = addon.queries.get('favtype', '')
 mainimg = addon.queries.get('mainimg', '')
+headers = addon.queries.get('headers', '')
+loggedin = addon.queries.get('loggedin', '')
 
 print 'Mode is: ' + mode
 print 'Url is: ' + url
@@ -65,89 +65,97 @@ print 'Filetype is: ' + console
 print 'DL Folder is: ' + dlfoldername
 print 'Favtype is: ' + favtype
 print 'Main Image is: ' + mainimg
-
+print 'Headers are ' +headers
+print 'Logged In Status is ' +loggedin
 #================DL END==================================
-
-
-
-
-#******************NEWLOGIN ATTEMPT*************************************************************************
-
-TMUSER = settings.getSetting('tmovies_user')
-TMPASSWORD = settings.getSetting('tmovies_pass')
-cookie_jar = setup.cookie_jar()
-'''
+#########################Blazetamer's Log Module########################################
+cookiejar = addon.get_profile()
+cookiejar = os.path.join(cookiejar,'cookies.lwp')
 def LogNotify(title,message,times,icon):
         xbmc.executebuiltin("XBMC.Notification("+title+","+message+","+times+","+icon+")")
+
+username = settings.getSetting('tmovies_user')
+password = settings.getSetting('tmovies_pass')
+
 def LOGIN():
-  if settings.getSetting('tmovies_account') == 'true':      
+    username = settings.getSetting('tmovies_user')
+    password = settings.getSetting('tmovies_pass')    
     header_dict = {}
-    header_dict['Accept'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-    header_dict['Accept-Encoding'] = 'gzip,deflate'
-    header_dict['Accept-Language'] = 'en-US,en;q=0.8'
+    header_dict['Accept'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
     header_dict['Connection'] = 'keep-alive'
     header_dict['Content-Type'] = 'application/x-www-form-urlencoded'
     header_dict['Host'] = 'twomovies.name'
-    header_dict['Referer'] = 'twomovies.name'
-    header_dict['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36'
-    
-    
-    #### Get token ###
-    net.set_cookies(cookie_jar)
-    url = 'http://twomovies.name/login/'
-    link = net.http_GET(url).content.encode("utf-8").rstrip()
-    net.save_cookies(cookie_jar)
-    
-    header_dict['Referer'] = 'http://twomovies.name/login'
-    ### Login ###	
-    form_data = ({'login':TMUSER, 'password':TMPASSWORD,'submit_login':'Login','submit_login':''})	
-    net.set_cookies(cookie_jar)
-    loginlink = net.http_POST('http://twomovies.name/login', form_data=form_data, headers=header_dict).content.encode("utf-8").rstrip()
-    net.save_cookies(cookie_jar)
-    if 'Invalid Username/Email or password' in loginlink:
-        LogNotify('Not logged in at twomovies.name', 'Check settings', '5000', '')
-        CATEGORIES()
+    header_dict['Referer'] = 'http://www.twomovies.name/login'
+    header_dict['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36'    
+    form_data = {'login':username, 'password':password,'remember_me':'on','submit_login':'Login', 'submit_login':''}
+    net.set_cookies(cookiejar)
+    login = net.http_POST('http://twomovies.name/go_login', form_data=form_data, headers=header_dict)
+    net.save_cookies(cookiejar)
+    link = net.http_GET('http://twomovies.name/login').content
+    logincheck=re.compile('<font class="form-title">Login (.+?)</font>').findall(link)
+    for nolog in logincheck:
+                    print 'Login Check Return is ' + nolog
+                    if 'using TwoMovies account' in nolog :
+                        LogNotify('Login Failed at twomovies.name', 'Check settings', '5000', 'http://addonrepo.com/xbmchub/Blazetamer/2movies.png')
+                        CATEGORIES('false')
+                        return True
     else:
-        LogNotify('Logged in at twomovies.name', '', '5000', '')
-
-
-  else:  
-                       CATEGORIES()'''
-
-
-
-#*********************END NEWLOGIN ATTEMPT**********************************************************************
-#Login Setup****************************************************************************************************
-
-cookiepath = xbmc.translatePath(os.path.join('special://home/addons/plugin.video.twomovies/resources/modules/', ''))
-def LogNotify(title,message,times,icon):
-        xbmc.executebuiltin("XBMC.Notification("+title+","+message+","+times+","+icon+")")
-
-
-
-def LOGIN(username,password,hidesuccess):
-            
-                logged_in = weblogin.doLogin(cookiepath,username,password)
-                if logged_in == True:
-
-                     LogNotify('Welcome back ',username,'4000','')
-                     CATEGORIES()
-                elif logged_in == False:
-
-                         LogNotify('Login Failure',' Check Account Settings','4000','')
-                         CATEGORIES()
+                        LogNotify('Welcome Back ' + username, 'Enjoy your stay!', '5000', 'http://addonrepo.com/xbmchub/Blazetamer/2movies.png')
+                        net.save_cookies(cookiejar)
+                        CATEGORIES('true')
+                        return False
+  
+def RELOGIN():
+        if settings.getSetting('tmovies_account') == 'false':
+                dialog = xbmcgui.Dialog()
+                ok = dialog.ok('Account Login Not Enabled', '            Please Choose 2Movies Account Tab and Enable')
+                if ok:
+                        LogNotify('2Movies Account Tab ', 'Please Enable Account', '5000', 'http://addonrepo.com/xbmchub/Blazetamer/2movies.png')        
+                        print 'YOU HAVE NOT SET THE USERNAME OR PASSWORD!'
+                        addon.show_settings()
+                                
+        else:
+            STARTUP()
         
 def STARTUP():
         username = settings.getSetting('tmovies_user')
         password = settings.getSetting('tmovies_pass')
+        cookiejar = addon.get_profile()
+        cookiejar = os.path.join(cookiejar,'cookies.lwp')
         if settings.getSetting('tmovies_account') == 'true':
-                LOGIN(username,password,'')             
-        else:  
-                       CATEGORIES()
+                if username is '' or password is '':
+                        dialog = xbmcgui.Dialog()
+                        ok = dialog.ok('Username or Password Not Set', '            Please Choose 2Movies Account Tab and Set')
+                        if ok:
+                                LogNotify('2Movies Account Tab ', 'Please set Username & Password!', '5000', 'http://addonrepo.com/xbmchub/Blazetamer/2movies.png')        
+                                print 'YOU HAVE NOT SET THE USERNAME OR PASSWORD!'
+                                addon.show_settings()
+                #Add new Cookie*****************************
+                #cookiejar = cookiejar.strip()                
+                '''if not os.path.exists(cookiejar):
+                        f = open(cookiejar, 'w')
+                        f.write('#LWP-Cookies-2.0')
+                        f.close()
+                        #return cookiejar '''               
+                #End Add new Cookie*****************************
+
+
+                LOGIN()      
+                       
+        else:
+              '''try:
+                  os.remove(cookiejar)
+              except:
+                     pass'''  
+              CATEGORIES('false')
 #************************End Login****************************************************************************
 #Main Links
-def CATEGORIES():
-        
+def CATEGORIES(loggedin):
+        if loggedin == 'true':
+                main.addDir('[COLOR red][B]LOGGED IN[/COLOR][/B]','http://addonrepo.com/xbmchub/twomovies/messages/loggedintrue.txt','addonstatus',artwork +'loggedin.png','','dir')
+        if loggedin == 'false':        
+                main.addDir('[COLOR white][B]Login/Re-Attempt Login[/COLOR][/B]','none','relogin',artwork +'relogin.png','','dir')
+                main.addDir('[COLOR white][B]How to Login[/COLOR][/B]','http://addonrepo.com/xbmchub/twomovies/messages/loggedinfalse.txt','addonstatus',artwork +'howtologin.png','','dir')
         main.addDir('[COLOR white]Movies[/COLOR]','none','moviecat',artwork +'Icon_Menu_Movies_Menu.png','','dir')     
         
         if settings.getSetting('tvshows') == 'true':
@@ -181,6 +189,7 @@ def CATEGORIES():
                 main.addDir('[COLOR white]Resolver Settings[/COLOR]','none','resolverSettings',artwork +'Icon_Menu_Settings_ResolverSettings.png','','dir')
         main.addDir('[COLOR white]Help and Extras[/COLOR]','http://addonrepo.com/xbmchub/twomovies/messages/addon.txt','statuscategories',artwork +'help.png','','dir')
         main.addDir('[COLOR gold]Manage Downloads[/COLOR]','none','viewQueue',artwork +'downloads/Downloads_Manage.png','','')
+        main.addDir('[COLOR gold]Announcements/Info[/COLOR]','http://addonrepo.com/xbmchub/twomovies/messages/addonannouncements.txt','addonstatus','http://addonrepo.com/xbmchub/twomovies/images/icon.png','','')
         main.AUTO_VIEW('')
 
 
@@ -250,6 +259,7 @@ def ADULTALLOW():
 
 def BYYEAR():
         yearurl = 'http://twomovies.name/browse_movies/all/byViews/'
+        main.addDir('2014 ',yearurl+'2014','playyear',artwork +'Icon_Menu_2014.png','','dir')
         main.addDir('2013 ',yearurl+'2013','playyear',artwork +'Icon_Menu_2013.png','','dir')
         main.addDir('2012 ',yearurl+'2012','playyear',artwork +'Icon_Menu_2012.png','','dir')
         main.addDir('2011 ',yearurl+'2011','playyear',artwork +'Icon_Menu_2011.png','','dir')
@@ -296,7 +306,9 @@ def GENRES():
         main.AUTO_VIEW('')
 
 def AZINDEX(url):
-        link = net.http_GET(url).content
+        if settings.getSetting('tmovies_account') == 'true':  
+              net.set_cookies(cookiejar)
+        link = net.http_GET(url).content   
         match=re.compile('<a href="(.+?)">\r\n        <img src=".+?" data-original="(.+?)"  class=".+?" style=".+?"  border=".+?" height=".+?" width=".+?" alt="Watch (.+?) Online for Free">\r\n').findall(link)
         if len(match) > 0:
          for url,sitethumb,name in match:
@@ -316,9 +328,11 @@ def AZINDEX(url):
         if len(nmatch) > 0:
                   main.addDir('Next Page',(nmatch[0]),'azindex',artwork +'Icon_Menu_Movies_nextpage.png','','dir')
              
-                  main.AUTO_VIEW('movies')
+        main.AUTO_VIEW('movies')
         
 def PLAYYEAR (url):
+        if settings.getSetting('tmovies_account') == 'true':  
+              net.set_cookies(cookiejar)
         link = net.http_GET(url).content
         match=re.compile('<a href="(.+?)" title=".+?">\r\n                        <img src="(.+?)" class=".+?" style=".+?"  border=".+?" height="147px" width="102px" alt="Watch (.+?) Online for Free">\r\n').findall(link)
         if len(match) > 0:
@@ -337,17 +351,21 @@ def PLAYYEAR (url):
         if len(nmatch) > 0:
                   main.addDir('Next Page',(nmatch[0]),'playyear',artwork +'Icon_Menu_Movies_nextpage.png','','dir')
              
-                  main.AUTO_VIEW('movies')
+        main.AUTO_VIEW('movies')
 
 def MOVIETAGS(url):
+        if settings.getSetting('tmovies_account') == 'true':  
+              net.set_cookies(cookiejar)
         link = net.http_GET(url).content
         match=re.compile('<a href="(.+?)" style=".+?; font-style: .+?; font-variant: .+?; font-size-adjust: .+?; font-stretch:.+?; -x-system-font: .+?; color: .+?; font-weight:.+?; line-height: .+?; word-spacing: .+?; letter-spacing:.+?;font-size:.+?;margin:.+?;">(.+?)</a>').findall(link)
         for url,name in match:
                 
                 main.addDir(name,url,'movietagindex',artwork +'Icon_Menu_Movies_ByTag.png','','dir')
-                main.AUTO_VIEW('')
+        main.AUTO_VIEW('')
                 
 def MOVIETAGINDEX(url):
+        if settings.getSetting('tmovies_account') == 'true':  
+              net.set_cookies(cookiejar)
         link = net.http_GET(url).content
         match=re.compile('<a href="(.+?)">\r\n        <img src=".+?" data-original="(.+?)"  class=".+?" style=".+?"  border=".+?" height=".+?" width=".+?" alt="Watch (.+?) Online for Free">\r\n').findall(link)
         if len(match) > 0:
@@ -364,9 +382,11 @@ def MOVIETAGINDEX(url):
              favtype = 'movie'
              main.addDir(name+' ('+ year +')',url,'linkpage',thumb,data,favtype)
              
-             main.AUTO_VIEW('movies')
+        main.AUTO_VIEW('movies')
 
 def ADULTMOVIEINDEX(url):
+        if settings.getSetting('tmovies_account') == 'true':  
+              net.set_cookies(cookiejar)
         link = net.http_GET(url).content
         match=re.compile('<a href="(.+?)" title=".+?">\r\n                        <img src="(.+?)" class=".+?" style=".+?"  border=".+?" height="147px" width="102px" alt="Watch (.+?) Online for Free">\r\n').findall(link)
         if len(match) > 0:
@@ -385,10 +405,12 @@ def ADULTMOVIEINDEX(url):
                     
                  main.addDir('Next Page',(nmatch[0]),'movieindex',artwork +'Icon_Menu_Movies_nextpage.png','','dir')
              
-                 main.AUTO_VIEW('movies')             
+        main.AUTO_VIEW('movies')             
 
              
 def MOVIEINDEX(url):
+        if settings.getSetting('tmovies_account') == 'true':  
+              net.set_cookies(cookiejar)
         link = net.http_GET(url).content
         match=re.compile('<a href="(.+?)" title=".+?">\r\n                        <img src="(.+?)" class=".+?" style=".+?"  border=".+?" height="147px" width="102px" alt="Watch (.+?) Online for Free">\r\n').findall(link)
         if len(match) > 0:
@@ -407,10 +429,12 @@ def MOVIEINDEX(url):
                     
                  main.addDir('Next Page',(nmatch[0]),'movieindex',artwork +'Icon_Menu_Movies_nextpage.png','','dir')
              
-                 main.AUTO_VIEW('movies')
+        main.AUTO_VIEW('movies')
 
                  
 def MOVIEINDEX1(url):
+        if settings.getSetting('tmovies_account') == 'true':  
+              net.set_cookies(cookiejar)
         link = net.http_GET(url).content
         match=re.compile('<a href="(.+?)">\r\n        <img src=".+?" data-original="(.+?)"  class=".+?" style=".+?"  border=".+?" height=".+?" width=".+?" alt="Watch (.+?) Online for Free">\r\n').findall(link)
         if len(match) > 0:
@@ -437,7 +461,7 @@ def MOVIEINDEX1(url):
               if len(nmatch) > 0:
                      main.addDir('Next Page',(nmatch[0]),'movieindex1',artwork +'Icon_Menu_Movies_nextpage.png','','dir')
              
-                     main.AUTO_VIEW('movies')
+        main.AUTO_VIEW('movies')
 
              
 '''def LINKPAGE(url,name):
@@ -476,6 +500,9 @@ def LINKPAGE(url,name):
         year = name[-6:]
         movie_name = movie_name.decode('UTF-8','ignore')
         dlfoldername = name
+        
+        if settings.getSetting('tmovies_account') == 'true':  
+              net.set_cookies(cookiejar)
         link = net.http_GET(url).content
         match=re.compile('href="(.+?)" target=".+?" rel=".+?" onclick=".+? = \'.+?">Watch Movie!</a>\n                                                       </div>\n                        </td>\n                        <td valign=.+? style=.+?>\n                          <span class=.+?>&nbsp;Site:&nbsp;</span><span class=.+?>(.+?)</span>').findall(link)
   
@@ -495,7 +522,9 @@ def LINKPAGE(url,name):
                 except:
                         pass'''
                   #This gets around the Continue Button
-                link = net.http_GET(url).content  
+                #headers = {'Referer': url}
+                #net.set_cookies(cookiejar)
+                link = net.http_GET(url).content
                 matchurl=re.compile('go=(.+?)"').findall(link)
                 for urls in matchurl:
                 
@@ -698,8 +727,16 @@ if mode==None or url==None or len(url)<1:
         STARTUP()
         
 elif mode=='categories':
+        print ""+loggedin
+        CATEGORIES(loggedin)
+
+elif mode=='login':
+        print ""+url
+        LOGIN(url)
+
+elif mode=='relogin':
         print ""
-        CATEGORIES()
+        RELOGIN()          
 
         
 elif mode=='helpmenu':
@@ -943,6 +980,10 @@ elif mode=='searcht':
 elif mode=='resolverSettings':
         print ""+url
         urlresolver.display_settings()
+
+elif mode=='loginSettings':
+        print ""+url
+        addon.show_settings('tmovies_account')        
 
 elif mode == "dev message":
     ADDON.setSetting('dev_message', value='run')
