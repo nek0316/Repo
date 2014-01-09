@@ -12,7 +12,7 @@ import extract
 import time,re
 import datetime
 import shutil
-#import mechanize 
+import mechanize 
 from resources.modules import tvshow
 from metahandler import metahandlers
 from resources.modules import main
@@ -55,6 +55,7 @@ favtype = addon.queries.get('favtype', '')
 mainimg = addon.queries.get('mainimg', '')
 headers = addon.queries.get('headers', '')
 loggedin = addon.queries.get('loggedin', '')
+header_dict = addon.queries.get('header_dict', '')
 
 print 'Mode is: ' + mode
 print 'Url is: ' + url
@@ -65,7 +66,7 @@ print 'Filetype is: ' + console
 print 'DL Folder is: ' + dlfoldername
 print 'Favtype is: ' + favtype
 print 'Main Image is: ' + mainimg
-print 'Headers are ' +headers
+print 'Header_Dicts are ' + header_dict
 print 'Logged In Status is ' +loggedin
 #================DL END==================================
 #########################Blazetamer's Log Module########################################
@@ -440,6 +441,7 @@ def MOVIEINDEX1(url):
         if len(match) > 0:
          for url,sitethumb,name in match: 
            matchyear=re.compile('<a class="filmyar" href=".+?">(.+?)</a>').findall(link)
+           #matchview=re.compile('<span class="filmtime">(.+?)</span></div><br>').findall(link)
            if len(matchyear) > 0:
               for year in matchyear:
                  try:     
@@ -510,21 +512,29 @@ def LINKPAGE(url,name):
             
                    
           if inc < 50:
+                 #This gets around the Continue Button
+                link = net.http_GET(url).content 
+                conmatch=re.compile('/>Please click (.+?):</p>').findall(link)
+                #formmatch=re.compile('input class="(.+?)" type="(.+?)" value="(.+?)" name="(.+?)" /').findall(link)
+                for button in conmatch:
+                        if 'continue button' in conmatch:
+                                        conmatch =str(conmatch)
+                                        print 'Button SAYS ' +conmatch
+                                        url = url
+                                        header_dict = {}
+                                        header_dict['Accept'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+                                        header_dict['Connection'] = 'keep-alive'
+                                        header_dict['Content-Type'] = 'application/x-www-form-urlencoded'
+                                        header_dict['Host'] = 'twomovies.name'
+                                        header_dict['Referer'] = url
+                                        header_dict['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36'
+                                        
+                                        form_data = {'confirm':'Continue'}
+                                        net.set_cookies(cookiejar)
+                                        conbutton = net.http_POST(url, form_data=form_data,headers=header_dict)
+                                
                   #This gets around the Continue Button
-                '''try:   
-                        br = mechanize.Browser()
-  
-                        response1 = br.open(url)        
-                        br.select_form(nr=0)
-                        response2 = br.submit()
-                        link=response2.read()
-                        response2.close()
-                except:
-                        pass'''
-                  #This gets around the Continue Button
-                #headers = {'Referer': url}
-                #net.set_cookies(cookiejar)
-                link = net.http_GET(url).content
+                #link = net.http_GET(url).content
                 matchurl=re.compile('go=(.+?)"').findall(link)
                 for urls in matchurl:
                 
@@ -571,6 +581,7 @@ def VIDPAGE(url,name):
         #for url in match:
         url = url
         name = name
+        thumb=mainimg
                 
         main.RESOLVE2(name,url,thumb)
 

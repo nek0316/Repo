@@ -469,7 +469,7 @@ def addTVDir(name,url,mode,thumb,labels,favtype,year):
 
 #Season Directory for TV Shows
 
-def addSDir(name,url,mode,thumb,year,types):
+def addSDir(name,url,mode,thumb,year,types,data):
      name = nameCleaner(name)
      contextMenuItems = []
      meta = {}
@@ -522,17 +522,17 @@ def addEPDir(name,url,thumb,mode,show,dlfoldername,mainimg):
           try:
               ep_meta = grab.get_episode_meta(show,show_id,s,e)
               if ep_meta['cover_url'] == '':
-                    thumb = artwork + '/tvshows/icon.png'
+                    thumb = mainimg
               else:
                     thumb = str(ep_meta['cover_url'])
           except:
                ep_meta=None
-               thumb = artwork + '/tvshows/icon.png'
+               thumb = mainimg
              
         else:
           thumb = othumb
           if thumb == '':
-               thumb = artwork + '/tvshows/icon.png'
+               thumb = mainimg
      
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'season':s, 'episode':e, 'show':show, 'types':'episode','dlfoldername':dlfoldername, 'mainimg':mainimg}        
         if settings.getSetting('metadata') == 'true':

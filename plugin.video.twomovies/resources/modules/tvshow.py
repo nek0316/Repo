@@ -144,7 +144,7 @@ def TVPLAYYEAR (url):
                  thumb = data['cover_url']
                    
            types = 'tvshow'
-           main.addSDir(name,url,'episodes',thumb,'',types)
+           main.addSDir(name,url,'episodes',thumb,'',types,data)
            nmatch=re.compile('<a id="next" class=".+?" href="(.+?)">Next &raquo</a>').findall(link)
         if len(nmatch) > 0:
         
@@ -166,7 +166,7 @@ def TVPLAYGENRE (url):
                 
                    
              types = 'tvshow'
-             main.addSDir(name,url,'episodes',thumb,'',types)
+             main.addSDir(name,url,'episodes',thumb,'',types,data)
              nmatch=re.compile('<a id="next" class=".+?" href="(.+?)">Next &raquo</a>').findall(link)
         if len(nmatch) > 0:
         
@@ -235,18 +235,31 @@ def TVLINKPAGE(url,name,thumb,mainimg):
                         hmf = urlresolver.HostedMediaFile(urls[0])'''
           if inc < 50:
                   #This gets around the Continue Button
-                  '''br = mechanize.Browser()
-  
-                  response1 = br.open(url)        
-                  br.select_form(nr=0)
-                  response2 = br.submit()
-                  link=response2.read()
-                  response2.close()'''
+                link = net.http_GET(url).content 
+                conmatch=re.compile('/>Please click (.+?):</p>').findall(link)
+                #formmatch=re.compile('input class="(.+?)" type="(.+?)" value="(.+?)" name="(.+?)" /').findall(link)
+                for button in conmatch:
+                        if 'continue button' in conmatch:
+                                        conmatch =str(conmatch)
+                                        print 'Button SAYS ' +conmatch
+                                        url = url
+                                        header_dict = {}
+                                        header_dict['Accept'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+                                        header_dict['Connection'] = 'keep-alive'
+                                        header_dict['Content-Type'] = 'application/x-www-form-urlencoded'
+                                        header_dict['Host'] = 'twomovies.name'
+                                        header_dict['Referer'] = url
+                                        header_dict['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36'
+                                        
+                                        form_data = {'confirm':'Continue'}
+                                        net.set_cookies(cookiejar)
+                                        conbutton = net.http_POST(url, form_data=form_data,headers=header_dict)
+                                
                   #This gets around the Continue Button
-                  link = net.http_GET(url).content  
-                  matchurl=re.compile('go=(.+?)"').findall(link)
-                  #print 'MY LINK URL IS '+ urls
-                  for urls in matchurl:
+                #link = net.http_GET(url).content  
+                matchurl=re.compile('go=(.+?)"').findall(link)
+                #print 'MY LINK URL IS '+ urls
+                for urls in matchurl:
   ################srting conversion########################
                    urls = str(urls)
                    print 'LINK URL AFTER STRING is' +urls
@@ -262,7 +275,7 @@ def TVLINKPAGE(url,name,thumb,mainimg):
                                 host = hmf.get_host()
                                 hthumb = main.GETHOSTTHUMB(host)
                                 #dlurl = urlresolver.resolve(url)
-                                data = main.GRABMETA(showname,'')
+                                data = main.GRABTVMETA(showname,'')
                                 thumb = data['cover_url']
                                 favtype = 'tvshows'
                                 try:    

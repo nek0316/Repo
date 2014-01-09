@@ -1,3 +1,8 @@
+V2.4.7
+Added Workaround for "Continue Button Bug"
+Fixed Art not Showing for TV Show Episodes
+Fixed Incorrect Cover Art showing in player
+
 V2.4.6
 Offical Login Ready Release
 
