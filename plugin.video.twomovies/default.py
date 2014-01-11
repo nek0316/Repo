@@ -12,7 +12,6 @@ import extract
 import time,re
 import datetime
 import shutil
-import mechanize 
 from resources.modules import tvshow
 from metahandler import metahandlers
 from resources.modules import main

@@ -241,6 +241,7 @@ def nameCleaner(name):
           name = name.replace('&#8211;','')
           name = name.replace("&#8217;","")
           name = name.replace("&#039;s","'s")
+          #name = unicode(name, errors='ignore')
           return(name)
      
 
@@ -291,7 +292,6 @@ def addDiralt(name,url,mode,thumb):
 #******************For Movie Download*********************************
 def addDLDir(name,url,mode,thumb,labels,dlfoldername,favtype,mainimg):
         contextMenuItems = []
-        
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername, 'favtype':favtype, 'mainimg':mainimg}
         contextMenuItems.append(('[COLOR gold]Download This File[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'url':url, 'mode':'dlvidpage', 'name':name, 'thumb':mainimg, 'console':console, 'dlfoldername':dlfoldername,'favtype':favtype})))
         addon.add_directory(params, {'title':name}, contextmenu_items=contextMenuItems, img= thumb)                             
@@ -300,7 +300,6 @@ def addDLDir(name,url,mode,thumb,labels,dlfoldername,favtype,mainimg):
 #********************TV DOWNLOAD DIR***************************
 def addTVDLDir(name,url,mode,thumb,labels,dlfoldername,favtype,mainimg):
         contextMenuItems = []
-        
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername, 'favtype':favtype,'mainimg':mainimg}
         contextMenuItems.append(('[COLOR gold]Download This File[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'url':url, 'mode':'dltvvidpage', 'name':name, 'thumb':mainimg, 'console':console, 'dlfoldername':dlfoldername,'favtype':favtype})))
         addon.add_directory(params, {'title':name}, contextmenu_items=contextMenuItems, img= thumb)
@@ -473,17 +472,16 @@ def addSDir(name,url,mode,thumb,year,types,data):
      name = nameCleaner(name)
      contextMenuItems = []
      meta = {}
-     
      params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'year':year, 'types':types, 'show':name}
 
      if settings.getSetting('metadata') == 'true':
           meta = grab.get_meta('tvshow',name)
           if meta['backdrop_url'] == '':
-               fanart = artwork + '/main/fanart.jpg'
+               fanart = artwork + 'fanart.jpg'
           else:
                fanart = meta['backdrop_url']
      else:
-          fanart = artwork + '/main/fanart.jpg'
+          fanart = artwork + 'fanart.jpg'
           
 
      if settings.getSetting('metadata') == 'true':
@@ -493,7 +491,7 @@ def addSDir(name,url,mode,thumb,year,types,data):
                else:
                     thumb = meta['banner_url']
      if thumb == '':
-          thumb = artwork + '/main/noepisode.png'
+          thumb = artwork + 'noepisode.png'
      
      contextMenuItems.append(('[COLOR gold]Tv Show Information[/COLOR]', 'XBMC.Action(Info)'))
 
@@ -507,6 +505,7 @@ def addSDir(name,url,mode,thumb,year,types,data):
 
 # Episode add DirFunction 
 def addEPDir(name,url,thumb,mode,show,dlfoldername,mainimg):
+        name = nameCleaner(name)
         contextMenuItems = []
         ep_meta = None
         show_id = None
@@ -516,7 +515,7 @@ def addEPDir(name,url,thumb,mode,show,dlfoldername,mainimg):
           meta = grab.get_meta('tvshow',show)
           show_id = meta['imdb_id']
         else:
-          fanart = artwork + '/tvshows/fanart.jpg'
+          fanart = artwork + 'fanart.jpg'
         s,e = GET_EPISODE_NUMBERS(name)
         if settings.getSetting('metadata') == 'true':
           try:
@@ -538,11 +537,11 @@ def addEPDir(name,url,thumb,mode,show,dlfoldername,mainimg):
         if settings.getSetting('metadata') == 'true':
 
           if ep_meta==None:
-               fanart = artwork + '/tvshows/fanart.jpg'
+               fanart = artwork + 'fanart.jpg'
                addon.add_directory(params, {'title':name}, img=thumb, fanart=fanart) 
           else:
                if meta['backdrop_url'] == '':
-                    fanart = artwork + '/tvshows/fanart.jpg'
+                    fanart = artwork + 'fanart.jpg'
                else:
                     fanart = meta['backdrop_url']
                ep_meta['title'] = name
@@ -553,8 +552,6 @@ def addEPDir(name,url,thumb,mode,show,dlfoldername,mainimg):
 
 #Host directory function for  Host Dir , hthumb =  host thumb and should be grabbed using the 'GETHOSTTHUMB(host)' function before 
 def addHDir(name,url,mode,thumb,hthumb):
-     
-
      params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'year':year, 'types':types, 'season':season, 'episode':episode, 'show':show}
      addon.add_directory(params, {'title':name}, img=hthumb, fanart=fanart)
 
@@ -579,17 +576,9 @@ def RESOLVE(name,url,iconimage):
 
 def RESOLVE2(name,url,thumb):
          
-     #data=0
-     #try:
-     #data = GRABMETA(movie_name,year)
-     #except:
+     
      data=0
-     #hmf = urlresolver.HostedMediaFile(url)
-     #host = ''
-     #if hmf:
-     url = urlresolver.resolve(url)
-          #host = hmf.get_host() 
-             
+     url = urlresolver.resolve(url)    
      params = {'url':url, 'name':name, 'thumb':thumb}
      if data == 0:
           addon.add_video_item(params, {'title':name}, img=thumb)

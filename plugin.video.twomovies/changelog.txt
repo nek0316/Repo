@@ -1,3 +1,7 @@
+
+V2.4.7a
+Corrected Imort discrepencies for some platforms
+
 V2.4.7
 Added Workaround for "Continue Button Bug"
 Fixed Art not Showing for TV Show Episodes
