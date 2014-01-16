@@ -58,6 +58,7 @@ print 'Main Image is: ' + mainimg
 
 download_path = settings.getSetting('download_folder')
 artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
+fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'
 #================Threading===========================================
 
 
@@ -395,9 +396,11 @@ def add2HELPDir(name,url,mode,iconimage,fanart,description,filetype):
      
 # Standard addDir
 def addDir(name,url,mode,thumb,labels,favtype):
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb,  'dlfoldername':dlfoldername, 'mainimg':mainimg}
         contextMenuItems = []
         sitethumb = thumb
         sitename = name
+        fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'
        
         try:
                 name = data['title']
@@ -423,7 +426,7 @@ def addDir(name,url,mode,thumb,labels,favtype):
         try:
              liz.setProperty( "Fanart_Image", labels['backdrop_url'] )
         except:
-             pass
+             liz.setProperty( "Fanart_Image", fanart )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok
 # AddDir for TV SHows to add a year forpass
@@ -559,6 +562,70 @@ def addEPDir(name,url,thumb,mode,show,dlfoldername,mainimg,season,episode):
         else:
             addon.add_directory(params, {'title':name},contextmenu_items=contextMenuItems,fanart=fanart, img=thumb)
      
+def addEPNOCLEANDir(name,url,thumb,mode,show,dlfoldername,mainimg,season,episode):
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb,  'dlfoldername':dlfoldername, 'mainimg':mainimg}
+        contextMenuItems = []
+        fullname = name
+        ep_meta = None
+        show_id = None
+        meta = None
+        othumb = thumb
+        if settings.getSetting('metadata') == 'true':
+          #meta = grab.get_meta('tvshow',dlfoldername,'',season,episode)
+          inc = 0
+          #movie_name = show[:-6]
+          movie_name = show
+          #year = show[-6:]
+          year = ''
+          print 'Meta Year is ' +year
+          print 'Meta Name is ' +movie_name
+          
+              
+          meta = GRABTVMETA(movie_name,year)
+          thumb = meta['cover_url']               
+          yeargrab = meta['year']
+          year = str(yeargrab)       
+          #meta = grab.get_meta('tvshow',name,'')
+          show_id = meta['imdb_id']
+          print 'IMDB ID is ' +show_id
+        else:
+          fanart = artwork + 'fanart.jpg'
+        s,e = GET_EPISODE_NUMBERS(name)
+        if settings.getSetting('metadata') == 'true':
+          try:
+              
+              ep_meta = GRABEPISODEMETA(show_id,season,episode,'')
+              if ep_meta['cover_url'] == '':
+                    thumb = mainimg
+              else:
+                    thumb = str(ep_meta['cover_url'])
+          except:
+               ep_meta=None
+               thumb = mainimg
+             
+        else:
+          thumb = othumb
+          if thumb == '':
+               thumb = mainimg
+     
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'season':season, 'episode':episode, 'show':show, 'types':'episode','dlfoldername':dlfoldername, 'mainimg':mainimg}        
+        if settings.getSetting('metadata') == 'true':
+         contextMenuItems.append(('[COLOR gold]Tv Show Information[/COLOR]', 'XBMC.Action(Info)'))
+         if ep_meta==None:
+               fanart = artwork + 'fanart.jpg'
+               addon.add_directory(params, {'title':name},contextmenu_items=contextMenuItems, img=thumb, fanart=fanart) 
+         else:
+               if meta['backdrop_url'] == '':
+                    fanart = artwork + 'fanart.jpg'
+               else:
+                    fanart = meta['backdrop_url']
+               ep_meta['title'] = name
+               addon.add_directory(params, ep_meta,contextmenu_items=contextMenuItems, fanart=fanart, img=thumb)
+        else:
+            addon.add_directory(params, {'title':name},contextmenu_items=contextMenuItems,fanart=fanart, img=thumb)
+     
+
+
 
 #Host directory function for  Host Dir , hthumb =  host thumb and should be grabbed using the 'GETHOSTTHUMB(host)' function before 
 def addHDir(name,url,mode,thumb,hthumb):

@@ -15,6 +15,8 @@ import shutil
 from resources.modules import tvshow
 from metahandler import metahandlers
 from resources.modules import main
+from resources.modules import moviedc
+from resources.modules import sgate
 
 try:
         from addon.common.addon import Addon
@@ -41,7 +43,7 @@ base_url = 'http://www.merdb.ru/'
 artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
 settings = xbmcaddon.Addon(id='plugin.video.moviedb')
 addon_path = os.path.join(xbmc.translatePath('special://home/addons'), '')
-
+fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'
 #========================DLStuff=======================
 mode = addon.queries['mode']
 url = addon.queries.get('url', '')
@@ -179,16 +181,17 @@ def MERDBMOVIES():
                        
 def MOVIECAT():
         main.addDir('MerDB Movies','none','merdbmovies',artwork +'merdbmovies.jpg','','dir')
-        main.addDir('[COLOR gold]More Movies[/COLOR]','none','moviecat',artwork +'merdbmovies.jpg','','dir')
-        main.addDir('[COLOR gold]Coming Soon[/COLOR]','none','moviecat',artwork +'merdbmovies.jpg','','dir')
+        main.addDir('Movie DataCenter Movies','none','moviedccats',artwork +'moviedcmovies.jpg','','dir')
+        main.addDir('[COLOR gold]**More Movies Coming Soon**[/COLOR]','none','moviecat',artwork +'merdbmovies.jpg','','dir')
+        
         
         main.AUTO_VIEW('')
 
 def TVCATS():        
         main.addDir('MerDB TV Shows','none','merdbtvcats',artwork +'merdbtv.jpg','','dir')
-        main.addDir('[COLOR gold]More TV Shows[/COLOR]','none','tvcats',artwork +'merdbtv.jpg','','dir')
-        main.addDir('[COLOR gold]Coming Soon[/COLOR]','none','tvcats',artwork +'merdbtv.jpg','','dir')
-
+        main.addDir('Series Gate TV Shows','none','sgcats',artwork +'sgatetv.jpg','','dir')
+        main.addDir('[COLOR gold]**More TV Shows Coming Soon**[/COLOR]','none','tvcats',artwork +'merdbtv.jpg','','dir')
+        
         main.AUTO_VIEW('')
   
 
@@ -643,8 +646,6 @@ elif mode=='tvlinkpage':
         print ""+url
         tvshow.TVLINKPAGE(url,name,thumb,mainimg)
 
-
-
 elif mode=='episodes':
         print ""+url
         tvshow.EPISODES(url,name,thumb)
@@ -741,6 +742,62 @@ elif mode=='killsleep':
     
 
 #==================END DL=====================================
+
+# ===============Movie DC=====================================
+
+elif mode=='moviedclinkpage':
+        print ""+url
+        moviedc.MOVIEDCLINKPAGE(url,name,thumb,mainimg)
+
+elif mode=='moviedcindex':
+        print ""+url
+        moviedc.MOVIEDCINDEX(url)
+        
+elif mode=='moviedcindexsec':
+        print ""+url
+        moviedc.MOVIEDCINDEXSEC(url)
+        
+elif mode=='moviedccats':
+        print ""
+        moviedc.MOVIEDCCATS()        
+
+elif mode=='searchmoviedc':
+        print ""+url
+        moviedc.SEARCHMOVIEDC(url)
+
+elif mode=='moviedcsearch':
+        print ""+url
+        moviedc.MOVIEDCSEARCH(url)
+
+#==================SGATE======================================
+
+elif mode=='sgcats':
+        print ""
+        sgate.SGCATS()
+
+elif mode=='sgindex':
+        print ""+url
+        sgate.SGINDEX(url)
+
+elif mode=='sgepisodes':
+        print ""+url
+        sgate.SGEPISODES(url,name,thumb)
+
+elif mode=='sgepisodelist':
+        print ""+url
+        sgate.SGEPISODELIST(url,name,thumb)
+
+elif mode=='sgtvlinkpage':
+        print ""+url
+        sgate.SGTVLINKPAGE(url,name,thumb,mainimg)
+
+elif mode=='sgsearchindex':
+        print ""+url
+        sgate.SGSEARCHINDEX(url)
+
+elif mode=='searchsgtv':
+        print ""+url
+        sgate.SEARCHSGTV(url)        
         
 #==================Start Status/Help==========================
         
