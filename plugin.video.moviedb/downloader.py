@@ -4,7 +4,7 @@ import urllib
 def download(url, dest, dp = None):
     if not dp:
         dp = xbmcgui.DialogProgress()
-        dp.create("XBMCHUB...","Downloading & Copying File",' ', ' ')
+        dp.create("Status...","Checking Installation",' ', ' ')
     dp.update(0)
     urllib.urlretrieve(url,dest,lambda nb, bs, fs, url=url: _pbhook(nb,bs,fs,url,dp))
  

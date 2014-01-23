@@ -11,7 +11,6 @@ import extract
 import time,re
 import datetime
 import shutil
-#import mechanize 
 from resources.modules import tvshow
 from metahandler import metahandlers
 from resources.modules import main
@@ -25,6 +24,8 @@ except:
         from t0mm0.common.addon import Addon
 addon_id = 'plugin.video.moviedb'
 addon = main.addon
+ADDON = xbmcaddon.Addon(id='plugin.video.moviedb')
+xmlpath = 'http://addonrepo.com/xbmchub/moviedb/messages/skins/DefaultSkin/720p/'
 
 
 try:
@@ -58,6 +59,7 @@ headers = addon.queries.get('headers', '')
 loggedin = addon.queries.get('loggedin', '')
 season = addon.queries.get('season', '')
 episode = addon.queries.get('episode', '')
+repourl = addon.queries.get('repourl', '')
 
 print 'Mode is: ' + mode
 print 'Url is: ' + url
@@ -70,6 +72,7 @@ print 'Favtype is: ' + favtype
 print 'Main Image is: ' + mainimg
 print 'Headers are ' +headers
 print 'Logged In Status is ' +loggedin
+print 'RepoUrl is ' +repourl
 #================DL END==================================
 #########################Blazetamer's Log Module########################################
 cookiejar = addon.get_profile()
@@ -154,15 +157,19 @@ def STARTUP():
 #************************End Login****************************************************************************
 #Main Links
 def CATEGORIES(loggedin):
-        main.addDir('[COLOR blue]WELCOME TO MDB ULTRA [/COLOR]','none','categories',artwork +'icon.png','','dir')
+        main.addDir('[COLOR blue][B]WELCOME TO MDB ULTRA[/B] [/COLOR]','none','categories',artwork +'icon.png','','dir')
+        main.addDir('[COLOR blue]**Choose an Option Below**[/COLOR]','none','categories',artwork +'icon.png','','dir')
         main.addDir('[COLOR white]Movies[/COLOR]','none','moviecat',artwork +'movies.jpg','','dir')
         main.addDir('[COLOR white]TV Shows[/COLOR]','none','tvcats',artwork +'tvshows.jpg','','dir')
+        main.addDir('[COLOR red]Manage Downloads[/COLOR]','none','viewQueue',artwork +'downloadsmanage.jpg','','')
         
         if settings.getSetting('resolver') == 'true':
-                main.addDir('[COLOR white]Resolver Settings[/COLOR]','none','resolverSettings',artwork +'resolversettings.jpg','','dir')
-        main.addDir('[COLOR white]Help and Extras[/COLOR]','http://addonrepo.com/xbmchub/moviedb/messages/addon.txt','statuscategories',artwork +'help.jpg','','dir')
-        main.addDir('[COLOR gold]Manage Downloads[/COLOR]','none','viewQueue',artwork +'downloadsmanage.jpg','','')
-        main.addDir('[COLOR gold]Announcements/Info[/COLOR]','http://addonrepo.com/xbmchub/moviedb/messages/addonannouncements.txt','addonstatus',artwork +'announcements.jpg','','')
+                main.addDir('[COLOR gold]Resolver Settings[/COLOR]','none','resolverSettings',artwork +'resolversettings.jpg','','dir')
+        #main.addDir('[COLOR gold]Addon Info[/COLOR]','http://addonrepo.com/xbmchub/moviedb/messages/addonannouncements.txt','addonstatus',artwork +'announcements.jpg','','')
+        main.addDir("[COLOR gold]Browse More Addons by Blazetamer[/COLOR]",'http://addons.xbmchub.com/author/Blazetamer/','addonlist','http://addonrepo.com/xbmchub/Blazetamer/Repo/icon.png','','')
+        main.addDir('[COLOR gold]Display Announcements Now[/COLOR]','none','pop',artwork +'icon.png','','dir')
+        main.addDir('[COLOR gold]About MDB Ultra[/COLOR]','http://addonrepo.com/xbmchub/moviedb/messages/addon.txt','statuscategories',artwork +'icon.png','','dir')
+        #main.addDir('[COLOR gold]Show Announcements at Next Launch[/COLOR]','none','resetpopup','','','dir')
         main.AUTO_VIEW('')
 
 def MERDBMOVIES():
@@ -418,7 +425,137 @@ def get_params():
         return param
 
 
+#==============POP UP FUNCTION==================
+def OPEN_URL(url):
+  req=urllib2.Request(url)
+  req.add_header('User-Agent','Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+  response=urllib2.urlopen(req)
+  link=response.read()
+  response.close()
+  return link
 
+def POP():
+
+# Couldtry to read pum or pum1 file to rewrite the image name....
+  link=OPEN_URL('http://addonrepo.com/xbmchub/moviedb/messages/changepopupimage.txt').replace('\n','').replace('\r','')
+  match=re.compile('name="(.+?)".+?rl="(.+?)".+?ewimage="(.+?)".+?ldimage="(.+?)".+?escription="(.+?)".+?ype="(.+?)"').findall(link)
+  for name,url,newimage,preimage,description,filetype in match:       
+    print 'NEWIMAGE IS ' + newimage   
+    #Change PUM XML
+    popuppath = os . path . join ( xbmc . translatePath ( 'special://home/addons' ) , 'plugin.video.moviedb/resources/skins/DefaultSkin/720p' , 'pum.xml' )
+    print 'POPUPIMAGE' + popuppath    
+    openedFile = open(popuppath)
+    link = openedFile.read()
+    matchimage=re.compile('false">http://addonrepo.com/xbmchub/moviedb/messages/(.+?)</textur').findall(link)
+    for oldimage in matchimage:
+        print 'OLD IMAGE ' + oldimage
+            
+    popupxml = os . path . join ( xbmc . translatePath ( 'special://home/addons' ) , 'plugin.video.moviedb/resources/skins/DefaultSkin/720p/' , 'pum.xml' )    
+    src = open ( popupxml , mode = 'r' )
+    str = src . read ( )
+    src . close ( )
+    str = str . replace ( oldimage , newimage )
+    src = open ( popupxml , mode = 'w' )
+    src . write ( str )
+    src . close ( )
+
+    #Change PUM1 XML
+    popupxmlandroid = os . path . join ( xbmc . translatePath ( 'special://home/addons' ) , 'plugin.video.moviedb/resources/skins/DefaultSkin/720p/' , 'pum1.xml' )
+    src = open ( popupxmlandroid , mode = 'r' )
+    str = src . read ( )
+    src . close ( )
+    str = str . replace ( oldimage , newimage )
+    src = open ( popupxmlandroid , mode = 'w' )
+    src . write ( str )
+    src . close ( )
+#END OF ATTEMPT TO REWRITE FILES
+    
+    if xbmc.getCondVisibility('system.platform.ios'):
+        if not xbmc.getCondVisibility('system.platform.atv'):
+            popup = PUM('pum1.xml',ADDON.getAddonInfo('path'),'DefaultSkin')#,close_time=60,logo_path='%s/resources/skins/DefaultSkin/media/Logo/'%ADDON.getAddonInfo('path'))
+    elif xbmc.getCondVisibility('system.platform.android'):
+        popup = PUM('pum1.xml',ADDON.getAddonInfo('path'),'DefaultSkin')#,close_time=60,logo_path='%s/resources/skins/DefaultSkin/media/Logo/'%ADDON.getAddonInfo('path'))
+    else:
+        popup = PUM('pum.xml',ADDON.getAddonInfo('path'),'DefaultSkin')#,close_time=60,logo_path='%s/resources/skins/DefaultSkin/media/Logo/'%ADDON.getAddonInfo('path'))
+
+    popup.doModal()
+    del popup
+    
+        #link=OPEN_URL('http://addonrepo.com/xbmchub/moviedb/messages/popupchoice.txt').replace('\n','').replace('\r','')
+        #match=re.compile('name="(.+?)".+?rl="(.+?)".+?mg="(.+?)".+?anart="(.+?)".+?escription="(.+?)".+?ype="(.+?)"').findall(link)
+        #for name,url,iconimage,fanart,description,filetype in match:       
+                #status.ADDONSTATUS(url) 
+    
+                
+def CHECKDATE(dateString):
+    try:
+        return datetime.datetime.fromtimestamp(time.mktime(time.strptime(dateString.encode('utf-8', 'replace'), "%Y-%m-%d %H:%M:%S")))
+    except:
+        return datetime.datetime.today() - datetime.timedelta(days = 1000) #force update
+
+
+def CHECK_POPUP():
+        if settings.getSetting('announce') == 'true':
+                threshold = int(settings.getSetting('anno_int') ) - 1
+                now   = datetime.datetime.today()
+                prev  = CHECKDATE(settings.getSetting('pop_time'))
+                delta = now - prev
+                nDays = delta.days
+
+                doUpdate = (nDays > threshold)
+                if not doUpdate:
+                        return
+
+                settings.setSetting('pop_time', str(now).split('.')[0])
+                            
+                POP()
+                           
+
+class PUM( xbmcgui.WindowXMLDialog ): 
+    #def __init__( self, *args, **kwargs ):
+    def __init__( self, *args ):
+        #self.shut = kwargs['close_time']   
+        xbmc.executebuiltin( "Skin.Reset(AnimeWindowXMLDialogClose)" )
+        xbmc.executebuiltin( "Skin.SetBool(AnimeWindowXMLDialogClose)" )
+        
+     
+
+    '''def onInit( self ):
+        #xbmc.Player().play('%s/resources/skins/DefaultSkin/media/xbmchub.mp3'%ADDON.getAddonInfo('path'))# Music.
+        xbmc.Player().play(''%ADDON.getAddonInfo('path'))# Music.
+        while self.shut > 0:
+            xbmc.sleep(1000)
+            self.shut -= 1
+        xbmc.Player().stop()
+        self._close_dialog()'''
+                
+    def onFocus( self, controlID ): pass
+    
+    def onClick( self, controlID ): 
+        if controlID == 12:
+            xbmc.Player().stop()
+            self._close_dialog()
+
+    def onAction( self, action ):
+        if action in [ 5, 6, 7, 9, 10, 92, 117 ] or action.getButtonCode() in [ 275, 257, 261 ]:
+            xbmc.Player().stop()
+            self._close_dialog()
+
+    def _close_dialog( self ):
+        xbmc.executebuiltin( "Skin.Reset(AnimeWindowXMLDialogClose)" )
+        time.sleep( .4 )
+        self.close()
+
+
+def RESETPOPUP():
+        #now   = datetime.datetime.today()
+        #now= str(now)
+        #resetnow = now - 30
+        settings.setSetting('pop_time', '2000-01-02 00:00:00')
+        return
+
+        
+#==============END POP UP FUNCTION===============
 
 
 
@@ -797,10 +934,20 @@ elif mode=='sgsearchindex':
 
 elif mode=='searchsgtv':
         print ""+url
-        sgate.SEARCHSGTV(url)        
+        sgate.SEARCHSGTV(url)
+
+#====================POP UP STUFF=============================
+elif mode=='pop':POP()
+elif mode=='resetpopup':RESETPOPUP()
+        
+        
         
 #==================Start Status/Help==========================
+
         
+elif mode=='addonlist': print""+url; items=status.ADDONLIST(url)
+elif mode=='searchaddon': print""+url; status.SEARCHADDON(url)
+elif mode=='addonindex': print""+url; status.ADDONINDEX(name,url,filetype)        
 elif mode == "statuscategories": print""+url; items=status.STATUSCATEGORIES(url)
 elif mode == "addonstatus": print""+url; items=status.ADDONSTATUS(url)
 elif mode=='getrepolink': print""+url; items=status.GETREPOLINK(url)
@@ -808,10 +955,14 @@ elif mode=='getshorts': print""+url; items=status.GETSHORTS(url)
 elif mode=='getrepo': status.GETREPO(name,url,description,filetype)
 elif mode=='getvideolink': print""+url; items=status.GETVIDEOLINK(url)
 elif mode=='getvideo': status.GETVIDEO(name,url,iconimage,description,filetype)
-elif mode=='addoninstall': status.ADDONINSTALL(name,url,description,filetype)
+elif mode=='addoninstall': status.ADDONINSTALL(name,url,description,filetype,repourl)
 elif mode=='addshortcuts': status.ADDSHORTCUTS(name,url,description,filetype)
 elif mode=='addsource': status.ADDSOURCE(name,url,description,filetype)
 elif mode=='playstream': status.PLAYSTREAM(name,url,iconimage,description)
+
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+
+CHECK_POPUP()
 
 

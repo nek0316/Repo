@@ -1,3 +1,16 @@
+V1.5.0
+(1)Added Interactive Announcements
+Announcements will pop up during first launch
+After that, you may go to Addon Settings, and enter an interval at 
+which the announcement pop up will display, or Disable them all together "ITS YOUR CHOICE"
+If you wish to recieve Announcement PopUps at lauch every 5 days, Then enter 5 in the Interval Settings. IF you do not wish to recieve any pop
+ups, simply Disable them in the Settings. 
+If Announcements are turned off in settings, you may still view them via the main menu.
+
+(2) Added Ability to install any of my other addons and /or My repo from within the addon itself.
+
+
+
 V1.1.0
 Added DataCenter Movies and SeriesGate Tv Shows
 
