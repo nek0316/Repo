@@ -1,3 +1,6 @@
+V1.9.0
+Fixed dead links in some menus
+
 V1.8.6
 Fixed Ouya/Android Bug
 Prepared for Gotham

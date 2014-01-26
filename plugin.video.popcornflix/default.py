@@ -126,7 +126,7 @@ def VIDEOLINKS(name,url,thumb,favtype):
                   for year in matchyear:
                        link = net.http_GET(url).content
                        url = URL + url
-                       match4=re.compile('"poster":"(.+?)","slider":".+?","duration":.+?,"rating":"(.+?)","language":".+?","cuepoints":".+?","urls":{".+?":"(.+?)"}}').findall(link)
+                       match4=re.compile('"poster":"(.+?)","slider":".+?","duration":.+?,"rating":"(.+?)","language":".+?","cuepoints":".+?","urls":{".+?":"(.+?)"}').findall(link)
                        for thumb,rating,url in match4:
                               #replace odd strings
                               thumb = thumb.replace("\\","")
