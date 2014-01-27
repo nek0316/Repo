@@ -1,3 +1,6 @@
+V1.1.0
+Fixed Menu Bug
+Added New menu Options
 
 V1.0.0
 Initial Release

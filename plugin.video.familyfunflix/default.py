@@ -74,13 +74,16 @@ def CATEGORIES():
     
     main.addDir('[COLOR white]New Arrivals[/COLOR]','http://www.familyfunflix.com/New-Arrivals-movies','index',artPath+'newarrival.png','','movies')
     main.addDir('[COLOR white]Most Popular[/COLOR]','http://www.familyfunflix.com/most-popular-movies','index',artPath+'mostpopular.png','','movies')
-    main.addDir('[COLOR white]Christmas[/COLOR]','http://www.familyfunflix.com/Christmas-movies','indexdeep',artPath+'christmas.png','','movies')
-    main.addDir('[COLOR white]Family Fun Movies[/COLOR]','http://www.familyfunflix.com/Fun-For-the-Family-movies','indexdeep',artPath+'fun.png','','movies')
-    main.addDir('[COLOR white]Wild Kingdom[/COLOR]','http://www.familyfunflix.com/Wild-Kingdom-movies','indexdeep',artPath+'wildkingdom.png','','movies')
-    main.addDir('[COLOR white]Fairy Tales[/COLOR]','http://www.familyfunflix.com/Fairy-Tales-movies','indexdeep',artPath+'fairytales.png','','movies')
-    main.addDir('[COLOR white]Animated[/COLOR]','http://www.familyfunflix.com/Animated-movies','indexdeep',artPath+'animated.png','','movies')
+    main.addDir('[COLOR white]Pop Kids[/COLOR]','http://www.familyfunflix.com/Pop Kids-movies','indexdeep',artPath+'popkids.png','','movies')
+    main.addDir('[COLOR white]Pop Junior[/COLOR]','http://www.familyfunflix.com/Pop Junior-movies','indexdeep',artPath+'popkids.png','','movies')
+    main.addDir('[COLOR white]Teen Zone[/COLOR]','http://www.familyfunflix.com/Teen Zone-movies','indexdeep',artPath+'teenzone.png','','movies')
+    main.addDir('[COLOR white]Family Fun Movies[/COLOR]','http://www.familyfunflix.com/Fun For the Family-movies','indexdeep',artPath+'fun.png','','movies')
+    main.addDir('[COLOR white]Wild Kingdom[/COLOR]','http://www.familyfunflix.com/Wild Kingdom-movies','indexdeep',artPath+'wildkingdom.png','','movies')
+    main.addDir('[COLOR white]Fairy Tales[/COLOR]','http://www.familyfunflix.com/Fairy Tales-movies','indexdeep',artPath+'fairytales.png','','movies')
+    main.addDir('[COLOR white]Cartoons[/COLOR]','http://www.familyfunflix.com/Cartoons-movies','indexdeep',artPath+'animated.png','','movies')
     main.addDir('[COLOR white]Musical[/COLOR]','http://www.familyfunflix.com/Musicals-movies','indexdeep',artPath+'musical.png','','movies')
-    main.addDir('[COLOR white]Espanol[/COLOR]','http://www.familyfunflix.com/Espanol-movies','indexdeep',artPath+'espanol.png','','movies')
+    main.addDir('[COLOR white]Girl Power[/COLOR]','http://www.familyfunflix.com/Girl Power-movies','indexdeep',artPath+'girlpower.png','','movies')
+    main.addDir('[COLOR white]Boys Rock[/COLOR]','http://www.familyfunflix.com/Boys Rock-movies','indexdeep',artPath+'boysrock.png','','movies')
     main.addDir('[COLOR red][B]Search[/B] >>>[/COLOR]','http://www.familyfunflix.com/search?query=','searchit',artPath+'search.png','','')
     main.addDir('[COLOR gold]Manage Downloads[/COLOR]','none','viewQueue',artPath +'downloads.png','','')
     main.addDir('[COLOR white]Help and Extras[/COLOR]','none','statuscats',artPath +'help.png','','')
@@ -114,7 +117,7 @@ def VIDEOLINKS(name,url,thumb,favtype):
                      for year in matchyear:
                        link = net.http_GET(url).content
                        url = URL + url
-                       match4=re.compile('"poster":"(.+?)","slider":".+?","duration":.+?,"rating":"(.+?)","language":".+?","cuepoints":".+?","urls":{".+?":"(.+?)"}}').findall(link)
+                       match4=re.compile('"poster":"(.+?)","slider":".+?","duration":.+?,"rating":"(.+?)","language":".+?","cuepoints":".+?","urls":{".+?":"(.+?)"}').findall(link)
                        for thumb,rating,url in match4:
                               #replace odd strings
                               thumb = thumb.replace("\/","/")
