@@ -252,7 +252,7 @@ def SGSEARCHINDEX (url):
                 year = str(yeargrab)               
                 dlfoldername = name
                 favtype = 'tvshow'
-                main.addDir(name,url,'sgepisodes',thumb,data,favtype)
+                main.addDir(name,url,'sgepisodelist',thumb,data,favtype)
                 
                 #main.addSDir(movie_name +'('+ year +')',basetv_url + url,'episodes',thumb,year,favtype)
                 

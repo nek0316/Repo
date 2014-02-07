@@ -22,8 +22,7 @@
 
 <category label="Enable / Disable Sections">
 
-
-<setting id="tvshows" type="bool" label="TV Shows" default="true"/>
+<setting id="adult" type="bool" label="Adult Section" default="false"/>
 
 <setting id="resolver" type="bool" label="Resolver Settings" default="true"/>
 

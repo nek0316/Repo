@@ -4,7 +4,7 @@ import xbmc, xbmcaddon, xbmcgui, xbmcplugin
 import os
 
 ADDON = xbmcaddon.Addon(id='plugin.video.moviedb')
-DATA_PATH = os.path.join(xbmc.translatePath('special://profile/addon_data/plugin.video.template'), '')
+DATA_PATH = os.path.join(xbmc.translatePath('special://profile/addon_data/plugin.video.moviedb'), '')
 TMPATH = xbmc.translatePath(os.path.join('special://home/addons/plugin.video.moviedb', ''))
 
 def addon():

@@ -1,3 +1,11 @@
+V1.6.0
+Added Cartoon Section
+Added Sport Section
+Added UFC to Sport Section
+Improved Announcments 
+Added Special Menus Section
+Added Adult Section "Enable in Settings"
+
 V1.5.0
 (1)Added Interactive Announcements
 Announcements will pop up during first launch

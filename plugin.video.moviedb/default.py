@@ -16,6 +16,8 @@ from metahandler import metahandlers
 from resources.modules import main
 from resources.modules import moviedc
 from resources.modules import sgate
+from resources.modules import chia
+from resources.modules import chanufc, epornik
 
 try:
         from addon.common.addon import Addon
@@ -41,6 +43,7 @@ base_url = 'http://www.merdb.ru/'
 
 
 #PATHS
+#language            = xbmcaddon.Addon().getLocalizedString
 artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
 settings = xbmcaddon.Addon(id='plugin.video.moviedb')
 addon_path = os.path.join(xbmc.translatePath('special://home/addons'), '')
@@ -74,103 +77,85 @@ print 'Headers are ' +headers
 print 'Logged In Status is ' +loggedin
 print 'RepoUrl is ' +repourl
 #================DL END==================================
-#########################Blazetamer's Log Module########################################
+#########################Blazetamer's Login Module########################################
 cookiejar = addon.get_profile()
 cookiejar = os.path.join(cookiejar,'cookies.lwp')
 def LogNotify(title,message,times,icon):
         xbmc.executebuiltin("XBMC.Notification("+title+","+message+","+times+","+icon+")")
 
-username = settings.getSetting('tmovies_user')
-password = settings.getSetting('tmovies_pass')
-
-def LOGIN():
-    username = settings.getSetting('tmovies_user')
-    password = settings.getSetting('tmovies_pass')    
-    header_dict = {}
-    header_dict['Accept'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
-    header_dict['Connection'] = 'keep-alive'
-    header_dict['Content-Type'] = 'application/x-www-form-urlencoded'
-    header_dict['Host'] = 'moviedb.name'
-    header_dict['Referer'] = 'http://www.moviedb.name/login'
-    header_dict['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36'    
-    form_data = {'login':username, 'password':password,'remember_me':'on','submit_login':'Login', 'submit_login':''}
-    net.set_cookies(cookiejar)
-    login = net.http_POST('http://moviedb.name/go_login', form_data=form_data, headers=header_dict)
-    net.save_cookies(cookiejar)
-    link = net.http_GET('http://moviedb.name/login').content
-    logincheck=re.compile('<font class="form-title">Login (.+?)</font>').findall(link)
-    for nolog in logincheck:
-                    print 'Login Check Return is ' + nolog
-                    if 'using moviedb account' in nolog :
-                        LogNotify('Login Failed at moviedb.name', 'Check settings', '5000', 'http://addonrepo.com/xbmchub/Blazetamer/2movies.jpg')
-                        CATEGORIES('false')
-                        return True
-    else:
-                        LogNotify('Welcome Back ' + username, 'Enjoy your stay!', '5000', 'http://addonrepo.com/xbmchub/Blazetamer/2movies.jpg')
-                        net.save_cookies(cookiejar)
-                        CATEGORIES('true')
-                        return False
-  
-def RELOGIN():
-        if settings.getSetting('tmovies_account') == 'false':
-                dialog = xbmcgui.Dialog()
-                ok = dialog.ok('Account Login Not Enabled', '            Please Choose 2Movies Account Tab and Enable')
-                if ok:
-                        LogNotify('2Movies Account Tab ', 'Please Enable Account', '5000', 'http://addonrepo.com/xbmchub/Blazetamer/2movies.jpg')        
-                        print 'YOU HAVE NOT SET THE USERNAME OR PASSWORD!'
-                        addon.show_settings()
-                                
-        else:
-            STARTUP()
         
 def STARTUP():
-        username = settings.getSetting('tmovies_user')
-        password = settings.getSetting('tmovies_pass')
-        cookiejar = addon.get_profile()
-        cookiejar = os.path.join(cookiejar,'cookies.lwp')
-        if settings.getSetting('tmovies_account') == 'true':
-                if username is '' or password is '':
-                        dialog = xbmcgui.Dialog()
-                        ok = dialog.ok('Username or Password Not Set', '            Please Choose Account Tab and Set')
-                        if ok:
-                                LogNotify(' Account Tab ', 'Please set Username & Password!', '5000', 'http://addonrepo.com/xbmchub/Blazetamer/2movies.jpg')        
-                                print 'YOU HAVE NOT SET THE USERNAME OR PASSWORD!'
-                                addon.show_settings()
-                #Add new Cookie*****************************
-                #cookiejar = cookiejar.strip()                
-                '''if not os.path.exists(cookiejar):
-                        f = open(cookiejar, 'w')
-                        f.write('#LWP-Cookies-2.0')
-                        f.close()
-                        #return cookiejar '''               
-                #End Add new Cookie*****************************
-
-
-                LOGIN()      
-                       
-        else:
-              '''try:
-                  os.remove(cookiejar)
-              except:
-                     pass'''  
-              CATEGORIES('false')
+        CATEGORIES('false')
 #************************End Login****************************************************************************
 #Main Links
 def CATEGORIES(loggedin):
         main.addDir('[COLOR blue][B]WELCOME TO MDB ULTRA[/B] [/COLOR]','none','categories',artwork +'icon.png','','dir')
-        main.addDir('[COLOR blue]**Choose an Option Below**[/COLOR]','none','categories',artwork +'icon.png','','dir')
+        #main.addDir('[COLOR blue]**Choose an Option Below**[/COLOR]','none','categories',artwork +'icon.png','','dir')
+        if settings.getSetting('adult') == 'true':
+                text_file = None
+                if not os.path.exists(xbmc.translatePath("special://home/userdata/addon_data/plugin.video.moviedb/")):
+                        os.makedirs(xbmc.translatePath("special://home/userdata/addon_data/plugin.video.moviedb/"))
+
+                if not os.path.exists(xbmc.translatePath("special://home/userdata/addon_data/plugin.video.moviedb/apc.69")):
+                        pin = ''
+                        notice = xbmcgui.Dialog().yesno('Would You Like To Set an Adult Passcode','Would you like to set a passcode for the adult movies section?','','')
+                        if notice:
+                                keyboard = xbmc.Keyboard(pin,'Choose A New Adult Movie Passcode')
+                                keyboard.doModal()
+                                if keyboard.isConfirmed():
+                                        pin = keyboard.getText()
+                                text_file = open(xbmc.translatePath("special://home/userdata/addon_data/plugin.video.moviedb/apc.69"), "w")
+                                text_file.write(pin)
+                                text_file.close()
+                        else:
+                                text_file = open(xbmc.translatePath("special://home/userdata/addon_data/plugin.video.moviedb/apc.69"), "w")
+                                text_file.write(pin)
+                                text_file.close()
+                main.addDir('[COLOR white]Adults Only[/COLOR]','none','adultcats',artwork +'adult.jpg','','dir')
         main.addDir('[COLOR white]Movies[/COLOR]','none','moviecat',artwork +'movies.jpg','','dir')
         main.addDir('[COLOR white]TV Shows[/COLOR]','none','tvcats',artwork +'tvshows.jpg','','dir')
-        main.addDir('[COLOR red]Manage Downloads[/COLOR]','none','viewQueue',artwork +'downloadsmanage.jpg','','')
-        
+        main.addDir('[COLOR white]Cartoons[/COLOR]','none','cartooncats',artwork +'cartoons.jpg','','dir')
+        main.addDir('[COLOR white]Sports[/COLOR]','none','sportcats',artwork +'sports.jpg','','dir')
         if settings.getSetting('resolver') == 'true':
                 main.addDir('[COLOR gold]Resolver Settings[/COLOR]','none','resolverSettings',artwork +'resolversettings.jpg','','dir')
-        #main.addDir('[COLOR gold]Addon Info[/COLOR]','http://addonrepo.com/xbmchub/moviedb/messages/addonannouncements.txt','addonstatus',artwork +'announcements.jpg','','')
-        main.addDir("[COLOR gold]Browse More Addons by Blazetamer[/COLOR]",'http://addons.xbmchub.com/author/Blazetamer/','addonlist','http://addonrepo.com/xbmchub/Blazetamer/Repo/icon.png','','')
-        main.addDir('[COLOR gold]Display Announcements Now[/COLOR]','none','pop',artwork +'icon.png','','dir')
-        main.addDir('[COLOR gold]About MDB Ultra[/COLOR]','http://addonrepo.com/xbmchub/moviedb/messages/addon.txt','statuscategories',artwork +'icon.png','','dir')
-        #main.addDir('[COLOR gold]Show Announcements at Next Launch[/COLOR]','none','resetpopup','','','dir')
+        main.addDir("[COLOR gold]Browse More Addons by Blazetamer[/COLOR]",'http://addons.xbmchub.com/author/Blazetamer/','addonlist',artwork +'moreaddons.jpg','','')
+        main.addDir('[COLOR gold]Special Menus/Announcements[/COLOR]','none','pop',artwork +'announcements.jpg','','dir')
+        #main.addDir('[COLOR gold]About MDB Ultra[/COLOR]','http://addonrepo.com/xbmchub/moviedb/messages/addon.txt','statuscategories',artwork +'icon.png','','dir')
+        #main.addDir('[COLOR red]Shut Down XBMC[/COLOR]','none','shutdownxbmc',artwork +'shutdown.png','','dir')
+        main.addDir('[COLOR red]Manage Downloads[/COLOR]','none','viewQueue',artwork +'downloadsmanage.jpg','','')
+#======================Developer Testing Section========================================================================        
+        #main.addDir('[COLOR gold]Test Functions[/COLOR]','none','testfunction',artwork +'shutdown.png','','dir')
+        
         main.AUTO_VIEW('')
+
+def TESTFUNCTION():
+
+        link=OPEN_URL('http://addonrepo.com/xbmchub/moviedb/controls/xmlcontrol2.txt').replace('\n','').replace('\r','')
+        match=re.compile('name="(.+?)"').findall(link)
+        for winxml in match:
+                
+                testwin = TEST(winxml,'http://addonrepo.com/xbmchub/moviedb/','DefaultSkin')
+                testwin.doModal()
+                del testwin
+                #xbmc.executebuiltin ("RunAddon(plugin.video.twomovies)")
+
+class TEST( xbmcgui.WindowXMLDialog ): 
+    def __init__( self, *args ): 
+        xbmc.executebuiltin( "Skin.Reset(AnimeWindowXMLDialogClose)" )
+        xbmc.executebuiltin( "Skin.SetBool(AnimeWindowXMLDialogClose)" )
+        
+                
+    def onFocus( self, controlID ): pass
+    
+
+    
+
+    def _close_dialog( self,controlID ): pass
+            
+        
+def SHUTDOWNXBMC():
+        xbmc.executebuiltin('XBMC.ActivateWindow(111)')
+
 
 def MERDBMOVIES():
         main.addDir('All Movies','http://www.merdb.ru/','movieindex',artwork +'all.jpg','','dir')
@@ -187,20 +172,32 @@ def MERDBMOVIES():
 
                        
 def MOVIECAT():
-        main.addDir('MerDB Movies','none','merdbmovies',artwork +'merdbmovies.jpg','','dir')
-        main.addDir('Movie DataCenter Movies','none','moviedccats',artwork +'moviedcmovies.jpg','','dir')
+        main.addDir('Movies [COLOR red](MerDB)[/COLOR] ','none','merdbmovies',artwork +'merdbmovies.jpg','','dir')
+        main.addDir('Movies [COLOR red](Movie DataCenter)[/COLOR]','none','moviedccats',artwork +'moviedcmovies.jpg','','dir')
         main.addDir('[COLOR gold]**More Movies Coming Soon**[/COLOR]','none','moviecat',artwork +'merdbmovies.jpg','','dir')
         
         
         main.AUTO_VIEW('')
 
 def TVCATS():        
-        main.addDir('MerDB TV Shows','none','merdbtvcats',artwork +'merdbtv.jpg','','dir')
-        main.addDir('Series Gate TV Shows','none','sgcats',artwork +'sgatetv.jpg','','dir')
+        main.addDir('TV Shows [COLOR red](MerDB)[/COLOR]','none','merdbtvcats',artwork +'merdbtv.jpg','','dir')
+        main.addDir('TV Shows [COLOR red](Series Gate)[/COLOR]','none','sgcats',artwork +'sgatetv.jpg','','dir')
         main.addDir('[COLOR gold]**More TV Shows Coming Soon**[/COLOR]','none','tvcats',artwork +'merdbtv.jpg','','dir')
         
         main.AUTO_VIEW('')
   
+def CARTOONCATS():
+        main.addDir('[COLOR white]Chia-Anime[/COLOR]','none','chiacats',artwork +'chiaanime.jpg','','dir')
+        main.addDir('[COLOR gold]**More Cartoons Coming Soon**[/COLOR]','none','cartooncats',artwork +'comingsoon.jpg','','dir')
+        
+def SPORTCATS():
+        main.addDir('[COLOR white]UFC[/COLOR]','none','chanufccats',artwork +'ufc.jpg','','dir')
+        main.addDir('[COLOR gold]**More Sports Coming Soon** [/COLOR]','none','sportcats',artwork +'comingsoon.jpg','','dir')
+        
+def ADULTCATS():
+        main.addDir('[COLOR white]Eporn[/COLOR]','none','epornikCategories',artwork +'eporn.jpg','','dir')
+        main.addDir('[COLOR gold]**More Sports Coming Soon** [/COLOR]','none','adultcats',artwork +'comingsoon.jpg','','dir')
+        
 
         
 
@@ -229,8 +226,6 @@ def GENRES():
 
              
 def MOVIEINDEX(url):
-        #if settings.getSetting('tmovies_account') == 'true':  
-              #net.set_cookies(cookiejar)
         link = net.http_GET(url).content
         match=re.compile('<img src="(.+?)" class=".+?" alt=".+?"/></a><div class=".+?"><a href="(.+?)" title="Watch(.+?)">.+?</a>').findall(link)
         if len(match) > 0:
@@ -435,51 +430,23 @@ def OPEN_URL(url):
   return link
 
 def POP():
-
-# Couldtry to read pum or pum1 file to rewrite the image name....
-  link=OPEN_URL('http://addonrepo.com/xbmchub/moviedb/messages/changepopupimage.txt').replace('\n','').replace('\r','')
-  match=re.compile('name="(.+?)".+?rl="(.+?)".+?ewimage="(.+?)".+?ldimage="(.+?)".+?escription="(.+?)".+?ype="(.+?)"').findall(link)
-  for name,url,newimage,preimage,description,filetype in match:       
-    print 'NEWIMAGE IS ' + newimage   
-    #Change PUM XML
-    popuppath = os . path . join ( xbmc . translatePath ( 'special://home/addons' ) , 'plugin.video.moviedb/resources/skins/DefaultSkin/720p' , 'pum.xml' )
-    print 'POPUPIMAGE' + popuppath    
-    openedFile = open(popuppath)
-    link = openedFile.read()
-    matchimage=re.compile('false">http://addonrepo.com/xbmchub/moviedb/messages/(.+?)</textur').findall(link)
-    for oldimage in matchimage:
-        print 'OLD IMAGE ' + oldimage
-            
-    popupxml = os . path . join ( xbmc . translatePath ( 'special://home/addons' ) , 'plugin.video.moviedb/resources/skins/DefaultSkin/720p/' , 'pum.xml' )    
-    src = open ( popupxml , mode = 'r' )
-    str = src . read ( )
-    src . close ( )
-    str = str . replace ( oldimage , newimage )
-    src = open ( popupxml , mode = 'w' )
-    src . write ( str )
-    src . close ( )
-
-    #Change PUM1 XML
-    popupxmlandroid = os . path . join ( xbmc . translatePath ( 'special://home/addons' ) , 'plugin.video.moviedb/resources/skins/DefaultSkin/720p/' , 'pum1.xml' )
-    src = open ( popupxmlandroid , mode = 'r' )
-    str = src . read ( )
-    src . close ( )
-    str = str . replace ( oldimage , newimage )
-    src = open ( popupxmlandroid , mode = 'w' )
-    src . write ( str )
-    src . close ( )
-#END OF ATTEMPT TO REWRITE FILES
+     link=OPEN_URL('http://addonrepo.com/xbmchub/moviedb/controls/xmlcontrol.txt').replace('\n','').replace('\r','')
+     match=re.compile('ame="(.+?)".+?ndroid="(.+?)"').findall(link)
+     for xml,xmlone in match:       
+                #status.ADDONSTATUS(url) 
     
-    if xbmc.getCondVisibility('system.platform.ios'):
-        if not xbmc.getCondVisibility('system.platform.atv'):
-            popup = PUM('pum1.xml',ADDON.getAddonInfo('path'),'DefaultSkin')#,close_time=60,logo_path='%s/resources/skins/DefaultSkin/media/Logo/'%ADDON.getAddonInfo('path'))
-    elif xbmc.getCondVisibility('system.platform.android'):
-        popup = PUM('pum1.xml',ADDON.getAddonInfo('path'),'DefaultSkin')#,close_time=60,logo_path='%s/resources/skins/DefaultSkin/media/Logo/'%ADDON.getAddonInfo('path'))
-    else:
-        popup = PUM('pum.xml',ADDON.getAddonInfo('path'),'DefaultSkin')#,close_time=60,logo_path='%s/resources/skins/DefaultSkin/media/Logo/'%ADDON.getAddonInfo('path'))
 
-    popup.doModal()
-    del popup
+    
+      if xbmc.getCondVisibility('system.platform.ios'):
+        if not xbmc.getCondVisibility('system.platform.atv'):
+            popup = PUM(xmlone,'http://addonrepo.com/xbmchub/moviedb/','DefaultSkin')#,close_time=60,logo_path='%s/resources/skins/DefaultSkin/media/Logo/'%ADDON.getAddonInfo('path'))
+      elif xbmc.getCondVisibility('system.platform.android'):
+        popup = PUM(xmlone,'http://addonrepo.com/xbmchub/moviedb/','DefaultSkin')#,close_time=60,logo_path='%s/resources/skins/DefaultSkin/media/Logo/'%ADDON.getAddonInfo('path'))
+      else:
+        popup = PUM(xml,'http://addonrepo.com/xbmchub/moviedb/','DefaultSkin')#,close_time=60,logo_path='%s/resources/skins/DefaultSkin/media/Logo/'%ADDON.getAddonInfo('path'))
+
+      popup.doModal()
+      del popup
     
         #link=OPEN_URL('http://addonrepo.com/xbmchub/moviedb/messages/popupchoice.txt').replace('\n','').replace('\r','')
         #match=re.compile('name="(.+?)".+?rl="(.+?)".+?mg="(.+?)".+?anart="(.+?)".+?escription="(.+?)".+?ype="(.+?)"').findall(link)
@@ -518,16 +485,6 @@ class PUM( xbmcgui.WindowXMLDialog ):
         xbmc.executebuiltin( "Skin.Reset(AnimeWindowXMLDialogClose)" )
         xbmc.executebuiltin( "Skin.SetBool(AnimeWindowXMLDialogClose)" )
         
-     
-
-    '''def onInit( self ):
-        #xbmc.Player().play('%s/resources/skins/DefaultSkin/media/xbmchub.mp3'%ADDON.getAddonInfo('path'))# Music.
-        xbmc.Player().play(''%ADDON.getAddonInfo('path'))# Music.
-        while self.shut > 0:
-            xbmc.sleep(1000)
-            self.shut -= 1
-        xbmc.Player().stop()
-        self._close_dialog()'''
                 
     def onFocus( self, controlID ): pass
     
@@ -666,6 +623,18 @@ elif mode=='merdbmovies':
 elif mode=='tvcats':
         print ""
         TVCATS()
+
+elif mode=='cartooncats':
+        print ""
+        CARTOONCATS()
+
+elif mode=='sportcats':
+        print ""
+        SPORTCATS()
+
+elif mode=='adultcats':
+        print ""
+        ADULTCATS()        
 
 elif mode=='merdbtvcats':
         print ""
@@ -960,6 +929,106 @@ elif mode=='addshortcuts': status.ADDSHORTCUTS(name,url,description,filetype)
 elif mode=='addsource': status.ADDSOURCE(name,url,description,filetype)
 elif mode=='playstream': status.PLAYSTREAM(name,url,iconimage,description)
 
+#=======================Cia Anime===========================
+elif mode=='chiacats':
+        print ""
+        chia.CHIACATS()
+
+elif mode=='chiaalph':
+        print ""
+        chia.CHIAALPH()
+
+elif mode=='chiadlvidpage':
+        print ""+url
+        chia.CHIADLVIDPAGE(url,name)
+
+elif mode=='chialinkpage':
+        print ""+url
+        chia.CHIALINKPAGE(url,name,thumb)
+
+elif mode=='chialatest':
+        print ""+url
+        chia.CHIALATEST(url)
+        
+elif mode=='chiaalphmain':
+        print ""+url
+        chia.CHIAALPHMAIN(url)
+
+elif mode=='chiagenremain':
+        print ""+url
+        chia.CHIAGENREMAIN(url)
+        
+
+elif mode=='chiagenres':
+        print ""+url
+        chia.CHIAGENRES(url)
+        
+elif mode=='chiaepisodes':
+        print ""+url
+        chia.CHIAEPISODES(url,name,year,thumb)
+
+elif mode=='chiaresolve':
+        print ""+url
+        chia.CHIARESOLVE(url,name,iconimage)
+
+elif mode=='searchanime':
+        print ""+url
+        chia.SEARCHANIME(url)
+
+elif mode=='chiasearch':
+        print ""+url
+        chia.CHIASEARCH(url)
+
+elif mode=='chiaresolvedl':
+        print ""+url
+        chia.CHIARESOLVEDL(url,name,thumb,favetype)
+
+#================SHUTDOWN=================
+
+elif mode=='shutdownxbmc':
+        print ""+url
+        SHUTDOWNXBMC()
+#===========TEST FUNCTIONS================
+elif mode=='testfunction':
+        print ""+url
+        TESTFUNCTION()
+
+#==========ChannelCut UFC================
+
+elif mode=='chanufcindex':
+        print ""+url
+        chanufc.CHANUFCINDEX(url)
+
+elif mode=='chanufccats':
+        print ""+url
+        chanufc.CHANUFCCATS()
+
+elif mode=='ufclinkpage':
+        print ""+url
+        chanufc.UFCLINKPAGE(url,name)
+
+elif mode=='dlsportvidpage':
+        print ""+url
+        chanufc.DLSPORTVIDPAGE(url,name)
+
+#==========Eporn=========================
+
+elif mode=='epornikCategories':
+        print ""+url
+        epornik.CATEGORIES()
+
+elif mode=='epornikIndex':
+        print ""+url
+        epornik.INDEX(url)
+
+elif mode=='epornikSearch':
+        print ""+url
+        epornik.SEARCH()
+
+elif mode=='pornresolve':
+        print ""+url
+        epornik.PORNRESOLVE(name,url,thumb)        
+        
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 

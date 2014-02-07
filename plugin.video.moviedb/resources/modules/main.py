@@ -309,7 +309,11 @@ def addTVDLDir(name,url,mode,thumb,labels,dlfoldername,favtype,mainimg):
         addon.add_directory(params, {'title':name}, contextmenu_items=contextMenuItems, img= thumb)
      
 
-
+def addUFCDLDir(name,url,mode,thumb,labels,dlfoldername,favtype,mainimg):
+        contextMenuItems = []
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername, 'favtype':favtype,'mainimg':mainimg}
+        contextMenuItems.append(('[COLOR gold]Download This File[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'url':url, 'mode':'dlsportvidpage', 'name':name, 'thumb':mainimg, 'console':console, 'dlfoldername':dlfoldername,'favtype':favtype})))
+        addon.add_directory(params, {'title':name}, contextmenu_items=contextMenuItems, img= thumb)
 
      
 #Resolve Movie DL Links******************************************
@@ -369,6 +373,36 @@ def RESOLVETVDL(name,url,thumb):
                xbmc.sleep(1000)
         
                addToQueue(name,url,thumb,ext,console)
+
+
+#================Reslove Sport DL Links===========================
+def RESOLVESPORTDL(name,url,thumb):
+         
+     data=0
+     try:
+          data = GRABMETA(movie_name,year)
+     except:
+           data=0
+     hmf = urlresolver.HostedMediaFile(url)
+     host = ''
+     if hmf:
+          url = urlresolver.resolve(url)
+          host = hmf.get_host()
+          if '.mp4' in url:
+                    ext = '.mp4'
+          elif '.flv' in url:
+                    ext = '.flv'
+          elif '.avi' in url:
+                    ext = '.avi'
+          if not ext == '':
+          
+               console = 'Downloads/Sports/'+ dlfoldername
+               params = {'url':url, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername} 
+     
+               xbmc.sleep(1000)
+        
+               addToQueue(name,url,thumb,ext,console)
+               
         
      
 # HELPDIR
@@ -400,7 +434,10 @@ def addDir(name,url,mode,thumb,labels,favtype):
         contextMenuItems = []
         sitethumb = thumb
         sitename = name
-        fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'
+        if thumb == artwork + 'ufc.jpg':
+                fanart = 'http://addonrepo.com/xbmchub/moviedb/images/ufcfanart.jpg'
+        else:     
+                fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'
        
         try:
                 name = data['title']
