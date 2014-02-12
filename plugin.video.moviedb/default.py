@@ -16,8 +16,8 @@ from metahandler import metahandlers
 from resources.modules import main
 from resources.modules import moviedc
 from resources.modules import sgate
-from resources.modules import chia
-from resources.modules import chanufc, epornik
+from resources.modules import chia, supertoons
+from resources.modules import chanufc, epornik, live
 
 try:
         from addon.common.addon import Addon
@@ -116,9 +116,11 @@ def CATEGORIES(loggedin):
         main.addDir('[COLOR white]TV Shows[/COLOR]','none','tvcats',artwork +'tvshows.jpg','','dir')
         main.addDir('[COLOR white]Cartoons[/COLOR]','none','cartooncats',artwork +'cartoons.jpg','','dir')
         main.addDir('[COLOR white]Sports[/COLOR]','none','sportcats',artwork +'sports.jpg','','dir')
+        main.addDir('[COLOR white]Live Streams[/COLOR]','none','livecats',artwork +'live.jpg','','dir')
         if settings.getSetting('resolver') == 'true':
                 main.addDir('[COLOR gold]Resolver Settings[/COLOR]','none','resolverSettings',artwork +'resolversettings.jpg','','dir')
         main.addDir("[COLOR gold]Browse More Addons by Blazetamer[/COLOR]",'http://addons.xbmchub.com/author/Blazetamer/','addonlist',artwork +'moreaddons.jpg','','')
+        main.addDir('[COLOR gold]Get the Addon Browser Here[/COLOR]','http://addons.xbmchub.com/search/?keyword=browser','addonlist',artwork +'addonbrowser.jpg','','dir')
         main.addDir('[COLOR gold]Special Menus/Announcements[/COLOR]','none','pop',artwork +'announcements.jpg','','dir')
         #main.addDir('[COLOR gold]About MDB Ultra[/COLOR]','http://addonrepo.com/xbmchub/moviedb/messages/addon.txt','statuscategories',artwork +'icon.png','','dir')
         #main.addDir('[COLOR red]Shut Down XBMC[/COLOR]','none','shutdownxbmc',artwork +'shutdown.png','','dir')
@@ -130,27 +132,51 @@ def CATEGORIES(loggedin):
 
 def TESTFUNCTION():
 
-        link=OPEN_URL('http://addonrepo.com/xbmchub/moviedb/controls/xmlcontrol2.txt').replace('\n','').replace('\r','')
+        link=OPEN_URL('http://addonrepo.com/xbmchub/moviedb/controls/xmlcontroltest.txt').replace('\n','').replace('\r','')
         match=re.compile('name="(.+?)"').findall(link)
         for winxml in match:
                 
-                testwin = TEST(winxml,'http://addonrepo.com/xbmchub/moviedb/','DefaultSkin')
+                testwin = TEST(winxml,'http://addonrepo.com/xbmchub/moviedb/','DefaultSkin',close_time=60,logo_path='%s/resources/skins/DefaultSkin/media/Logo/'%ADDON.getAddonInfo('path'))
+                #testwin = TEST(winxml,ADDON.getAddonInfo('path'),'DefaultSkin''DefaultSkin',close_time=60,logo_path='%s/resources/skins/DefaultSkin/media/Logo/'%ADDON.getAddonInfo('path'))
                 testwin.doModal()
+                #MERDBMOVIES()
+                #xbmc.executebuiltin ("PreviousMenu")
                 del testwin
-                #xbmc.executebuiltin ("RunAddon(plugin.video.twomovies)")
 
+                
 class TEST( xbmcgui.WindowXMLDialog ): 
-    def __init__( self, *args ): 
+    def __init__( self, *args, **kwargs ):
+        self.shut = kwargs['close_time'] 
         xbmc.executebuiltin( "Skin.Reset(AnimeWindowXMLDialogClose)" )
         xbmc.executebuiltin( "Skin.SetBool(AnimeWindowXMLDialogClose)" )
-        
+                                       
+    def onInit( self ):
+        #xbmc.Player().play('%s/resources/skins/DefaultSkin/media/xbmchub.mp3'%ADDON.getAddonInfo('path'))# Music.
+        '''xbmc.Player().play(''%ADDON.getAddonInfo('path'))# Music.
+        while self.shut > 0:
+            xbmc.sleep(1000)
+            self.shut -= 1
+        xbmc.Player().stop()
+        self._close_dialog()'''
                 
     def onFocus( self, controlID ): pass
     
+    def onClick( self, controlID ): 
+        if controlID == 12:
+            xbmc.Player().stop()
+            self._close_dialog()
 
-    
+    def onAction( self, action ):
+        if action in [ 5, 6, 7, 9, 10, 92, 117 ] or action.getButtonCode() in [ 275, 257, 261 ]:
+            xbmc.Player().stop()
+            self._close_dialog()
 
-    def _close_dialog( self,controlID ): pass
+    def _close_dialog( self ):
+        xbmc.executebuiltin( "Skin.Reset(AnimeWindowXMLDialogClose)" )
+        time.sleep( .4 )
+        self.close()     
+                        
+                     
             
         
 def SHUTDOWNXBMC():
@@ -188,6 +214,7 @@ def TVCATS():
   
 def CARTOONCATS():
         main.addDir('[COLOR white]Chia-Anime[/COLOR]','none','chiacats',artwork +'chiaanime.jpg','','dir')
+        main.addDir('[COLOR white]SuperToons[/COLOR]','none','supertoonscats',artwork +'supertoons.jpg','','dir')
         main.addDir('[COLOR gold]**More Cartoons Coming Soon**[/COLOR]','none','cartooncats',artwork +'comingsoon.jpg','','dir')
         
 def SPORTCATS():
@@ -196,7 +223,8 @@ def SPORTCATS():
         
 def ADULTCATS():
         main.addDir('[COLOR white]Eporn[/COLOR]','none','epornikCategories',artwork +'eporn.jpg','','dir')
-        main.addDir('[COLOR gold]**More Sports Coming Soon** [/COLOR]','none','adultcats',artwork +'comingsoon.jpg','','dir')
+        main.addDir('[COLOR blue]Adult Streams [COLOR green]Online[/COLOR]','http://addonrepo.com/xbmchub/moviedb/streams/adultstreams.xml','livecatslist',artwork +'adult.jpg','','dir')
+        #main.addDir('[COLOR gold]**More Sports Coming Soon** [/COLOR]','none','adultcats',artwork +'comingsoon.jpg','','dir')
         
 
         
@@ -1027,7 +1055,62 @@ elif mode=='epornikSearch':
 
 elif mode=='pornresolve':
         print ""+url
-        epornik.PORNRESOLVE(name,url,thumb)        
+        epornik.PORNRESOLVE(name,url,thumb)
+
+#==========LIVE Streams================
+
+elif mode=='chanufcindex':
+        print ""+url
+        live.CHANUFCINDEX(url)
+
+elif mode=='livecats':
+        print ""+url
+        live.LIVECATS()
+
+elif mode=='commonstreams':
+        print ""+url
+        live.COMMONSTREAMS()
+
+elif mode=='usersub':
+        print ""+url
+        live.USERSUB()        
+
+elif mode=='livecatslist':
+        print ""+url
+        live.LIVECATSLIST(url)        
+
+elif mode=='ufclinkpage':
+        print ""+url
+        live.UFCLINKPAGE(url,name)
+
+elif mode=='liveresolve':
+        print ""+url
+        live.LIVERESOLVE(name,url,thumb)        
+
+
+#=============END LIVE STREAMS
+
+#===============SUPERTOONS=================
+
+elif mode=='supertoonscats':
+        print ""+url
+        supertoons.SUPERTOONSCATS()
+
+elif mode=='supertoonsindex':
+        print ""+url
+        supertoons.SUPERTOONSINDEX(url)
+
+elif mode=='supertoonsdeep':
+        print ""+url
+        supertoons.SUPERTOONSDEEP(url)
+
+elif mode=='supertoonsdirect':
+        print ""+url
+        supertoons.SUPERTOONSDIRECT(url)        
+
+elif mode=='supertoonsresolve':
+        print ""+url
+        supertoons.SUPERTOONSRESOLVE(name,url,thumb)         
         
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
