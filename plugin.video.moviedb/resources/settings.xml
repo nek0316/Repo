@@ -26,6 +26,18 @@
 
 <setting id="resolver" type="bool" label="Resolver Settings" default="true"/>
 
+<setting id="toons" type="bool" label="Cartoons" default="true"/>
+
+<setting id="sports" type="bool" label="Sports" default="true"/>
+
+<setting id="streams" type="bool" label="Live Streams" default="true"/>
+
+<setting id="addons" type="bool" label="Other Addons" default="true"/>
+
+<setting id="special" type="bool" label="Special Menus" default="true"/>
+
+
+
 <setting id="metadata" type="bool" label="Tv Show Episode MetaData" default="true"/>
 
 </category>

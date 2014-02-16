@@ -112,16 +112,22 @@ def CATEGORIES(loggedin):
                                 text_file.write(pin)
                                 text_file.close()
                 main.addDir('[COLOR white]Adults Only[/COLOR]','none','adultcats',artwork +'adult.jpg','','dir')
+                
         main.addDir('[COLOR white]Movies[/COLOR]','none','moviecat',artwork +'movies.jpg','','dir')
         main.addDir('[COLOR white]TV Shows[/COLOR]','none','tvcats',artwork +'tvshows.jpg','','dir')
-        main.addDir('[COLOR white]Cartoons[/COLOR]','none','cartooncats',artwork +'cartoons.jpg','','dir')
-        main.addDir('[COLOR white]Sports[/COLOR]','none','sportcats',artwork +'sports.jpg','','dir')
-        main.addDir('[COLOR white]Live Streams[/COLOR]','none','livecats',artwork +'live.jpg','','dir')
+        if settings.getSetting('toons') == 'true':
+                main.addDir('[COLOR white]Cartoons[/COLOR]','none','cartooncats',artwork +'cartoons.jpg','','dir')
+        if settings.getSetting('sports') == 'true':        
+                main.addDir('[COLOR white]Sports[/COLOR]','none','sportcats',artwork +'sports.jpg','','dir')
+        if settings.getSetting('streams') == 'true':        
+                main.addDir('[COLOR white]Live Streams[/COLOR]','http://goo.gl/1EMDrC','livecats',artwork +'live.jpg','','dir')
         if settings.getSetting('resolver') == 'true':
                 main.addDir('[COLOR gold]Resolver Settings[/COLOR]','none','resolverSettings',artwork +'resolversettings.jpg','','dir')
-        main.addDir("[COLOR gold]Browse More Addons by Blazetamer[/COLOR]",'http://addons.xbmchub.com/author/Blazetamer/','addonlist',artwork +'moreaddons.jpg','','')
-        main.addDir('[COLOR gold]Get the Addon Browser Here[/COLOR]','http://addons.xbmchub.com/search/?keyword=browser','addonlist',artwork +'addonbrowser.jpg','','dir')
-        main.addDir('[COLOR gold]Special Menus/Announcements[/COLOR]','none','pop',artwork +'announcements.jpg','','dir')
+        if settings.getSetting('addons') == 'true':        
+                main.addDir("[COLOR gold]Browse More Addons by Blazetamer[/COLOR]",'http://addons.xbmchub.com/author/Blazetamer/','addonlist',artwork +'moreaddons.jpg','','')
+                main.addDir('[COLOR gold]Get the Addon Browser Here[/COLOR]','http://addons.xbmchub.com/search/?keyword=browser','addonlist',artwork +'addonbrowser.jpg','','dir')
+        if settings.getSetting('special') == 'true':        
+                main.addDir('[COLOR gold]Special Menus/Announcements[/COLOR]','none','pop',artwork +'announcements.jpg','','dir')
         #main.addDir('[COLOR gold]About MDB Ultra[/COLOR]','http://addonrepo.com/xbmchub/moviedb/messages/addon.txt','statuscategories',artwork +'icon.png','','dir')
         #main.addDir('[COLOR red]Shut Down XBMC[/COLOR]','none','shutdownxbmc',artwork +'shutdown.png','','dir')
         main.addDir('[COLOR red]Manage Downloads[/COLOR]','none','viewQueue',artwork +'downloadsmanage.jpg','','')
@@ -1065,15 +1071,15 @@ elif mode=='chanufcindex':
 
 elif mode=='livecats':
         print ""+url
-        live.LIVECATS()
+        live.LIVECATS(url)
 
 elif mode=='commonstreams':
         print ""+url
-        live.COMMONSTREAMS()
+        live.COMMONSTREAMS(url)
 
 elif mode=='usersub':
         print ""+url
-        live.USERSUB()        
+        live.USERSUB(url)        
 
 elif mode=='livecatslist':
         print ""+url

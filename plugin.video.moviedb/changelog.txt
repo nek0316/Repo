@@ -1,3 +1,9 @@
+
+V1.7.0a
+Cosmetic Enhancements
+Added Ability to turn off extras in Settings
+
+
 V1.7.0
 Added LIVE Streams Section
 Contact Blazetamer to submit Streams

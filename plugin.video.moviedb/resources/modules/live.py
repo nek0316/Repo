@@ -43,6 +43,7 @@ console = addon.queries.get('console', '')
 dlfoldername = addon.queries.get('dlfoldername', '')
 favtype = addon.queries.get('favtype', '')
 mainimg = addon.queries.get('mainimg', '')
+desc = addon.queries.get('desc', '')
 
 print 'Mode is: ' + mode
 print 'Url is: ' + url
@@ -69,26 +70,39 @@ def OPEN_URL(url):
   response.close()
   return link
 
-def LIVECATS():
-        addDir('User Submitted - More Reliable','none','usersub',artwork +'usersub.png','','user')
-        addDir('Community Streams - Less Reliable','none','commonstreams',artwork +'community.png','','comm')
+def LIVECATS(url):
+        link=OPEN_URL(url).replace('\n','').replace('\r','')
+        match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail><mode>(.+?)</mode><desc>(.+?)</desc>').findall(link)
+        for name,url,thumb,mode,desc in match:
+                print 'Description is  ' + desc
+                addDir(name,url,mode,thumb,desc,thumb)                        
+        #main.AUTO_VIEW('movies') 
+        #addDir('User Submitted','http://addonrepo.com/xbmchub/moviedb/streams/userstreams.xml','usersub',artwork +'usersub.png','','user')
+        #addDir('Community Streams','http://addonrepo.com/xbmchub/moviedb/streams/streamsets.xml','commonstreams',artwork +'community.png','','comm')
         #addDir(name,url,'livecatslist',thumb,'','dir')
-        main.AUTO_VIEW('list')
+        main.AUTO_VIEW('movies')
         
-def COMMONSTREAMS():
-        link=OPEN_URL('http://addonrepo.com/xbmchub/moviedb/streams/streamsets.xml').replace('\n','').replace('\r','')
+def COMMONSTREAMS(url):
+        link=OPEN_URL(url).replace('\n','').replace('\r','')
         match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail>').findall(link)
         for name,url,thumb in match:
                 addDir(name,url,'livecatslist',thumb,'',thumb)                        
         main.AUTO_VIEW('movies') 
         
-def USERSUB():
-        main.addDir('[COLOR blue][B]Author/Updated[/B][/COLOR]' ,'none','usersub',artwork +'usersub.png','','dir')
-        link=OPEN_URL('http://addonrepo.com/xbmchub/moviedb/streams/userstreams.xml').replace('\n','').replace('\r','')
+def USERSUB(url):
+        #main.addDir('[COLOR blue][B]Author/Updated[/B][/COLOR]' ,'none','usersub',artwork +'usersub.png','','dir')
+        link=OPEN_URL(url).replace('\n','').replace('\r','')
         match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail><submitted>(.+?)</submitted>').findall(link)
         for name,url,thumb,date in match:
-                addDir(name +' '+ date ,url,'livecatslist',thumb,'',thumb)                        
+                if 'menu' in date:
+                        addDir(name,url,'commonstreams',thumb,'',thumb)   
+                        
+                else:
+                        addDir(name,url,'livecatslist',thumb,'',thumb)                        
         main.AUTO_VIEW('movies')        
+
+
+
         
 def LIVECATSLIST(url):
         link=OPEN_URL(url).replace('\n','').replace('\r','')
@@ -131,19 +145,21 @@ def LIVERESOLVE(name,url,iconimage):
 
   
 
-def addDir(name,url,mode,thumb,labels,favtype):
-        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb}
+def addDir(name,url,mode,thumb,desc,favtype):
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'desc':desc}
         fanart = thumb
         if thumb == artwork + 'icon.png':
                 fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'
         elif thumb == '-':
                 fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'        
-       
+        if desc == '':
+                desc = 'Description not available at this level'
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
         ok=True
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumb)
-        liz.setInfo( type="Video", infoLabels=labels )
+        liz.setInfo( type="Video", infoLabels={ "title": name, "Plot": desc } )
         liz.setProperty( "Fanart_Image", fanart )
+        #liz.setProperty( "Addon.Description", desc )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok
 
