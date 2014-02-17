@@ -1103,7 +1103,11 @@ elif mode=='ilivelists':
     
 elif mode=='iliveplaylink':
     print ""+url
-    live.ILIVEPLAYLINK(name,url,thumb)        
+    live.ILIVEPLAYLINK(name,url,thumb)
+
+elif mode=='searchilive':
+        print ""+url
+        live.SEARCHILIVE(url)    
 
 
 #=============END LIVE STREAMS

@@ -157,6 +157,11 @@ def addDir(name,url,mode,thumb,desc,favtype):
 #==============================Attempt to scrape Ilive.to==============================================================
 
 def ILIVEMAIN():
+        link=OPEN_URL('http://goo.gl/WrDOJi').replace('\n','').replace('\r','')
+        match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail><mode>(.+?)</mode><desc>(.+?)</desc>').findall(link)
+        for name,url,thumb,mode,desc in match:
+                print 'Description is  ' + desc
+                addDir(name,url,mode,thumb,desc,thumb)
         
         #addDir('All','all','ilivelists',artwork+'/ilive.png','','')
         addDir('All','allenglish','ilivelists',artwork+'/ilive.png','All Streams available from iLive','')
@@ -174,16 +179,7 @@ def ILIVELISTS(menuurl):
                 urllist=['http://www.ilive.to/channels/General','http://www.ilive.to/channels/General?p=2']
             except:
                 urllist=['http://www.ilive.to/channels/General']
-        if menuurl=='entertainment':
-            try:
-                urllist=['http://www.ilive.to/channels/Entertainment','http://www.ilive.to/channels/Entertainment?p=2','http://www.ilive.to/channels/Entertainment?p=3','http://www.ilive.to/channels/Entertainment?p=4','http://www.ilive.to/channels/Entertainment?p=5','http://www.ilive.to/channels/Entertainment?p=6']
-            except:
-                urllist=['http://www.ilive.to/channels/Entertainment','http://www.ilive.to/channels/Entertainment?p=2','http://www.ilive.to/channels/Entertainment?p=3','http://www.ilive.to/channels/Entertainment?p=4','http://www.ilive.to/channels/Entertainment?p=5']
-        if menuurl=='sports':
-            try:
-                urllist=['http://www.ilive.to/channels/Sport','http://www.ilive.to/channels/Sport?p=2','http://www.ilive.to/channels/Sport?p=3','http://www.ilive.to/channels/Sport?p=4']
-            except:
-                urllist=['http://www.ilive.to/channels/Sport','http://www.ilive.to/channels/Sport?p=2','http://www.ilive.to/channels/Sport?p=3']
+        
         if menuurl=='news':
             try:
                 urllist=['http://www.ilive.to/channels/News']
@@ -199,11 +195,7 @@ def ILIVELISTS(menuurl):
                 urllist=['http://www.ilive.to/channels/Animation']
             except:
                 urllist=['http://www.ilive.to/channels/Animation']
-        if menuurl=='all':
-            try:
-                urllist=['http://www.ilive.to/channels','http://www.ilive.to/channels?p=2','http://www.ilive.to/channels?p=3','http://www.ilive.to/channels?p=4','http://www.ilive.to/channels?p=5','http://www.ilive.to/channels?p=6','http://www.ilive.to/channels?p=7','http://www.ilive.to/channels?p=8','http://www.ilive.to/channels?p=9','http://www.ilive.to/channels?p=10','http://www.ilive.to/channels?p=11','http://www.ilive.to/channels?p=12','http://www.ilive.to/channels?p=13','http://www.ilive.to/channels?p=14','http://www.ilive.to/channels?p=15','http://www.ilive.to/channels?p=16']
-            except:
-                urllist=['http://www.ilive.to/channels','http://www.ilive.to/channels?p=2','http://www.ilive.to/channels?p=3','http://www.ilive.to/channels?p=4','http://www.ilive.to/channels?p=5','http://www.ilive.to/channels?p=6','http://www.ilive.to/channels?p=7','http://www.ilive.to/channels?p=8','http://www.ilive.to/channels?p=9','http://www.ilive.to/channels?p=10']
+
         if menuurl=='allenglish':
             try:
                 urllist=['http://www.ilive.to/channels?lang=1','http://www.ilive.to/channels?lang=1&p=2','http://www.ilive.to/channels?lang=1&p=3','http://www.ilive.to/channels?lang=1&p=4','http://www.ilive.to/channels?lang=1&p=5','http://www.ilive.to/channels?lang=1&p=6','http://www.ilive.to/channels?lang=1&p=7','http://www.ilive.to/channels?lang=1&p=8','http://www.ilive.to/channels?lang=1&p=9','http://www.ilive.to/channels?lang=1&p=10']
@@ -219,6 +211,13 @@ def ILIVELISTS(menuurl):
                 urllist=['http://www.ilive.to/channels/Sport?lang=1','http://www.ilive.to/channels/Sport?lang=1&p=2']
             except:
                 urllist=['http://www.ilive.to/channels/Sport?lang=1']
+        if 'http' in menuurl:
+                print 'MENUURL IS '+ menuurl
+                urllist = [menuurl]
+                
+                urllistlist = str(urllist)
+                print 'URLLIST is ' + urllistlist
+
         dialogWait = xbmcgui.DialogProgress()
         ret = dialogWait.create('Loading Menu..Standby...')
         pages = len(urllist)
@@ -260,4 +259,38 @@ def ILIVEPLAYLINK(name,menuurl,thumb):
                 playable = newlink[0]
                 print 'RTMP IS ' +  playable
                 LIVERESOLVE(name,playable,thumb)
+
+
+#Start Ketboard Function                
+def _get_keyboard( default="", heading="", hidden=False ):
+	""" shows a keyboard and returns a value """
+	keyboard = xbmc.Keyboard( default, heading, hidden )
+	keyboard.doModal()
+	if ( keyboard.isConfirmed() ):
+		return unicode( keyboard.getText(), "utf-8" )
+	return default
+
+
+#Start Search Function
+def SEARCHILIVE(url):
+	searchUrl = url 
+	vq = _get_keyboard( heading="Searching for Streams" )
+	if ( not vq ): return False, 0
+	title = urllib.quote_plus(vq)
+	searchUrl += title  
+	print "Searching Streams: " + searchUrl 
+	SEARCHLINKS(searchUrl)
+             
                
+def SEARCHLINKS(urllist):                 
+        
+                link=OPEN_URL(urllist)
+                link=link.replace('\r','').replace('\n','').replace('\t','').replace('&nbsp;','')
+                match=re.compile('src=".+?" alt=".+?<img width=".+?" height=".+?" src="([^<]+)" alt=".+?"/></noscript></a><a href="(.+?)"><strong>(.*?)</strong></a><br/>').findall(link)
+                if len(match) > 0:
+                        for thumb,url,name in match:
+                                addDir(name,url,'iliveplaylink',thumb,'','')
+                                  
+                else:
+                        addDir('[COLOR red]None Found Try again[/COLOR]','http://www.ilive.to/channels/?q=','searchilive','','','')
+        
