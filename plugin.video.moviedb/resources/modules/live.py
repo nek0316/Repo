@@ -70,16 +70,15 @@ def OPEN_URL(url):
   response.close()
   return link
 
+
+
+
 def LIVECATS(url):
         link=OPEN_URL(url).replace('\n','').replace('\r','')
         match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail><mode>(.+?)</mode><desc>(.+?)</desc>').findall(link)
         for name,url,thumb,mode,desc in match:
                 print 'Description is  ' + desc
                 addDir(name,url,mode,thumb,desc,thumb)                        
-        #main.AUTO_VIEW('movies') 
-        #addDir('User Submitted','http://addonrepo.com/xbmchub/moviedb/streams/userstreams.xml','usersub',artwork +'usersub.png','','user')
-        #addDir('Community Streams','http://addonrepo.com/xbmchub/moviedb/streams/streamsets.xml','commonstreams',artwork +'community.png','','comm')
-        #addDir(name,url,'livecatslist',thumb,'','dir')
         main.AUTO_VIEW('movies')
         
 def COMMONSTREAMS(url):
@@ -105,25 +104,18 @@ def USERSUB(url):
 
         
 def LIVECATSLIST(url):
-        link=OPEN_URL(url).replace('\n','').replace('\r','')
         mainurl=url
+        link=OPEN_URL(url).replace('\n','').replace('\r','')
+        match=re.compile('<name>(.+?)</name><link>(.+?)</link><thumbnail>(.+?)</thumbnail><mode>(.+?)</mode><desc>(.+?)</desc>').findall(link)
+        for name,url,thumb,mode,desc in match:
+                print 'Description is  ' + desc
+                addDir(name,url,mode,thumb,desc,thumb)                        
+        
+        link=OPEN_URL(mainurl).replace('\n','').replace('\r','')
         match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail>').findall(link)
         for name,url,thumb in match:
                 addDir(name,url,'liveresolve',thumb,'','dir')       
-        link=OPEN_URL(mainurl).replace('\n','').replace('\r','').replace('\x93','').replace('\x80','').replace('\xe2','')
-        match2=re.compile('<stream>(.+?)  (.+?)</stream>').findall(link)
-        for name,url in match2:
-                addDir(name,url,'liveresolve',thumb,'','dir')
-
-        link=OPEN_URL(mainurl).replace('\n','').replace('\r','').replace('\x93','').replace('\x80','').replace('\xe2','')
-        match2=re.compile('<stream>(.+?)-(.+?)</stream>').findall(link)
-        for name,url in match2:
-                addDir(name,url,'liveresolve',thumb,'','dir')
-
-        link=OPEN_URL(mainurl).replace('\n','').replace('\r','').replace('\x93','').replace('\x80','').replace('\xe2','')
-        match2=re.compile('XTINF:-1,(.+?) -(.+?)#E').findall(link)
-        for name,url in match2:
-                addDir(name,url,'liveresolve',thumb,'','dir')        
+            
 
         main.AUTO_VIEW('movies')   
 
@@ -133,9 +125,9 @@ def LIVECATSLIST(url):
 
 
 
-def LIVERESOLVE(name,url,iconimage):
+def LIVERESOLVE(name,url,thumb):
          ok=True
-         liz=xbmcgui.ListItem(name, iconImage=iconimage,thumbnailImage=iconimage); liz.setInfo( type="Video", infoLabels={ "Title": name } )
+         liz=xbmcgui.ListItem(name, iconImage=thumb,thumbnailImage=thumb); liz.setInfo( type="Video", infoLabels={ "Title": name } )
          ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=str(url),listitem=liz)
          xbmc.sleep(1000)
          xbmc.Player ().play(str(url), liz, False)
@@ -162,6 +154,110 @@ def addDir(name,url,mode,thumb,desc,favtype):
         #liz.setProperty( "Addon.Description", desc )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok
+#==============================Attempt to scrape Ilive.to==============================================================
+
+def ILIVEMAIN():
+        
+        #addDir('All','all','ilivelists',artwork+'/ilive.png','','')
+        addDir('All','allenglish','ilivelists',artwork+'/ilive.png','All Streams available from iLive','')
+        addDir('Animation','animation','ilivelists',artwork+'/ilive.png','Animation Stream Listings','')
+        addDir('Entertainment','entertainmentenglish','ilivelists',artwork+'/ilive.png','Entertainment Streams from iLive','')
+        addDir('General','general','ilivelists',artwork+'/ilive.png','General Streams','')
+        addDir('Music','music','ilivelists',artwork+'/ilive.png','Current Listed Music Streams','')
+        addDir('News','news','ilivelists',artwork+'/ilive.png','Current News Streams','')
+        addDir('Sports','sportsenglish','ilivelists',artwork+'/ilive.png','Live Sports Streams from iLive','')
+        main.AUTO_VIEW('movies')
+        
+def ILIVELISTS(menuurl):
+        if menuurl=='general':
+            try:
+                urllist=['http://www.ilive.to/channels/General','http://www.ilive.to/channels/General?p=2']
+            except:
+                urllist=['http://www.ilive.to/channels/General']
+        if menuurl=='entertainment':
+            try:
+                urllist=['http://www.ilive.to/channels/Entertainment','http://www.ilive.to/channels/Entertainment?p=2','http://www.ilive.to/channels/Entertainment?p=3','http://www.ilive.to/channels/Entertainment?p=4','http://www.ilive.to/channels/Entertainment?p=5','http://www.ilive.to/channels/Entertainment?p=6']
+            except:
+                urllist=['http://www.ilive.to/channels/Entertainment','http://www.ilive.to/channels/Entertainment?p=2','http://www.ilive.to/channels/Entertainment?p=3','http://www.ilive.to/channels/Entertainment?p=4','http://www.ilive.to/channels/Entertainment?p=5']
+        if menuurl=='sports':
+            try:
+                urllist=['http://www.ilive.to/channels/Sport','http://www.ilive.to/channels/Sport?p=2','http://www.ilive.to/channels/Sport?p=3','http://www.ilive.to/channels/Sport?p=4']
+            except:
+                urllist=['http://www.ilive.to/channels/Sport','http://www.ilive.to/channels/Sport?p=2','http://www.ilive.to/channels/Sport?p=3']
+        if menuurl=='news':
+            try:
+                urllist=['http://www.ilive.to/channels/News']
+            except:
+                urllist=['http://www.ilive.to/channels/News']
+        if menuurl=='music':
+            try:
+                urllist=['http://www.ilive.to/channels/Music']
+            except:
+                urllist=['http://www.ilive.to/channels/Music']
+        if menuurl=='animation':
+            try:
+                urllist=['http://www.ilive.to/channels/Animation']
+            except:
+                urllist=['http://www.ilive.to/channels/Animation']
+        if menuurl=='all':
+            try:
+                urllist=['http://www.ilive.to/channels','http://www.ilive.to/channels?p=2','http://www.ilive.to/channels?p=3','http://www.ilive.to/channels?p=4','http://www.ilive.to/channels?p=5','http://www.ilive.to/channels?p=6','http://www.ilive.to/channels?p=7','http://www.ilive.to/channels?p=8','http://www.ilive.to/channels?p=9','http://www.ilive.to/channels?p=10','http://www.ilive.to/channels?p=11','http://www.ilive.to/channels?p=12','http://www.ilive.to/channels?p=13','http://www.ilive.to/channels?p=14','http://www.ilive.to/channels?p=15','http://www.ilive.to/channels?p=16']
+            except:
+                urllist=['http://www.ilive.to/channels','http://www.ilive.to/channels?p=2','http://www.ilive.to/channels?p=3','http://www.ilive.to/channels?p=4','http://www.ilive.to/channels?p=5','http://www.ilive.to/channels?p=6','http://www.ilive.to/channels?p=7','http://www.ilive.to/channels?p=8','http://www.ilive.to/channels?p=9','http://www.ilive.to/channels?p=10']
+        if menuurl=='allenglish':
+            try:
+                urllist=['http://www.ilive.to/channels?lang=1','http://www.ilive.to/channels?lang=1&p=2','http://www.ilive.to/channels?lang=1&p=3','http://www.ilive.to/channels?lang=1&p=4','http://www.ilive.to/channels?lang=1&p=5','http://www.ilive.to/channels?lang=1&p=6','http://www.ilive.to/channels?lang=1&p=7','http://www.ilive.to/channels?lang=1&p=8','http://www.ilive.to/channels?lang=1&p=9','http://www.ilive.to/channels?lang=1&p=10']
+            except:
+                urllist=['http://www.ilive.to/channels?lang=1','http://www.ilive.to/channels?lang=1&p=2','http://www.ilive.to/channels?lang=1&p=3','http://www.ilive.to/channels?lang=1&p=4','http://www.ilive.to/channels?lang=1&p=5','http://www.ilive.to/channels?lang=1&p=6','http://www.ilive.to/channels?lang=1&p=7','http://www.ilive.to/channels?lang=1&p=8','http://www.ilive.to/channels?lang=1&p=9']
+        if menuurl=='entertainmentenglish':
+            try:
+                urllist=['http://www.ilive.to/channels/Entertainment?lang=1','http://www.ilive.to/channels/Entertainment?lang=1&p=2','http://www.ilive.to/channels/Entertainment?lang=1&p=3','http://www.ilive.to/channels/Entertainment?lang=1&p=4','http://www.ilive.to/channels/Entertainment?lang=1&p=5','http://www.ilive.to/channels/Entertainment?lang=1&p=6']
+            except:
+                urllist=['http://www.ilive.to/channels/Entertainment?lang=1','http://www.ilive.to/channels/Entertainment?lang=1&p=2','http://www.ilive.to/channels/Entertainment?lang=1&p=3','http://www.ilive.to/channels/Entertainment?lang=1&p=4','http://www.ilive.to/channels/Entertainment?lang=1&p=5']
+        if menuurl=='sportsenglish':
+            try:
+                urllist=['http://www.ilive.to/channels/Sport?lang=1','http://www.ilive.to/channels/Sport?lang=1&p=2']
+            except:
+                urllist=['http://www.ilive.to/channels/Sport?lang=1']
+        dialogWait = xbmcgui.DialogProgress()
+        ret = dialogWait.create('Loading Menu..Standby...')
+        pages = len(urllist)
+        gotpages = 0
+        remaining_display = 'Pages  :: [B]'+str(gotpages)+' / '+str(pages)+'[/B].'
+        dialogWait.update(0,'[COLOR gold][B]Loading.....[/B][/COLOR]',remaining_display)
+        for durl in urllist:
+                link=OPEN_URL(durl)
+                link=link.replace('\r','').replace('\n','').replace('\t','').replace('&nbsp;','')
+                match=re.compile('src=".+?" alt=".+?<img width=".+?" height=".+?" src="([^<]+)" alt=".+?"/></noscript></a><a href="(.+?)"><strong>(.*?)</strong></a><br/>').findall(link)
+                for thumb,url,name in match:
+                        addDir(name,url,'iliveplaylink',thumb,'','')
+                                      
+                gotpages = gotpages + 1
+                percent = (gotpages * 100)/gotpages
+                remaining_display = 'Pages loaded :: [B]'+str(gotpages)+' / '+str(pages)+'[/B].'
+                dialogWait.update(percent,'[COLOR gold][B]Loading.....[/B][/COLOR]',remaining_display)
+                if (dialogWait.iscanceled()):
+                        return False   
+        dialogWait.close()
+        del dialogWait
+         
 
 
-
+def ILIVEPLAYLINK(name,menuurl,thumb):
+        
+        LogNotify('Attempting to play Stream', 'Please Wait...', '3000', artwork+'/ilive.png')
+        link=OPEN_URL(menuurl)
+        ok=True
+        if link:
+                playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+                playlist.clear()
+                link=link.replace('\r','').replace('\n','').replace('\t','').replace('&nbsp;','')
+                match=re.compile('http://www.ilive.to/embed/(.+?)&width=(.+?)&height=(.+?)&autoplay=true').findall(link)
+                for fid,wid,hei in match:
+                    pageUrl='http://www.ilive.to/m/channel.php?n='+fid
+                link=OPEN_URL(pageUrl).replace('\/','/').replace('\\','')
+                newlink=re.compile('''file': "([^"]+?)"''').findall(link)
+                playable = newlink[0]
+                print 'RTMP IS ' +  playable
+                LIVERESOLVE(name,playable,thumb)
+               

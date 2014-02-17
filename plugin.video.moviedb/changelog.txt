@@ -1,3 +1,6 @@
+ V1.7.5
+Added automatically updating iLive Streams
+
 
 V1.7.0a
 Cosmetic Enhancements

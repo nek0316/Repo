@@ -1091,7 +1091,19 @@ elif mode=='ufclinkpage':
 
 elif mode=='liveresolve':
         print ""+url
-        live.LIVERESOLVE(name,url,thumb)        
+        live.LIVERESOLVE(name,url,thumb)
+
+elif mode=='ilivemain':
+        print ""+url
+        live.ILIVEMAIN()
+    
+elif mode=='ilivelists':
+        print ""+url
+        live.ILIVELISTS(url)
+    
+elif mode=='iliveplaylink':
+    print ""+url
+    live.ILIVEPLAYLINK(name,url,thumb)        
 
 
 #=============END LIVE STREAMS
