@@ -1,4 +1,3 @@
-
 #2Movies - Blazetamer
 
 
@@ -505,12 +504,12 @@ def LINKPAGE(url,name):
         if settings.getSetting('tmovies_account') == 'true':  
               net.set_cookies(cookiejar)
         link = net.http_GET(url).content
-        match=re.compile('href="(.+?)" target=".+?" rel=".+?" onclick=".+? = \'.+?">Watch Movie!</a>\n                                                       </div>\n                        </td>\n                        <td valign=.+? style=.+?>\n                          <span class=.+?>&nbsp;Site:&nbsp;</span><span class=.+?>(.+?)</span>').findall(link)
+        match=re.compile('href="(.+?)" title=(.*?)').findall(link)
   
         for url,linkname in match:
             
                    
-          if inc < 50:
+          if inc < 50 and "full" in url:
                  #This gets around the Continue Button
                 link = net.http_GET(url).content 
                 conmatch=re.compile('/>Please click (.+?):</p>').findall(link)
