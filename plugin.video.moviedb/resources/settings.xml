@@ -1,8 +1,15 @@
 <settings>
 	<category label="Announcements">
-		<setting id="announce" type="bool" label="Enable Announcement PopUps" default="true"/>
-<setting id="anno_int" type="number" label="Announcement Interval (Days)" default="1" enable="!eq(-1,false)"/>
-<setting id="pop_time" type="text" label="Last Announcement Shown " default="2000-01-01 00:00:00" visible="true"enable="!eq(-2,false)"/>	</category>
+
+<setting id="announce" type="bool" label="Enable Announcement PopUps" default="true"/>
+
+<setting id="anno_int" type="number" label="Announcement Interval (Days)" default="1" visible="true" enable="!eq(-1,false)"/>
+
+<setting id="pop_time" type="text" label="Last Announcement Shown " default="2000-01-01 00:00:00" visible="true"enable="false"/>
+	
+<setting id="version_number" type="text" label="Current Version" default="1.0.0" visible="true"enable="false" />
+
+</category>
 
 	<category label="Auto-View">
 		<setting id="auto-view" type="bool" label="Enable Auto View" default="true"/>
@@ -24,7 +31,7 @@
 
 <setting id="adult" type="bool" label="Adult Section" default="false"/>
 
-<setting id="resolver" type="bool" label="Resolver Settings" default="true"/>
+<setting id="resolver" type="bool" label="Resolver Settings" default="false"/>
 
 <setting id="toons" type="bool" label="Cartoons" default="true"/>
 
@@ -32,15 +39,26 @@
 
 <setting id="streams" type="bool" label="Live Streams" default="true"/>
 
-<setting id="addons" type="bool" label="Other Addons" default="true"/>
+<setting id="addons" type="bool" label="Other Addons" default="false"/>
 
-<setting id="special" type="bool" label="Special Menus" default="true"/>
+<setting id="special" type="bool" label="Special Menus" default="false"/>
+
+<setting id="debug" type="bool" label="Enable Advanced Logging" default="false"/>
 
 
 
 <setting id="metadata" type="bool" label="Tv Show Episode MetaData" default="true"/>
 
+
+
 </category>
+<category label= 'Logfile Upload'>
+		<setting label="Click to Upload Log NOW" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.moviedb/resources/modules/logup.py)"/>
+		<setting id="email" type="text" label="Email address"/>
+		<setting type="lsep" label="[COLOR gold]Please add your email if you want to recieve links to your uploads[/COLOR]"/>
+
+</category>
+	
 
 </settings>
 

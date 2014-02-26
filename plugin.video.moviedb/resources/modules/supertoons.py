@@ -44,15 +44,6 @@ dlfoldername = addon.queries.get('dlfoldername', '')
 favtype = addon.queries.get('favtype', '')
 mainimg = addon.queries.get('mainimg', '')
 
-print 'Mode is: ' + mode
-print 'Url is: ' + url
-print 'Name is: ' + name
-print 'Thumb is: ' + thumb
-print 'Extension is: ' + ext
-print 'File Type is: ' + console
-print 'DL Folder is: ' + dlfoldername
-print 'Favtype is: ' + favtype
-print 'Main Image is: ' + mainimg
 
 # Global Stuff
 settings = xbmcaddon.Addon(id=addon_id)

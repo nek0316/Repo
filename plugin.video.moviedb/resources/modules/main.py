@@ -45,15 +45,7 @@ season = addon.queries.get('season', '')
 episode = addon.queries.get('episode', '')
 fanart = addon.queries.get('fanart', '')
 
-print 'Mode is: ' + mode
-print 'Url is: ' + url
-print 'Name is: ' + name
-print 'Thumb is: ' + thumb
-print 'Extension is: ' + ext
-print 'File Type is: ' + console
-print 'DL Folder is: ' + dlfoldername
-print 'Favtype is: ' + favtype
-print 'Main Image is: ' + mainimg
+
 
 
 download_path = settings.getSetting('download_folder')

@@ -48,18 +48,6 @@ season = addon.queries.get('season', '')
 episode = addon.queries.get('episode', '')
 repourl = addon.queries.get('repourl', '')
 
-print 'Mode is: ' + mode
-print 'Url is: ' + url
-print 'Name is: ' + name
-print 'Thumb is: ' + thumb
-print 'Extension is: ' + ext
-print 'Filetype is: ' + console
-print 'DL Folder is: ' + dlfoldername
-print 'Favtype is: ' + favtype
-print 'Main Image is: ' + mainimg
-print 'Headers are ' +headers
-print 'Logged In Status is ' +loggedin
-print 'RepoUrl is ' +repourl
 
 
 

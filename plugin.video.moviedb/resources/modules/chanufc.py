@@ -48,16 +48,6 @@ mainimg = addon.queries.get('mainimg', '')
 season = addon.queries.get('season', '')
 episode = addon.queries.get('episode', '')
 
-print 'Mode is: ' + mode
-print 'Url is: ' + url
-print 'Name is: ' + name
-print 'Thumb is: ' + thumb
-print 'Extension is: ' + ext
-print 'File Type is: ' + console
-print 'DL Folder is: ' + dlfoldername
-print 'Favtype is: ' + favtype
-print 'Main Image is: ' + mainimg
-
 # Global Stuff
 cookiejar = addon.get_profile()
 cookiejar = os.path.join(cookiejar,'cookies.lwp')

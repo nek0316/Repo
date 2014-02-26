@@ -45,15 +45,6 @@ favtype = addon.queries.get('favtype', '')
 mainimg = addon.queries.get('mainimg', '')
 desc = addon.queries.get('desc', '')
 
-print 'Mode is: ' + mode
-print 'Url is: ' + url
-print 'Name is: ' + name
-print 'Thumb is: ' + thumb
-print 'Extension is: ' + ext
-print 'File Type is: ' + console
-print 'DL Folder is: ' + dlfoldername
-print 'Favtype is: ' + favtype
-print 'Main Image is: ' + mainimg
 
 # Global Stuff
 settings = xbmcaddon.Addon(id=addon_id)
@@ -89,15 +80,10 @@ def COMMONSTREAMS(url):
         main.AUTO_VIEW('movies') 
         
 def USERSUB(url):
-        #main.addDir('[COLOR blue][B]Author/Updated[/B][/COLOR]' ,'none','usersub',artwork +'usersub.png','','dir')
         link=OPEN_URL(url).replace('\n','').replace('\r','')
         match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail><submitted>(.+?)</submitted>').findall(link)
         for name,url,thumb,date in match:
-                if 'menu' in date:
-                        addDir(name,url,'commonstreams',thumb,'',thumb)   
-                        
-                else:
-                        addDir(name,url,'livecatslist',thumb,'',thumb)                        
+                 addDir(name,url,'livecatslist',thumb,'',thumb)                        
         main.AUTO_VIEW('movies')        
 
 
@@ -114,7 +100,7 @@ def LIVECATSLIST(url):
         link=OPEN_URL(mainurl).replace('\n','').replace('\r','')
         match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail>').findall(link)
         for name,url,thumb in match:
-                addDir(name,url,'liveresolve',thumb,'','dir')       
+                addDir(name,url,'liveresolve',thumb,'',thumb)       
             
 
         main.AUTO_VIEW('movies')   
@@ -126,9 +112,12 @@ def LIVECATSLIST(url):
 
 
 def LIVERESOLVE(name,url,thumb):
-         ok=True
-         liz=xbmcgui.ListItem(name, iconImage=thumb,thumbnailImage=thumb); liz.setInfo( type="Video", infoLabels={ "Title": name } )
-         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=str(url),listitem=liz)
+         params = {'url':url, 'name':name, 'thumb':thumb}
+         #ok=True
+         #liz=xbmcgui.ListItem(name, iconImage=thumb,thumbnailImage=thumb); liz.setInfo( type="Video", infoLabels={ "Title": name } )
+         #ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=str(url),listitem=liz)
+         addon.add_video_item(params, {'title':name}, img=thumb)
+         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumb)
          xbmc.sleep(1000)
          xbmc.Player ().play(str(url), liz, False)
 
@@ -244,21 +233,50 @@ def ILIVELISTS(menuurl):
 
 def ILIVEPLAYLINK(name,menuurl,thumb):
         
-        LogNotify('Attempting to play Stream', 'Please Wait...', '3000', artwork+'/ilive.png')
-        link=OPEN_URL(menuurl)
-        ok=True
-        if link:
-                playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-                playlist.clear()
-                link=link.replace('\r','').replace('\n','').replace('\t','').replace('&nbsp;','')
-                match=re.compile('http://www.ilive.to/embed/(.+?)&width=(.+?)&height=(.+?)&autoplay=true').findall(link)
-                for fid,wid,hei in match:
-                    pageUrl='http://www.ilive.to/m/channel.php?n='+fid
-                link=OPEN_URL(pageUrl).replace('\/','/').replace('\\','')
-                newlink=re.compile('''file': "([^"]+?)"''').findall(link)
-                playable = newlink[0]
-                print 'RTMP IS ' +  playable
-                LIVERESOLVE(name,playable,thumb)
+        LogNotify('Attempting to play Stream', 'Please Wait...', '5000', artwork+'/ilive.png')
+        link=OPEN_URL('http://goo.gl/bLOqUg').replace('\n','').replace('\r','')
+        match=re.compile('<token>(.+?)</token><swf>(.+?)</swf>').findall(link)
+        for token,newswf in match:
+                link=OPEN_URL(menuurl)
+                ok=True
+                if link:
+                        playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+                        playlist.clear()
+                        link=link.replace('\r','').replace('\n','').replace('\t','').replace('&nbsp;','')
+                        match=re.compile('http://www.ilive.to/embed/(.+?)&width=.+?&height=.+?&autoplay=true').findall(link)
+                        for fid in match:
+                                pageUrl='http://www.ilive.to/m/channel.php?n='+fid
+                                server=re.compile('''.*getJSON\("([^'"]+)"''').findall(link)
+                        #swf=re.compile('''.*flashplayer[:,]\s*['"]([^'"]+)['"].*''').findall(link)
+                        #swf = swf[0]
+                        #newswf = str(swf)
+                        #newswf = 'http://www.ilive.to/player/player_ilive_2.swf'
+                        #token = 'motngaynew1'
+                        
+                                playpath=re.compile('''.*file[:,]\s*['"]([^'"]+).flv['"]''').findall(link)
+                                playpath = playpath[0]
+                                newplaypath =str(playpath)
+                                rtmp=re.compile('streamer: "(.+?)"').findall(link)
+                                rtmp= rtmp[0]
+                                newrtmp = str(rtmp)
+                                newrtmp = newrtmp.replace('\/','/').replace('\\','')
+                                try:
+                                        app = newrtmp.replace('rtmp://watch.ilive.to:1935/','')
+                                except:        
+                                        app = newrtmp.replace('rtmp://watch1.ilive.to:1935/','')
+                                newapp = str(app)
+                                #token = 'motngaynew1'
+                                playable =newrtmp + ' app=' + newapp + ' playpath=' + newplaypath + ' swfUrl=' + newswf + ' live=1 timeout=15 token=' + token + ' swfVfy=1 pageUrl=http://www.ilive.to'
+                        
+                #match=re.compile('http://www.ilive.to/embed/(.+?)&width=(.+?)&height=(.+?)&autoplay=true').findall(link)
+                #for fid,wid,hei in match:
+                    #pageUrl='http://www.ilive.to/m/channel.php?n='+fid
+                #link=OPEN_URL(pageUrl).replace('\/','/').replace('\\','')
+                #newlink=re.compile('''file': "([^"]+?)"''').findall(link)
+                #newlink=re.compile('''streamer': "([^"]+?)"''').findall(link)
+                #playable = newlink[0]
+                                print 'RTMP IS ' +  playable
+                                LIVERESOLVE(name,playable,thumb)
 
 
 #Start Ketboard Function                

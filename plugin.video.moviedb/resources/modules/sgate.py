@@ -49,15 +49,6 @@ season = addon.queries.get('season', '')
 episode = addon.queries.get('episode', '')
 show = addon.queries.get('show', '')
 
-print 'Mode is: ' + mode
-print 'Url is: ' + url
-print 'Name is: ' + name
-print 'Thumb is: ' + thumb
-print 'Extension is: ' + ext
-print 'File Type is: ' + console
-print 'DL Folder is: ' + dlfoldername
-print 'Favtype is: ' + favtype
-print 'Main Image is: ' + mainimg
 
 # Global Stuff
 cookiejar = addon.get_profile()
@@ -67,7 +58,7 @@ artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/
 grab=metahandlers.MetaData()
 net = Net()
 
-basetv_url ='http://seriesgate.tv/'
+basetv_url ='http://seriesgate.me/'
 def LogNotify(title,message,times,icon):
         xbmc.executebuiltin("XBMC.Notification("+title+","+message+","+times+","+icon+")")
 
@@ -75,8 +66,8 @@ def LogNotify(title,message,times,icon):
 def SGCATS():
 
     
-          main.addDir('All Series Gate TV Shows','http://seriesgate.tv/tvshows/','sgindex',artwork + 'all.jpg','','dir')
-          main.addDir('[COLOR gold]Search TV Shows[/COLOR]','http://seriesgate.tv/search/indv_episodes/','searchsgtv',artwork + 'search.jpg','','dir')
+          main.addDir('All Series Gate TV Shows','http://seriesgate.me/tvshows/','sgindex',artwork + 'all.jpg','','dir')
+          main.addDir('[COLOR gold]Search TV Shows[/COLOR]','http://seriesgate.me/search/indv_episodes/','searchsgtv',artwork + 'search.jpg','','dir')
           
           main.AUTO_VIEW('')    
 
@@ -108,7 +99,8 @@ def SGINDEX (url):
                 year = str(yeargrab)               
                 dlfoldername = name
                 favtype = 'tvshow'
-                main.addDir(name,url,'sgepisodelist',thumb,data,favtype)
+                #main.addDir(name,url,'sgepisodelist',thumb,data,favtype)
+                main.addDir(name,basetv_url + url,'sgepisodelist',thumb,data,favtype)
                 
                 #main.addSDir(movie_name +'('+ year +')',basetv_url + url,'episodes',thumb,year,favtype)
                 
@@ -141,14 +133,15 @@ def SGEPISODELIST(url,name,thumb):
     mainimg = thumb
     show = name
     link = net.http_GET(url).content
-    match=re.compile('<a href="(.+?)">&raquo S(.+?) - E(.+?)  (.+?)</a><span>(.+?)</span>').findall(link)             
-    for url,season,epnum,epname, date in match:
+    #match=re.compile('<a href="(.+?)">&raquo S(.+?) - E(.+?)  (.+?)</a><span>(.+?)</span>').findall(link)
+    match=re.compile('<a href="(.+?)">&raquo S(.+?) - E(.+?)  (.+?)</a>').findall(link)
+    for url,season,epnum,epname in match:
               s = 'S'+season
               e = 'E'+epnum
               se = s+e
               name = se + ' ' + epname
               favtype = 'episodes'
-              main.addEPNOCLEANDir(name,url,thumb,'sgtvlinkpage',show,dlfoldername,mainimg,season,epnum)
+              main.addEPNOCLEANDir(name,basetv_url + url,thumb,'sgtvlinkpage',show,dlfoldername,mainimg,season,epnum)
              
               main.AUTO_VIEW('movies')              
 
@@ -172,13 +165,13 @@ def SGEPISODELIST(url,name,thumb):
 def SGTVLINKPAGE(url,name,thumb,mainimg):
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername,'mainimg':mainimg}
         inc = 0
-        linkbase = 'http://seriesgate.tv'
+        linkbase = 'http://seriesgate.me'
         mainimg = mainimg
         #link = net.http_GET(url).content
         #match=re.compile('href="(.+?)">More Links').findall(link)
         #for surl in match:
            #url = linkbase + surl
-        url = url +'searchresult/'    
+        #url = url +'searchresult/'    
             
                 
   
@@ -188,8 +181,10 @@ def SGTVLINKPAGE(url,name,thumb,mainimg):
                    
         if inc < 50:
                  link = net.http_GET(url).content
-                 hostmatch=re.compile('<a rel="nofollow" href="(.+?)" TARGET="_blank" >(.+?)</a>').findall(link)        
-                 for urls,sourcename in hostmatch:
+                 #hostmatch=re.compile('<a rel="nofollow" href="(.+?)" TARGET="_blank" >(.+?)</a>').findall(link)
+                 hostmatch=re.compile('hre_watch" href="(.+?)">').findall(link)
+                 #for urls,sourcename in hostmatch:
+                 for urls in hostmatch:        
                    print 'Pre HMF url is  ' +urls
                    hmf = urlresolver.HostedMediaFile(urls)
                   ##########################################
@@ -238,8 +233,10 @@ def SGSEARCHINDEX (url):
               #net.set_cookies(cookiejar)
         link = net.http_GET(url).content
         match=re.compile('</a><div class = ".+?" style=".+?"><div class = ".+?"><a href = "(.+?)">(.+?)</a>').findall(link)
+        #match=re.compile('<a href="(.+?)">&raquo (.+?) - (.+?)  (.+?)</a>').findall(link)
         if len(match) > 0:
          for url,name in match:
+         #for url,season,episode,name in match:        
                 
                 inc = 0
                 #movie_name = fullyear[:-6]
@@ -252,7 +249,7 @@ def SGSEARCHINDEX (url):
                 year = str(yeargrab)               
                 dlfoldername = name
                 favtype = 'tvshow'
-                main.addDir(name,url,'sgepisodelist',thumb,data,favtype)
+                main.addDir(name,basetv_url + url,'sgepisodelist',thumb,data,favtype)
                 
                 #main.addSDir(movie_name +'('+ year +')',basetv_url + url,'episodes',thumb,year,favtype)
                 
