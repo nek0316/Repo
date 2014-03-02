@@ -67,7 +67,7 @@
 </extension>
 </addon>
 
-<addon id="plugin.video.moviedb" version="1.8.5" name="MDB Ultra" provider-name="Blazetamer">
+<addon id="plugin.video.moviedb" version="1.9.0" name="MDB Ultra" provider-name="Blazetamer">
 <requires>
 <import addon="xbmc.python" version="2.1.0"/>
 <import addon="script.module.urlresolver"  version="2.1.2"/>
@@ -87,6 +87,28 @@
 <description>- MDB Ultra ** Includes iLive Streams and Streams  Submitted by users, Movies, Tv Shows, Cartoons and Sports from several source websites. Content is updated daily. Download Movies and Shows to your libray with a Queue!! See the Special Menus section within the addon for more information!</description>
 <forum>http://www.xbmchub.com/forums/blazetamers-repository/17959-%5Brelease%5D-mdb-ultra-video-addon.html</forum>
 <website>http://www.xbmchub.com/</website>
+
+<platform>all</platform>
+</extension>
+</addon>
+
+<addon id="plugin.video.movievault" version="2.3.6" name="Movie Vault BETA" provider-name="[COLOR red]TEST[/COLOR]">
+<requires>
+<import addon="xbmc.python" version="2.1.0"/>
+<import addon="script.module.urlresolver"  version="2.0.9"/>
+<import addon="script.module.metahandler" version="1.0.0" />
+<import addon="script.module.t0mm0.common" version="1.1.0"/>
+<import addon="script.module.mechanize" version="0.2.6"/>
+<import addon="script.common.plugin.cache" version="0.9.1"/>
+
+
+</requires>
+<extension point="xbmc.python.pluginsource" library="default.py">
+<provides>video</provides>
+</extension>
+<extension point="xbmc.addon.metadata">
+<summary>Beta Addon</summary>
+<description>Desription will go here</description>
 
 <platform>all</platform>
 </extension>

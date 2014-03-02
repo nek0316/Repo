@@ -1,10 +1,12 @@
+V2.0.0
+Added iLive Favorites management system
+Added Auto Update systemforminor "on the fly" updates
+
 V1.8.5
 Cleaned  Code
 Added more user friendly Announcement console
 Repaired and added a better way to stream from iLive
 Various bug fixes 
-Some new content and other menu options are available in the settings menu under
-enable/disable.
 
 V1.8.0
 Added Search to iLive Streams

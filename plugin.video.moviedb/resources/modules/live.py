@@ -31,7 +31,7 @@ except:
 #addon = Addon(addon_id, sys.argv)
 addon = main.addon
 # Cache  
-cache = StorageServer.StorageServer("MovieDB", 0)
+streamcache = StorageServer.StorageServer("MovieDBfavs", 0)
 
 
 mode = addon.queries['mode']
@@ -127,6 +127,7 @@ def LIVERESOLVE(name,url,thumb):
   
 
 def addDir(name,url,mode,thumb,desc,favtype):
+        
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'desc':desc}
         fanart = thumb
         if thumb == artwork + 'icon.png':
@@ -143,6 +144,9 @@ def addDir(name,url,mode,thumb,desc,favtype):
         #liz.setProperty( "Addon.Description", desc )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok
+
+
+        
 #==============================Attempt to scrape Ilive.to==============================================================
 
 def ILIVEMAIN():
@@ -204,8 +208,8 @@ def ILIVELISTS(menuurl):
                 print 'MENUURL IS '+ menuurl
                 urllist = [menuurl]
                 
-                urllistlist = str(urllist)
-                print 'URLLIST is ' + urllistlist
+                #urllistlist = str(urllist)
+                #print 'URLLIST is ' + urllistlist
 
         dialogWait = xbmcgui.DialogProgress()
         ret = dialogWait.create('Loading Menu..Standby...')
@@ -218,7 +222,7 @@ def ILIVELISTS(menuurl):
                 link=link.replace('\r','').replace('\n','').replace('\t','').replace('&nbsp;','')
                 match=re.compile('src=".+?" alt=".+?<img width=".+?" height=".+?" src="([^<]+)" alt=".+?"/></noscript></a><a href="(.+?)"><strong>(.*?)</strong></a><br/>').findall(link)
                 for thumb,url,name in match:
-                        addDir(name,url,'iliveplaylink',thumb,'','')
+                        addFavDir(name,url,'iliveplaylink',thumb,'','')
                                       
                 gotpages = gotpages + 1
                 percent = (gotpages * 100)/gotpages
@@ -312,3 +316,100 @@ def SEARCHLINKS(urllist):
                 else:
                         addDir('[COLOR red]None Found Try again[/COLOR]','http://www.ilive.to/channels/?q=','searchilive','','','')
         
+
+
+
+
+
+
+
+def PLAYFAVS(name,url,thumb):
+        queue = streamcache.get('queue')
+        if queue:
+          queue_items = sorted(eval(queue), key=lambda item: item[1])
+          for item in queue_items:
+               name = item[0]
+               url = item[1]
+               thumb = item[2]
+               print 'PLAY URL IS ' + url
+               main.RESOLVE(name,url,thumb)
+               
+  
+               
+  
+
+
+     
+
+def addFavDir(name,url,mode,thumb,desc,favtype):
+        contextMenuItems = []
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'desc':desc}
+
+        contextMenuItems.append(('[COLOR red]Add to Live Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'addtofavs', 'name': name,'url': url,'thumb': thumb})))
+        fanart = thumb
+        if thumb == artwork + 'icon.png':
+                fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'
+        elif thumb == '-':
+                fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'        
+        if desc == '':
+                desc = 'Description not available at this level'
+        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
+        ok=True
+        liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumb)
+        liz.setInfo( type="Video", infoLabels={ "title": name, "Plot": desc } )
+        liz.setProperty( "Fanart_Image", fanart )
+        #liz.setProperty( "Addon.Description", desc )
+        addon.add_directory(params, {'title':name}, contextmenu_items=contextMenuItems, img= thumb)
+
+def addRemoveDir(name,url,mode,thumb,desc,favtype):
+        contextMenuItems = []
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'desc':desc}
+
+        contextMenuItems.append(('[COLOR red]Remove From Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removefromfavs', 'name': name,'url': url,'thumb': thumb})))
+        fanart = thumb
+        if thumb == artwork + 'icon.png':
+                fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'
+        elif thumb == '-':
+                fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'        
+        if desc == '':
+                desc = 'Description not available at this level'
+        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
+        ok=True
+        liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumb)
+        liz.setInfo( type="Video", infoLabels={ "title": name, "Plot": desc } )
+        liz.setProperty( "Fanart_Image", fanart )
+        #liz.setProperty( "Addon.Description", desc )
+        addon.add_directory(params, {'title':name}, contextmenu_items=contextMenuItems, img= thumb)            
+     
+def ADDTOFAVS(name,url,thumb):
+     queue = streamcache.get('queue')
+     queue_items = []
+     if queue:
+          queue_items = eval(queue)
+          if queue_items:
+               if (name,url,thumb,ext,console) in queue_items:
+                    addon.show_small_popup(title='[COLOR red]Item Already In Your Favorites[/COLOR]', msg=name + ' Is Already In Your Favorite List', delay=int(5000), image=thumb)
+                    return
+     queue_items.append((name,url,thumb))         
+     streamcache.set('queue', str(queue_items))
+     addon.show_small_popup(title='[COLOR gold]Item Added To Your Favorites [/COLOR]', msg=name + ' Was Added To Your Favorite List', delay=int(5000), image=thumb)
+
+def VIEWFAVS():
+     addDir('[COLOR blue]Favorite Streams[/COLOR]','none','viewfavs',artwork +'playfavs.jpg','','')
+     queue = streamcache.get('queue')
+     if queue:
+          queue_items = sorted(eval(queue), key=lambda item: item[1])
+          print queue_items
+          for item in queue_items:
+               addRemoveDir(item[0],item[1],'iliveplaylink',item[2],'','')
+
+
+def REMOVEFROMFAVS(name,url,thumb):
+     queue = streamcache.get('queue')
+     if queue:
+          queue_items = sorted(eval(queue), key=lambda item: item[1])
+          print queue_items
+          queue_items.remove((name,url,thumb,))
+          streamcache.set('queue', str(queue_items))
+          xbmc.executebuiltin("XBMC.Container.Refresh")               
+               

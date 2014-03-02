@@ -18,6 +18,7 @@ from resources.modules import moviedc
 from resources.modules import sgate
 from resources.modules import chia, supertoons, phub
 from resources.modules import chanufc, epornik, live
+from resources.utils import autoupdate
 
 try:
         from addon.common.addon import Addon
@@ -45,12 +46,27 @@ base_url = 'http://www.merdb.ru/'
 
 
 #PATHS
-#language            = xbmcaddon.Addon().getLocalizedString
+datapaths = xbmc.translatePath(ADDON.getAddonInfo('profile'))
+UpdatePath=os.path.join(datapaths,'Update')
+try: os.makedirs(UpdatePath)
+except: pass
+StreamPath=os.path.join(datapaths,'Stream Files')
+try: os.makedirs(StreamPath)
+except: pass
+CookiesPath=os.path.join(datapaths,'Cookies')
+try: os.makedirs(CookiesPath)
+except: pass
+DownloadPath=os.path.join(datapaths,'Downloads')
+try: os.makedirs(DownloadPath)
+except: pass
+
+
 artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
 settings = xbmcaddon.Addon(id='plugin.video.moviedb')
 addon_path = os.path.join(xbmc.translatePath('special://home/addons'), '')
 fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'
-vernum = '1.8.5'
+#vernum=settings.getAddonInfo('version')
+#print 'Loading version is  ' + vernum
 #========================Alternate Param Stuff=======================
 mode = addon.queries['mode']
 url = addon.queries.get('url', '')
@@ -85,6 +101,7 @@ if settings.getSetting('debug') == 'true':
 #======================== END Advanced Log Stuff=======================        
         
 #########################Blazetamer's Startup Module########################################
+
 cookiejar = addon.get_profile()
 cookiejar = os.path.join(cookiejar,'cookies.lwp')
 def LogNotify(title,message,times,icon):
@@ -95,14 +112,44 @@ def UPLOADLOGFILE():
     from resources.modules import logup
     logup.LogUploader()
         
-def STARTUP():        
-        if settings.getSetting('version_number') == vernum:
-                CHECK_POPUP()
-        else:
-                confirm=xbmcgui.Dialog().yesno("MDB UPDATE INSTALLED","                              MDB Ultra has been upgraded","                        Thank you for your continued support!              ","                    ","Cancel","Continue")
+def STARTUP():
+        myversion=CheckVersion()
+        if myversion == True:
+                        print 'Version is TRUE'
+        
+        if myversion ==False:
+                        print 'Version is FALSE'
+        CHECK_POPUP()
+        
+def CheckVersion():
+    curver=xbmc.translatePath(os.path.join('special://home/addons/plugin.video.moviedb/','addon.xml'))    
+    source= open( curver, mode = 'r' )
+    link = source . read( )
+    source . close ( )
+    match=re.compile('" version="(.+?)" name="MDB Ultra"').findall(link)
+    for vernum in match:
+            print 'Original Version is ' + vernum
+    try:
+        link=OPEN_URL('https://raw.github.com/Blazetamer/mdbautoupdate/master/plugin.video.moviedb/addon.xml')
+    except:
+        link='nill'
+
+    link=link.replace('\r','').replace('\n','').replace('\t','').replace('&nbsp;','')
+    match=re.compile('" version="(.+?)" name="MDB Ultra"').findall(link)
+    if len(match)>0:
+        if vernum != str(match[0]):
+                dialog = xbmcgui.Dialog()
+                confirm=xbmcgui.Dialog().yesno('[B]MDB Ultra Update Available![/B]', "                              Your version is outdated." ,'                    The current available version is [COLOR blue]'+str(match[0])+'[/COLOR]','                         Would you like to update now?',"Cancel","Update")
+                #return False
                 if confirm:
-                        settings.setSetting('version_number', vernum)
-                        CHECK_POPUP()
+                        autoupdate.UPDATEFILES()
+                return False
+        else:
+                return True
+    
+    else:
+        return False
+
 
 def SPECIALANN():
 
@@ -115,7 +162,7 @@ def SPECIALANN():
                 if settings.getSetting('announce') == 'true':
                          if today == popdate:
                                  status.ADDONSTATUS('http://goo.gl/A6A9oe')
-                                 #ADVERT()
+                                 
               
                 CATEGORIES('false')
 
@@ -139,9 +186,8 @@ def CHECK_POPUP():
 #************************End Stratup****************************************************************************
 
 
+
 def CATEGORIES(loggedin):
-        #main.addDir('[COLOR blue][B]MDB ULTRA Main Menu[/B] [/COLOR]','none','categories',artwork +'icon.png','','dir')
-        #main.addDir('[COLOR blue]**Choose an Option Below**[/COLOR]','none','categories',artwork +'icon.png','','dir')
         if settings.getSetting('adult') == 'true':
                 text_file = None
                 if not os.path.exists(xbmc.translatePath("special://home/userdata/addon_data/plugin.video.moviedb/")):
@@ -172,28 +218,29 @@ def CATEGORIES(loggedin):
                 live.addDir('[COLOR white]Sports[/COLOR]','none','sportcats',artwork +'sports.jpg','Sports such as UFC and more!',artwork +'sports.jpg')
         if settings.getSetting('streams') == 'true':        
                 live.addDir('[COLOR white]Live Streams[/COLOR]','http://goo.gl/1EMDrC','livecats',artwork +'live.jpg','Live streams from around the globe, User Sumbitted streams are also available, Be sure to check the special events section!!',artwork +'live.jpg')
-        #==============Menu Creation====================================== 
+                live.addDir('[COLOR blue]Live Streams(Favorites)[/COLOR]','none','viewfavs',artwork +'livefav.jpg','Manage and View your Favorite Live Streams',artwork +'livefav.jpg')
+        #==============Custom Menu Creation====================================== 
         link=OPEN_URL('http://goo.gl/5niFwn').replace('\n','').replace('\r','')
         match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail><mode>(.+?)</mode><desc>(.+?)</desc>').findall(link)
         for name,url,thumb,mode,desc in match:
                 print 'Description is  ' + desc
                 live.addDir(name,url,mode,thumb,desc,thumb)
-        #==============End Menu Creation==================================        
+        #==============End Custom Menu Creation==================================        
         if settings.getSetting('resolver') == 'true':
-                live.addDir('[COLOR gold]Resolver Settings[/COLOR]','none','resolverSettings',artwork +'resolversettings.jpg','Adjust your resolver settings here',artwork +'resolversettings.jpg')
+                live.addDir('[COLOR blue]Resolver Settings[/COLOR]','none','resolverSettings',artwork +'resolversettings.jpg','Adjust your resolver settings here',artwork +'resolversettings.jpg')
         if settings.getSetting('addons') == 'true':        
-                live.addDir("[COLOR gold]Browse More Addons by Blazetamer[/COLOR]",'http://addons.xbmchub.com/author/Blazetamer/','addonlist',artwork +'moreaddons.jpg','Check out and install more of my add-ons here.',artwork +'moreaddons.jpg')
-                live.addDir('[COLOR gold]Get the Addon Browser Here[/COLOR]','http://addons.xbmchub.com/search/?keyword=browser','addonlist',artwork +'addonbrowser.jpg','Need the legendary Addon Browser?  Get it now!!',artwork +'addonbrowser.jpg')
+                live.addDir("[COLOR blue]Browse More Addons by Blazetamer[/COLOR]",'http://addons.xbmchub.com/author/Blazetamer/','addonlist',artwork +'moreaddons.jpg','Check out and install more of my add-ons here.',artwork +'moreaddons.jpg')
+                live.addDir('[COLOR blue]Get the Addon Browser Here[/COLOR]','http://addons.xbmchub.com/search/?keyword=browser','addonlist',artwork +'addonbrowser.jpg','Need the legendary Addon Browser?  Get it now!!',artwork +'addonbrowser.jpg')
         if settings.getSetting('special') == 'true':        
-                live.addDir('[COLOR gold]Special Menus/Extras[/COLOR]','none','pop',artwork +'specialmenu.jpg','View Special Menus and more',artwork +'specialmenu.jpg')
-                live.addDir('[COLOR gold]Display Latest Announcement(s)[/COLOR]','http://goo.gl/A6A9oe','addonstatus',artwork +'announcements.jpg','In case you missed the latest announcements, You can view them manually here.',artwork +'announcements.jpg')
+                live.addDir('[COLOR blue]Special Menus/Extras[/COLOR]','none','pop',artwork +'specialmenu.jpg','View Special Menus and more',artwork +'specialmenu.jpg')
         live.addDir('[COLOR blue]Manage Downloads[/COLOR]','none','viewQueue',artwork +'downloadsmanage.jpg','Manage your download queue, Start, stop and or remove items from the Queue',artwork +'downloadsmanage.jpg')
         live.addDir('[COLOR blue]Upload Logfile[/COLOR]','none','uploadlogfile',artwork +'uploadlog.jpg','Need to upload a logfile? Here is the place to do it, Set your email from the addon settings area if you want a link emailed to you. .',artwork +'uploadlog.jpg')
+        live.addDir('[COLOR blue]Display Latest Announcement(s)[/COLOR]','http://goo.gl/A6A9oe','addonstatus',artwork +'announcements.jpg','In case you missed the latest announcements, You can view them manually here.',artwork +'announcements.jpg')
+#======================Developer Testing Section========================================================================
+        #live.addDir('[COLOR blue]Test Update[/COLOR]','none','updatefiles','','','')
+        #main.addDir('[COLOR blue]Test Functions[/COLOR]','none','testfunction',artwork +'shutdown.png','','dir')
         
-#======================Developer Testing Section========================================================================        
-        #main.addDir('[COLOR gold]Test Functions[/COLOR]','none','testfunction',artwork +'shutdown.png','','dir')
-        
-        main.AUTO_VIEW('movies')
+        main.AUTO_VIEW('')
 
 def TESTFUNCTION():
 
@@ -203,8 +250,6 @@ def TESTFUNCTION():
                 
                 testwin = TEST(winxml,'http://addonrepo.com/xbmchub/moviedb/','DefaultSkin',close_time=60,logo_path='%s/resources/skins/DefaultSkin/media/Logo/'%ADDON.getAddonInfo('path'))
                 testwin.doModal()
-                #MERDBMOVIES()
-                #xbmc.executebuiltin ("PreviousMenu")
                 del testwin
 
                 
@@ -255,7 +300,7 @@ def MERDBMOVIES():
         main.addDir('Movies by Genre','none','genres',artwork +'genre.jpg','','dir')
         main.addDir('Movies by Release Date','http://www.merdb.ru/?sort=year','movieindex',artwork +'releasedate.jpg','','dir')
         main.addDir('Movies by Date Added','http://www.merdb.ru/?sort=stamp','movieindex',artwork +'dateadded.jpg','','dir')
-        main.addDir('[COLOR gold]Search Movies[/COLOR]','http://www.merdb.ru/?search=','searchm',artwork + 'search.jpg','','dir')
+        main.addDir('[COLOR blue]Search Movies[/COLOR]','http://www.merdb.ru/?search=','searchm',artwork + 'search.jpg','','dir')
         main.AUTO_VIEW('')
         
         
@@ -264,7 +309,7 @@ def MERDBMOVIES():
 def MOVIECAT():
         main.addDir('Movies [COLOR red](MerDB)[/COLOR] ','none','merdbmovies',artwork +'merdbmovies.jpg','','dir')
         main.addDir('Movies [COLOR red](Movie DataCenter)[/COLOR]','none','moviedccats',artwork +'moviedcmovies.jpg','','dir')
-        main.addDir('[COLOR gold]**More Movies Coming Soon**[/COLOR]','none','moviecat',artwork +'merdbmovies.jpg','','dir')
+        main.addDir('[COLOR blue]**More Movies Coming Soon**[/COLOR]','none','moviecat',artwork +'merdbmovies.jpg','','dir')
         
         
         main.AUTO_VIEW('')
@@ -272,18 +317,18 @@ def MOVIECAT():
 def TVCATS():        
         main.addDir('TV Shows [COLOR red](MerDB)[/COLOR]','none','merdbtvcats',artwork +'merdbtv.jpg','','dir')
         main.addDir('TV Shows [COLOR red](Series Gate)[/COLOR]','none','sgcats',artwork +'sgatetv.jpg','','dir')
-        main.addDir('[COLOR gold]**More TV Shows Coming Soon**[/COLOR]','none','tvcats',artwork +'merdbtv.jpg','','dir')
+        main.addDir('[COLOR blue]**More TV Shows Coming Soon**[/COLOR]','none','tvcats',artwork +'merdbtv.jpg','','dir')
         
         main.AUTO_VIEW('')
   
 def CARTOONCATS():
         main.addDir('[COLOR white]Chia-Anime[/COLOR]','none','chiacats',artwork +'chiaanime.jpg','','dir')
         main.addDir('[COLOR white]SuperToons[/COLOR]','none','supertoonscats',artwork +'supertoons.jpg','','dir')
-        main.addDir('[COLOR gold]**More Cartoons Coming Soon**[/COLOR]','none','cartooncats',artwork +'comingsoon.jpg','','dir')
+        main.addDir('[COLOR blue]**More Cartoons Coming Soon**[/COLOR]','none','cartooncats',artwork +'comingsoon.jpg','','dir')
         
 def SPORTCATS():
         main.addDir('[COLOR white]UFC[/COLOR]','none','chanufccats',artwork +'ufc.jpg','','dir')
-        main.addDir('[COLOR gold]**More Sports Coming Soon** [/COLOR]','none','sportcats',artwork +'comingsoon.jpg','','dir')
+        main.addDir('[COLOR blue]**More Sports Coming Soon** [/COLOR]','none','sportcats',artwork +'comingsoon.jpg','','dir')
         
 def ADULTCATS():
         main.addDir('[COLOR white]PornHub[/COLOR]','none','phcategories',artwork +'pornhub.png','','dir')
@@ -1145,7 +1190,23 @@ elif mode=='iliveplaylink':
 
 elif mode=='searchilive':
         print ""+url
-        live.SEARCHILIVE(url)    
+        live.SEARCHILIVE(url)
+
+elif mode=='addtofavs':
+        print ""+url
+        live.ADDTOFAVS(name,url,thumb)
+
+elif mode=='removefromfavs':
+        print ""+url
+        live.REMOVEFROMFAVS(name,url,thumb)
+
+elif mode=='playfavs':
+        print ""+url
+        live.PLAYFAVS(name,url,thumb)        
+
+elif mode=='viewfavs':
+        print ""+url
+        live.VIEWFAVS()        
 
 
 #=============END LIVE STREAMS
@@ -1196,7 +1257,10 @@ elif mode=='phsearch':
 elif mode=='uploadlogfile':UPLOADLOGFILE()
 elif mode=='advert':ADVERT()
 
-#=================================================
+#===================Update Files=====================
+
+elif mode=='updatefiles':
+        autoupdate.UPDATEFILES()
         
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
 

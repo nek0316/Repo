@@ -6,8 +6,6 @@
 <setting id="anno_int" type="number" label="Announcement Interval (Days)" default="1" visible="true" enable="!eq(-1,false)"/>
 
 <setting id="pop_time" type="text" label="Last Announcement Shown " default="2000-01-01 00:00:00" visible="true"enable="false"/>
-	
-<setting id="version_number" type="text" label="Current Version" default="1.0.0" visible="true"enable="false" />
 
 </category>
 
