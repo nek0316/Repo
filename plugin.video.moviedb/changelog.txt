@@ -1,3 +1,17 @@
+V2.0.5
+Added ability to stream movies encoded for any url resolver
+capable url
+Added more code enhancements for speed improvement  
+
+V2.0.4
+Bug Fix to Merdb TV SHow page 2 display
+
+V2.0.3
+Added ability to upload errors "directly to Blazetamer"
+
+V2.0.2
+Deals with iLive changes again
+
 V2.0.0
 Added iLive Favorites management system
 Added Auto Update systemforminor "on the fly" updates

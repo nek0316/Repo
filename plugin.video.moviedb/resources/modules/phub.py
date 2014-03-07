@@ -6,7 +6,7 @@ import urlresolver
 import cookielib
 import downloader
 from resources.modules import main
-
+from resources.utils import buggalo
 
 try:
         from addon.common.addon import Addon
@@ -47,6 +47,7 @@ repourl = addon.queries.get('repourl', '')
 baseurl = 'http://www.pornhub.com'
 
 def PHCATEGORIES():
+   try:        
     
     addDir('Amature Video','http://www.pornhub.com/video?c=3','phindex','http://cdn1a.static.pornhub.phncdn.com/images/categories/3.jpg')
     addDir('Bi-Sexual','http://www.pornhub.com/video?c=76','phindex','http://cdn1a.static.pornhub.phncdn.com/images/categories/76.jpg')
@@ -75,8 +76,11 @@ def PHCATEGORIES():
     addDir('Top Rated','http://www.pornhub.com/video?o=tr','phindex','')
     addDir('All Videos','http://www.pornhub.com/video','phindex','')
     main.AUTO_VIEW('')
-    
+   except Exception:
+        buggalo.onExceptionRaised()
+        
 def OPEN_URL(url):
+           
   req=urllib2.Request(url)
   req.add_header('User-Agent','Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
   response=urllib2.urlopen(req)
@@ -85,24 +89,32 @@ def OPEN_URL(url):
   return link    
     
 def PHINDEX(url):
+   try:
     link=OPEN_URL(url)
     match=re.compile('href="(.+?)" title="(.+?)" class=".+?" data-related-url=".+?">\r\n\t\t\t\t\t\t\t\t\t<div class=".+?">\r\n\t\t\t\t<var class=".+?">.+?</var>\r\n\t\t\t\t\t\t\t</div>\r\n\t\t\t<img src=".+?" alt=".+?" data-smallthumb=".+?" data-mediumthumb="(.+?)"').findall(link)
     for url, name,thumb in match:
             addDir(name,baseurl + url,'phvideolinks',thumb)
     main.AUTO_VIEW('movies')
-
+   except Exception:
+        buggalo.onExceptionRaised()
                 
 def PHVIDEOLINKS(url,name):
+   try:        
         link=OPEN_URL(url)
         match=re.compile('iframe src=&quot;(.+?)&quot;').findall(link)
         for url in match:
                  EMBED(url,name)
-
+   except Exception:
+        buggalo.onExceptionRaised()
+        
 def EMBED(url,name):
+   try:        
         link=OPEN_URL(url)
         match=re.compile('data-src="(.+?)" poster="(.+?)"').findall(link)
         for url,iconimage in match:
-                 addLink(name,url,iconimage)                 
+                 addLink(name,url,iconimage)
+   except Exception:
+        buggalo.onExceptionRaised()                
                
 
 #Start Ketboard Function                

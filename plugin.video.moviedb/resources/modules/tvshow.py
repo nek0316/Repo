@@ -5,7 +5,7 @@
 import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,urlresolver,xbmc,os,xbmcaddon,main
 
 from metahandler import metahandlers
-
+from resources.utils import buggalo
 
 try:
         from addon.common.addon import Addon
@@ -58,16 +58,16 @@ artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/
 grab=metahandlers.MetaData()
 net = Net()
 
-basetv_url ='http://www.merdb.ru'
+basetv_url ='http://www.merdb.cn/'
+basetvshow_url ='http://www.merdb.cn/tvshow'
 base_url ='http://www.merdb.ru'
 def LogNotify(title,message,times,icon):
         xbmc.executebuiltin("XBMC.Notification("+title+","+message+","+times+","+icon+")")
 
 
 def MERDBTVCATS():
-
-    
-          main.addDir('All TV Shows','http://www.merdb.ru/tvshow/','tvindex',artwork + 'all.jpg','','dir')
+   try:    
+          main.addDir('All TV Shows','http://www.merdb.cn/tvshow/index.php','tvindex',artwork + 'all.jpg','','dir')
           main.addDir('Featured TV Shows','http://www.merdb.ru/tvshow/?sort=featured','tvindex',artwork + 'featured.jpg','','dir')
           main.addDir('TV Shows by Popularity','http://www.merdb.ru/tvshow/?featured=1&sort=views','tvindex',artwork + 'popular.jpg','','dir')
           main.addDir('TV Shows by Rating','http://www.merdb.ru/tvshow/?featured=1&sort=ratingp','tvindex',artwork + 'rating.jpg','','dir')
@@ -76,19 +76,11 @@ def MERDBTVCATS():
           main.addDir('[COLOR gold]Search TV Shows[/COLOR]','http://www.merdb.ru/tvshow/?search=','searchtv',artwork + 'search.jpg','','dir')
           
           main.AUTO_VIEW('')    
-
-
-
-
-
-               
-
-        
-
+   except Exception:
+        buggalo.onExceptionRaised()
         
 def TVINDEX (url):
-        #if settings.getSetting('tmovies_account') == 'true':  
-              #net.set_cookies(cookiejar)
+   try:
         link = net.http_GET(url).content
         match=re.compile('<img src="(.+?)" class=".+?" alt=".+?"/></a><div class=".+?"><a href="(.+?)" title="(.+?)">(.+?)</a>').findall(link)
         if len(match) > 0:
@@ -113,14 +105,14 @@ def TVINDEX (url):
          if len(nmatch) > 0: 
           for pageurl,pageno in nmatch:
                      
-                main.addDir('Page'+ pageno,basetv_url + pageurl,'movieindex',artwork +'nextpage.jpg','','dir')
+                main.addDir('Page'+ pageno,basetvshow_url + pageurl,'tvindex',artwork +'nextpage.jpg','','dir')
              
         main.AUTO_VIEW('tvshow')
-
+   except Exception:
+        buggalo.onExceptionRaised()
         
 def TVPLAYGENRE (url):
-        if settings.getSetting('tmovies_account') == 'true':  
-              net.set_cookies(cookiejar)
+   try:
         link = net.http_GET(url).content
         match=re.compile('<a href="(.+?)" title=".+?">\r\n                        <img src="(.+?)" class=".+?" style=".+?"  border=".+?" height=".+?" width=".+?" alt="Watch (.+?) Online for Free">\r\n').findall(link)
         if len(match) > 0:
@@ -140,12 +132,12 @@ def TVPLAYGENRE (url):
                     main.addDir('Next Page',(nmatch[0]),'tvplaygenre',artwork + 'nextpage.jpg','','dir')
              
                     main.AUTO_VIEW('')
-
+   except Exception:
+        buggalo.onExceptionRaised()
 
 
 def SEARCHSHOW(url):
-             if settings.getSetting('tmovies_account') == 'true':  
-              net.set_cookies(cookiejar)
+   try:             
              link = net.http_GET(url).content
              match=re.compile('<a href="(.+?)">\r\n        <img src=".+?" data-original="(.+?)"  class=".+?" style=".+?"  border=".+?" height=".+?" width=".+?" alt="Watch (.+?) Online for Free">\r\n').findall(link)
              if len(match) > 0:
@@ -159,10 +151,12 @@ def SEARCHSHOW(url):
                     if 'watch_tv_show' in url:
                               main.addTVDir(name,url,'episodes',thumb,data,types,'')
                               main.AUTO_VIEW('tvshows')
-
+   except Exception:
+        buggalo.onExceptionRaised()
 
                                 
 def EPISODES(url,name,thumb):
+   try:        
     params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb,} 
     dlfoldername = name
     mainimg = thumb
@@ -180,9 +174,11 @@ def EPISODES(url,name,thumb):
               main.addEPDir(name,base_url + url,thumb,'tvlinkpage',show,dlfoldername,mainimg,season,epnum)
              
               main.AUTO_VIEW('episode')
-
+   except Exception:
+        buggalo.onExceptionRaised()
 
 def TVLINKPAGE(url,name,thumb,mainimg):
+   try:        
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername,'mainimg':mainimg}
         inc = 0
         mainimg = mainimg
@@ -216,7 +212,9 @@ def TVLINKPAGE(url,name,thumb,mainimg):
                                         inc +=1
                                   except:
                                         continue
-                                   
+   except Exception:
+        buggalo.onExceptionRaised()
+        
 def DLTVVIDPAGE(url,name):
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':mainimg, 'dlfoldername':dlfoldername,}
         #link = net.http_GET(url).content

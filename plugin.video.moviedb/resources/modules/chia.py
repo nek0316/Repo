@@ -5,7 +5,7 @@
 import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,urlresolver,xbmc,os,xbmcaddon,main
 
 from metahandler import metahandlers
-
+from resources.utils import buggalo
 try:
         from addon.common.addon import Addon
 
@@ -56,16 +56,18 @@ def LogNotify(title,message,times,icon):
 
 
 def CHIACATS():
-
-    
+   try:    
      main.addDir('Latest Anime Episodes','http://www.chia-anime.com/','chialatest',artwork+'anime/latestepisodes.jpg','','dir')
      main.addDir('Anime by Genres','none','chiagenres',artwork+'anime/genre.jpg','','dir')
      main.addDir('A-Z','none','chiaalph',artwork+'anime/a-z.jpg','','dir')
      main.addDir('Search Anime ','http://www.chia-anime.com/search/','searchanime',artwork +'anime/search.jpg','','dir')     
-     main.AUTO_VIEW('')    
+     main.AUTO_VIEW('')
+   except Exception:
+        buggalo.onExceptionRaised()     
 
 
 def CHIALATEST(url):
+   try:        
      link = net.http_GET(url).content
      match=re.compile('<h3><a href="(.+?)" rel="bookmark" title="(.+?)">.+?</a></h3></div></center><div><span class="video-episode">.+?</span></div><div class="thumb" style="background: #000 url(.+?) no-repeat').findall(link)
      for url,name,thumb in match:
@@ -73,16 +75,22 @@ def CHIALATEST(url):
           thumb = thumb.replace(')','')
           main.addDir(name,url,'chiavidpage',thumb,'','')
           main.AUTO_VIEW('movies')
+   except Exception:
+        buggalo.onExceptionRaised()          
 
 def CHIAVIDPAGE(url,name):
+   try:        
      link = net.http_GET(url).content
      matchvid=re.compile('Watch via Mobile</font></a><a id="download" target="_blank" href="(.+?)">.+?MP4 Video format').findall(link)
      for url in matchvid:
           addCHIADLDir(name,url,'chialinkpage',thumb,'','','','')
           main.AUTO_VIEW('movies')
+   except Exception:
+        buggalo.onExceptionRaised()          
 
 
 def CHIAALPH():
+   try:        
      main.addDir('#','http://www.chia-anime.com/alpha/#','chiaalphmain',artwork+'anime/hash.jpg','','dir')
      main.addDir('A','http://www.chia-anime.com/alpha/A','chiaalphmain',artwork+'anime/a.jpg','','dir')
      main.addDir('B','http://www.chia-anime.com/alpha/B','chiaalphmain',artwork+'anime/b.jpg','','dir')
@@ -113,8 +121,11 @@ def CHIAALPH():
           
         
      main.AUTO_VIEW('')
+   except Exception:
+        buggalo.onExceptionRaised()     
 
 def CHIAGENRES(url):
+   try:        
      genreurl = 'http://www.chia-anime.com/?genre='
      main.addDir('Adventure',genreurl + 'adventure','chiagenremain',artwork+'/anime/adventure.jpg','','dir')
      main.addDir('Comedy',genreurl + 'comedy','chiagenremain',artwork+'/anime/comedy.jpg','','dir')
@@ -144,33 +155,44 @@ def CHIAGENRES(url):
      main.addDir('Martial Arts',genreurl + 'martial+arts','chiagenremain',artwork+'/anime/martialarts.jpg','','dir')
          
      main.AUTO_VIEW('')
+   except Exception:
+        buggalo.onExceptionRaised()     
               
 def CHIAGENREMAIN(url):
+   try:        
      link = net.http_GET(url).content
      match=re.compile('overflow:hidden;"> <a href="(.+?)" title="(.+?)"><img width=".+?" height=".+?" src="(.+?)"></a>').findall(link)
      for url,name,thumb in match:
           name = name.replace('View all episode in','')
           main.addDir(name,url,'chiaepisodes',thumb,'','')
           main.AUTO_VIEW('movies')
+   except Exception:
+        buggalo.onExceptionRaised()          
 
 def CHIASEARCH(url):
+   try:        
      link = net.http_GET(url).content
      match=re.compile('<img style="padding-left:0px;" width="135" height="190" src="(.+?)"></a></div><div class="title"><a href="(.+?)">(.+?)</a></div>').findall(link)
      for thumb,url,name in match:
           #name = name.replace('View all episode in','')
           main.addDir(name,url,'chialinkpage',thumb,'','')
-          main.AUTO_VIEW('movies')          
+          main.AUTO_VIEW('movies')
+   except Exception:
+        buggalo.onExceptionRaised()          
 
 def CHIAALPHMAIN(url):
+   try:        
      link = net.http_GET(url).content
      match=re.compile('<img width=".+?" height=".+?" src="(.+?)"></a></p></div></td><div style="width:.+?; float:.+?;"><td class=".+?" style=".+?; overflow:.+?;"><div style="height:.+?; width:.+?;"><div style=".+?;"><a href="(.+?)" title="(.+?)">').findall(link)
      for thumb,url,name in match:
           name = name.replace('View all episode in','')
           main.addDir(name,url,'chiaepisodes',thumb,'','')
           main.AUTO_VIEW('movies')
+   except Exception:
+        buggalo.onExceptionRaised()          
                
 def CHIAEPISODES(url,name,year,thumb):
-     
+   try:        
     dlfoldername = name 
     link = net.http_GET(url).content
     match=re.compile('background: #000 url(.+?) no-repeat.+?;" alt="(.+?)"><a href="(.+?)"').findall(link)             
@@ -184,15 +206,20 @@ def CHIAEPISODES(url,name,year,thumb):
          for url in matchvid:
               addCHIADLDir(name,url,'chialinkpage',thumb,'',dlfoldername,'',mainimg)
               main.AUTO_VIEW('movies')
+   except Exception:
+        buggalo.onExceptionRaised()              
           
                       
 
 def CHIALINKPAGE(url,name,thumb):
+   try:        
      params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb}
      link = net.http_GET(url).content
      matchsource = re.compile('class="bttn green" href="(.+?)">Save mp4 as Link</a>').findall(link)
      for url in matchsource:
           CHIARESOLVE(name,url,thumb)
+   except Exception:
+        buggalo.onExceptionRaised()          
      
         
 
@@ -231,14 +258,18 @@ def CHIARESOLVE(name,url,iconimage):
 
 
 def CHIADLVIDPAGE(url,name):
+   try:        
      params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername,}
      link = net.http_GET(url).content
      matchsource = re.compile('class="bttn green" href="(.+?)">Save mp4 as Link</a>').findall(link)
      for url in matchsource:
                 
-                CHIARESOLVEDL(name,url,thumb)         
+                CHIARESOLVEDL(name,url,thumb)
+   except Exception:
+        buggalo.onExceptionRaised()                
 
 def CHIARESOLVEDL(name,url,thumb):
+   try:        
                if '.mp4' in url:
                     ext = '.mp4'
                elif '.flv' in url:
@@ -256,6 +287,8 @@ def CHIARESOLVEDL(name,url,thumb):
                     xbmc.sleep(1000)
         
                     main.addToQueue(name,url,thumb,ext,console)#.play(url, liz, False)
+   except Exception:
+        buggalo.onExceptionRaised()                    
 
 #Start Ketboard Function                
 def _get_keyboard( default="", heading="", hidden=False ):

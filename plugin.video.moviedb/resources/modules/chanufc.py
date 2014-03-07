@@ -5,7 +5,7 @@
 import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,urlresolver,xbmc,os,xbmcaddon,main
 
 from metahandler import metahandlers
-
+from resources.utils import buggalo
 
 try:
         from addon.common.addon import Addon
@@ -61,24 +61,18 @@ def LogNotify(title,message,times,icon):
 
 
 def CHANUFCCATS():
-
+   try:
     
           main.addDir('UFC [COLOR red](ChannelCut)[/COLOR]','http://www.channelcut.me/category/ufc','chanufcindex',artwork + 'ufc.jpg','','dir')
           
           
-          main.AUTO_VIEW('')    
-
-
-
-
-
-               
-
-        
+          main.AUTO_VIEW('')
+   except Exception:
+        buggalo.onExceptionRaised()          
 
         
 def CHANUFCINDEX (url):
-        
+   try:        
         link = net.http_GET(url).content
         match=re.compile('<h2><a href="(.+?)" rel="bookmark" title="(.+?)">').findall(link)
         if len(match) > 0:
@@ -98,6 +92,8 @@ def CHANUFCINDEX (url):
                 main.addDir('[COLOR blue]Next Page>>[/COLOR]',pageurl,'chanufcindex',artwork +'nextpage.jpg','','dir')
              
         main.AUTO_VIEW('movies')
+   except Exception:
+           buggalo.onExceptionRaised()        
 
         
 
@@ -107,6 +103,7 @@ def CHANUFCINDEX (url):
 
 
 def UFCLINKPAGE(url,name):
+   try:        
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername,'mainimg':mainimg}
         inc = 0
         link = net.http_GET(url).content
@@ -128,6 +125,8 @@ def UFCLINKPAGE(url,name):
                                         inc +=1
                                   except:
                                         continue
+   except Exception:
+        buggalo.onExceptionRaised()                                
                                    
 
 

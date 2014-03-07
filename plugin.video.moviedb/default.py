@@ -19,7 +19,7 @@ from resources.modules import sgate
 from resources.modules import chia, supertoons, phub
 from resources.modules import chanufc, epornik, live
 from resources.utils import autoupdate
-
+from resources.utils import buggalo
 try:
         from addon.common.addon import Addon
 
@@ -39,6 +39,12 @@ except:
         from t0mm0.common.net import Net
         
 net = Net(http_debug=True)
+
+try:
+     from sqlite3 import dbapi2 as lite
+except:
+     from pysqlite2 import dbapi2 as lite
+
 newagent ='Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36'
 net.set_user_agent(newagent)
 
@@ -46,6 +52,7 @@ base_url = 'http://www.merdb.ru/'
 
 
 #PATHS
+buggalo.GMAIL_RECIPIENT ='blazetamer@gmail.com'
 datapaths = xbmc.translatePath(ADDON.getAddonInfo('profile'))
 UpdatePath=os.path.join(datapaths,'Update')
 try: os.makedirs(UpdatePath)
@@ -122,6 +129,7 @@ def STARTUP():
         CHECK_POPUP()
         
 def CheckVersion():
+   try:        
     curver=xbmc.translatePath(os.path.join('special://home/addons/plugin.video.moviedb/','addon.xml'))    
     source= open( curver, mode = 'r' )
     link = source . read( )
@@ -149,9 +157,13 @@ def CheckVersion():
     
     else:
         return False
+   except Exception:
+        buggalo.onExceptionRaised()
+
 
 
 def SPECIALANN():
+   try:        
 
         link=OPEN_URL('http://goo.gl/vyPZNT').replace('\n','').replace('\r','')
         match=re.compile('ate="(.+?)"').findall(link)
@@ -165,8 +177,11 @@ def SPECIALANN():
                                  
               
                 CATEGORIES('false')
+   except Exception:
+        buggalo.onExceptionRaised()                
 
 def CHECK_POPUP():
+   try:
         if settings.getSetting('announce') == 'true':
                 threshold = int(settings.getSetting('anno_int') ) - 1
                 now   = datetime.datetime.today()
@@ -182,12 +197,15 @@ def CHECK_POPUP():
                         SPECIALANN()
         if settings.getSetting('announce') == 'false':                
                 CATEGORIES('false')
+   except Exception:
+        buggalo.onExceptionRaised()                
                                                   
 #************************End Stratup****************************************************************************
 
 
 
 def CATEGORIES(loggedin):
+   try:        
         if settings.getSetting('adult') == 'true':
                 text_file = None
                 if not os.path.exists(xbmc.translatePath("special://home/userdata/addon_data/plugin.video.moviedb/")):
@@ -218,7 +236,7 @@ def CATEGORIES(loggedin):
                 live.addDir('[COLOR white]Sports[/COLOR]','none','sportcats',artwork +'sports.jpg','Sports such as UFC and more!',artwork +'sports.jpg')
         if settings.getSetting('streams') == 'true':        
                 live.addDir('[COLOR white]Live Streams[/COLOR]','http://goo.gl/1EMDrC','livecats',artwork +'live.jpg','Live streams from around the globe, User Sumbitted streams are also available, Be sure to check the special events section!!',artwork +'live.jpg')
-                live.addDir('[COLOR blue]Live Streams(Favorites)[/COLOR]','none','viewfavs',artwork +'livefav.jpg','Manage and View your Favorite Live Streams',artwork +'livefav.jpg')
+                live.addDir('[COLOR white]Live Streams(Favorites)[/COLOR]','none','viewfavs',artwork +'livefav.jpg','Manage and View your Favorite Live Streams',artwork +'livefav.jpg')
         #==============Custom Menu Creation====================================== 
         link=OPEN_URL('http://goo.gl/5niFwn').replace('\n','').replace('\r','')
         match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail><mode>(.+?)</mode><desc>(.+?)</desc>').findall(link)
@@ -238,20 +256,23 @@ def CATEGORIES(loggedin):
         live.addDir('[COLOR blue]Display Latest Announcement(s)[/COLOR]','http://goo.gl/A6A9oe','addonstatus',artwork +'announcements.jpg','In case you missed the latest announcements, You can view them manually here.',artwork +'announcements.jpg')
 #======================Developer Testing Section========================================================================
         #live.addDir('[COLOR blue]Test Update[/COLOR]','none','updatefiles','','','')
-        #main.addDir('[COLOR blue]Test Functions[/COLOR]','none','testfunction',artwork +'shutdown.png','','dir')
+        #live.addDir('[COLOR blue]Test Functions[/COLOR]','none','testfunction',artwork +'shutdown.png','','dir')
         
         main.AUTO_VIEW('')
+   except Exception:
+        buggalo.onExceptionRaised()        
 
 def TESTFUNCTION():
-
+   try:
         link=OPEN_URL('http://addonrepo.com/xbmchub/moviedb/controls/xmlcontroltest.txt').replace('\n','').replace('\r','')
         match=re.compile('name="(.+?)"').findall(link)
-        for winxml in match:
+        for winxml in match1:
                 
                 testwin = TEST(winxml,'http://addonrepo.com/xbmchub/moviedb/','DefaultSkin',close_time=60,logo_path='%s/resources/skins/DefaultSkin/media/Logo/'%ADDON.getAddonInfo('path'))
                 testwin.doModal()
                 del testwin
-
+   except Exception:
+        buggalo.onExceptionRaised()  
                 
 class TEST( xbmcgui.WindowXMLDialog ): 
     def __init__( self, *args, **kwargs ):
@@ -293,6 +314,7 @@ def SHUTDOWNXBMC():
 
 
 def MERDBMOVIES():
+   try:        
         main.addDir('All Movies','http://www.merdb.ru/','movieindex',artwork +'all.jpg','','dir')
         main.addDir('Featured Movies','http://www.merdb.ru/?featured=1&sort=stamp','movieindex',artwork +'featured.jpg','','dir')
         main.addDir('Movies by Popularity','http://www.merdb.ru/?sort=views','movieindex',artwork +'popular.jpg','','dir')
@@ -302,6 +324,8 @@ def MERDBMOVIES():
         main.addDir('Movies by Date Added','http://www.merdb.ru/?sort=stamp','movieindex',artwork +'dateadded.jpg','','dir')
         main.addDir('[COLOR blue]Search Movies[/COLOR]','http://www.merdb.ru/?search=','searchm',artwork + 'search.jpg','','dir')
         main.AUTO_VIEW('')
+   except Exception:
+        buggalo.onExceptionRaised()        
         
         
 
@@ -338,6 +362,7 @@ def ADULTCATS():
         
 
 def GENRES():
+   try:        
         genurl = 'http://www.merdb.ru/?genre='
         main.addDir('Action',genurl +'Action','movieindex',artwork +'action.jpg','','dir')
         main.addDir('Adventure',genurl +'Adventure','movieindex',artwork +'adventure.jpg','','dir')
@@ -359,9 +384,12 @@ def GENRES():
         main.addDir('War',genurl +'War','movieindex',artwork +'western.jpg','','dir')
         
         main.AUTO_VIEW('')
+   except Exception:
+        buggalo.onExceptionRaised()        
 
              
 def MOVIEINDEX(url):
+   try:        
         link = net.http_GET(url).content
         match=re.compile('<img src="(.+?)" class=".+?" alt=".+?"/></a><div class=".+?"><a href="(.+?)" title="Watch(.+?)">.+?</a>').findall(link)
         if len(match) > 0:
@@ -387,9 +415,12 @@ def MOVIEINDEX(url):
                 main.addDir('Page'+ pageno,base_url + pageurl,'movieindex',artwork +'nextpage.jpg','','dir')
              
         main.AUTO_VIEW('movies')
+   except Exception:
+        buggalo.onExceptionRaised()        
 
                  
 def MOVIEINDEX1(url):
+   try:        
         link = net.http_GET(url).content
         link = net.http_GET(url).content
         match=re.compile('<img src="(.+?)" class=".+?" alt=".+?"/></a><div class=".+?"><a href="(.+?)" title="Watch(.+?)">.+?</a>').findall(link)
@@ -421,10 +452,13 @@ def MOVIEINDEX1(url):
                       main.addDir('Page'+ pageno,base_url + pageurl,'movieindex',artwork +'nextpage.jpg','','dir')
              
         main.AUTO_VIEW('movies')
+   except Exception:
+        buggalo.onExceptionRaised()        
 
              
 
 def LINKPAGE(url,name):
+   try:        
         inc = 0
         movie_name = name[:-6]
         year = name[-6:]
@@ -462,6 +496,8 @@ def LINKPAGE(url,name):
                                           continue
                           #except:
                                   #pass
+   except Exception:
+        buggalo.onExceptionRaised()                                        
                    
 
 
@@ -1206,7 +1242,11 @@ elif mode=='playfavs':
 
 elif mode=='viewfavs':
         print ""+url
-        live.VIEWFAVS()        
+        live.VIEWFAVS()
+
+elif mode=='resolver':
+        print ""+url
+        live.RESOLVER(url,name)        
 
 
 #=============END LIVE STREAMS

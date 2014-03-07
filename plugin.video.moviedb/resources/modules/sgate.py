@@ -5,7 +5,7 @@
 import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,urlresolver,xbmc,os,xbmcaddon,main
 
 from metahandler import metahandlers
-
+from resources.utils import buggalo
 
 try:
         from addon.common.addon import Addon
@@ -64,25 +64,16 @@ def LogNotify(title,message,times,icon):
 
 
 def SGCATS():
-
-    
+   try:        
           main.addDir('All Series Gate TV Shows','http://seriesgate.me/tvshows/','sgindex',artwork + 'all.jpg','','dir')
           main.addDir('[COLOR gold]Search TV Shows[/COLOR]','http://seriesgate.me/search/indv_episodes/','searchsgtv',artwork + 'search.jpg','','dir')
           
           main.AUTO_VIEW('')    
-
-
-
-
-
-               
-
-        
-
+   except Exception:
+        buggalo.onExceptionRaised()
         
 def SGINDEX (url):
-        #if settings.getSetting('tmovies_account') == 'true':  
-              #net.set_cookies(cookiejar)
+   try:        
         link = net.http_GET(url).content
         match=re.compile('<a href = "(.+?)"><img src = "(.+?)" height=".+?/><div class = "_tvshow_title">(.+?)</div>').findall(link)
         if len(match) > 0:
@@ -111,9 +102,11 @@ def SGINDEX (url):
                 main.addDir('Page'+ pageno,basetv_url + pageurl,'movieindex',artwork +'nextpage.jpg','','dir')
              
         main.AUTO_VIEW('movies')
-
+   except Exception:
+        buggalo.onExceptionRaised()
                                 
 def SGEPISODES(url,name,thumb):
+   try:        
     params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb} 
     dlfoldername = name
     mainimg = thumb
@@ -126,8 +119,11 @@ def SGEPISODES(url,name,thumb):
               main.addEPNOCLEANDir(snumber,url,thumb,'sgepisodelist',show,dlfoldername,mainimg,'','')
              
               main.AUTO_VIEW('movies')
-
-def SGEPISODELIST(url,name,thumb):   
+   except Exception:
+        buggalo.onExceptionRaised()
+        
+def SGEPISODELIST(url,name,thumb):
+   try:        
     params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb}
     dlfoldername = name
     mainimg = thumb
@@ -144,7 +140,9 @@ def SGEPISODELIST(url,name,thumb):
               main.addEPNOCLEANDir(name,basetv_url + url,thumb,'sgtvlinkpage',show,dlfoldername,mainimg,season,epnum)
              
               main.AUTO_VIEW('movies')              
-
+   except Exception:
+        buggalo.onExceptionRaised()
+        
 '''def SGEPISODELIST(url,name,thumb):
     params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb} 
     #dlfoldername = name
@@ -163,6 +161,7 @@ def SGEPISODELIST(url,name,thumb):
 
 
 def SGTVLINKPAGE(url,name,thumb,mainimg):
+   try:        
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername,'mainimg':mainimg}
         inc = 0
         linkbase = 'http://seriesgate.me'
@@ -202,7 +201,8 @@ def SGTVLINKPAGE(url,name,thumb,mainimg):
                                         inc +=1
                                   except:
                                         continue
-                                   
+   except Exception:
+        buggalo.onExceptionRaised()                                   
 
 
 #Start Search Function
@@ -229,8 +229,7 @@ def SEARCHSGTV(url):
 
 
 def SGSEARCHINDEX (url):
-        #if settings.getSetting('tmovies_account') == 'true':  
-              #net.set_cookies(cookiejar)
+   try:        
         link = net.http_GET(url).content
         match=re.compile('</a><div class = ".+?" style=".+?"><div class = ".+?"><a href = "(.+?)">(.+?)</a>').findall(link)
         #match=re.compile('<a href="(.+?)">&raquo (.+?) - (.+?)  (.+?)</a>').findall(link)
@@ -260,5 +259,6 @@ def SGSEARCHINDEX (url):
                 main.addDir('Page'+ pageno,basetv_url + pageurl,'movieindex',artwork +'nextpage.jpg','','dir')
              
         main.AUTO_VIEW('movies')
-
+   except Exception:
+        buggalo.onExceptionRaised()
 

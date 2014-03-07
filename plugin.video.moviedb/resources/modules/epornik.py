@@ -11,7 +11,7 @@ from resources.modules import moviedc
 from resources.modules import sgate
 from resources.modules import chia
 from resources.modules import chanufc
-
+from resources.utils import buggalo
 try:
         from addon.common.addon import Addon
 
@@ -57,6 +57,7 @@ def CATEGORIES():
         addDir('Search','none','epornikSearch',artwork + '/main/search.png')
 
 def INDEX(url):
+   try:        
         np_url = ''
         link = net.http_GET(url).content
         match=re.compile('<a href=".+?">.+?</a>\n                        </div>\n                        <div class="img_preview_item"> <a href="(.+?)"><img src="(.+?)" width=".+?" height=".+?" alt="(.+?)" /></a>').findall(link)
@@ -88,7 +89,9 @@ def INDEX(url):
                 if len(np) > 0:
                         np_url = base_url + '/' + np[0]
                         addDir('[COLOR blue]Next Page>>[/COLOR]',np_url,'epornikIndex', artwork + '/main/next.png')
-        main.AUTO_VIEW('movies')               
+        main.AUTO_VIEW('movies')
+   except Exception:
+        buggalo.onExceptionRaised()        
 
                                    
 def SEARCH():
@@ -114,6 +117,7 @@ def addDir(name,url,mode,thumb):
 
 
 def PORNRESOLVE(name,url,thumb):
+   try:        
      meta = 0
      hmf = urlresolver.HostedMediaFile(url)
      host = ''
@@ -135,4 +139,6 @@ def PORNRESOLVE(name,url,thumb):
      xbmc.sleep(1000)
         
      xbmc.Player ().play(url, liz, False)
+   except Exception:
+        buggalo.onExceptionRaised()     
 
