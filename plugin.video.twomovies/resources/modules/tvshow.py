@@ -144,13 +144,13 @@ def TVPLAYYEAR (url):
                  thumb = data['cover_url']
                    
            types = 'tvshow'
-           main.addSDir(name,url,'episodes',thumb,'',types,data)
+           main.addSDir(name+'('+year+')',url,'episodes',thumb,'',types,data)
            nmatch=re.compile('<a id="next" class=".+?" href="(.+?)">Next &raquo</a>').findall(link)
         if len(nmatch) > 0:
         
                     main.addDir('Next Page',(nmatch[0]),'tvplayyear',artwork + '/tvshows/nextpage.png','','dir')
              
-                    main.AUTO_VIEW('')        
+                    main.AUTO_VIEW('tvshow')        
 def TVPLAYGENRE (url):
         if settings.getSetting('tmovies_account') == 'true':  
               net.set_cookies(cookiejar)
@@ -166,13 +166,13 @@ def TVPLAYGENRE (url):
                 
                    
              types = 'tvshow'
-             main.addSDir(name,url,'episodes',thumb,'',types,data)
+             main.addSDir(name+'('+year+')',url,'episodes',thumb,'',types,data)
              nmatch=re.compile('<a id="next" class=".+?" href="(.+?)">Next &raquo</a>').findall(link)
         if len(nmatch) > 0:
         
                     main.addDir('Next Page',(nmatch[0]),'tvplaygenre',artwork + '/tvshows/nextpage.png','','dir')
              
-                    main.AUTO_VIEW('')
+                    main.AUTO_VIEW('tvshow')
 
 
 
@@ -190,7 +190,7 @@ def SEARCHSHOW(url):
                          thumb = data['cover_url']
                     types = 'tvshow'
                     if 'watch_tv_show' in url:
-                              main.addTVDir(name,url,'episodes',thumb,data,types,'')
+                              main.addTVDir(name+'('+year+')',url,'episodes',thumb,data,types,'')
                               main.AUTO_VIEW('tvshows')
 
 
@@ -212,9 +212,9 @@ def EPISODES(url,name,thumb):
               se = s+e
               name = se + ' ' + epname
               favtype = 'episodes'
-              main.addEPDir(name,url,thumb,'tvlinkpage',show,dlfoldername,mainimg)
+              main.addEPDir(name,url,thumb,'tvlinkpage',show,dlfoldername,mainimg,season,episode)
              
-              main.AUTO_VIEW('episode')
+              main.AUTO_VIEW('tvshow')
 
 
 def TVLINKPAGE(url,name,thumb,mainimg):
@@ -223,11 +223,13 @@ def TVLINKPAGE(url,name,thumb,mainimg):
         mainimg = mainimg
         showname = name
         if settings.getSetting('tmovies_account') == 'true':  
-              net.set_cookies(cookiejar)
+              net.set_cookies(cookiejar)    
         link = net.http_GET(url).content
-        match=re.compile('href="(.+?)" target=".+?" rel=".+?" onclick=".+?">Full Movie</a>').findall(link)
+        link=link.replace('\r','').replace('\n','').replace('\t','').replace(' ','')
+        match=re.compile('href="http://twomovies.name/full_movie(.+?)"target="_blank"').findall(link)
+        #match=re.compile('href="(.+?)" target=".+?" rel=".+?" onclick=".+?">Full Movie</a>').findall(link)
         for url in match:
-                 
+          url = 'http://twomovies.name/full_movie'+url         
           '''if inc < 50:
                         link = net.http_GET(url).content
                         urls=re.compile('<iframe.*?src="(http://.+?)".*?>').findall(link)
@@ -324,7 +326,7 @@ def SEARCHTV(url):
 	print "Searching URL: " + searchUrl 
 	SEARCHSHOW(searchUrl)
 
-	main.AUTO_VIEW('movies')
+	main.AUTO_VIEW('tvshow')
 
 
 

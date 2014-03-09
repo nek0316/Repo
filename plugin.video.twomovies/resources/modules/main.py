@@ -504,9 +504,10 @@ def addSDir(name,url,mode,thumb,year,types,data):
 
 
 # Episode add DirFunction 
-def addEPDir(name,url,thumb,mode,show,dlfoldername,mainimg):
+def AaddEPDir(name,url,thumb,mode,show,dlfoldername,mainimg,season,episode):
         name = nameCleaner(name)
         contextMenuItems = []
+        fullname = name
         ep_meta = None
         show_id = None
         meta = None
@@ -548,6 +549,68 @@ def addEPDir(name,url,thumb,mode,show,dlfoldername,mainimg):
                addon.add_directory(params, ep_meta, fanart=fanart, img=thumb)
         else:
             addon.add_directory(params, {'title':name},fanart=fanart, img=thumb)
+            
+
+def addEPDir(name,url,thumb,mode,show,dlfoldername,mainimg,season,episode):
+        #params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'season':s, 'episode':e, 'show':show, 'types':'episode','dlfoldername':dlfoldername, 'mainimg':mainimg}
+        name = nameCleaner(name)
+        contextMenuItems = []
+        fullname = name
+        ep_meta = None
+        show_id = None
+        meta = None
+        othumb = thumb
+        if settings.getSetting('metadata') == 'true':
+          #meta = grab.get_meta('tvshow',dlfoldername,'',season,episode)
+          inc = 0
+          movie_name = show[:-6]
+          year = show[-6:]
+          print 'Meta Year is ' +year
+          print 'Meta Name is ' +movie_name
+          
+              
+          meta = GRABTVMETA(movie_name,year)
+          thumb = meta['cover_url']               
+          yeargrab = meta['year']
+          year = str(yeargrab)       
+          #meta = grab.get_meta('tvshow',name,'')
+          show_id = meta['imdb_id']
+          print 'IMDB ID is ' +show_id
+        else:
+          fanart = artwork + 'fanart.jpg'
+        s,e = GET_EPISODE_NUMBERS(name)
+        if settings.getSetting('metadata') == 'true':
+          try:
+              
+              ep_meta = GRABEPISODEMETA(show_id,season,episode,'')
+              if ep_meta['cover_url'] == '':
+                    thumb = mainimg
+              else:
+                    thumb = str(ep_meta['cover_url'])
+          except:
+               ep_meta=None
+               thumb = mainimg
+             
+        else:
+          thumb = othumb
+          if thumb == '':
+               thumb = mainimg
+     
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'season':season, 'episode':episode, 'show':show, 'types':'episode','dlfoldername':dlfoldername, 'mainimg':mainimg}        
+        if settings.getSetting('metadata') == 'true':
+         contextMenuItems.append(('[COLOR gold]Tv Show Information[/COLOR]', 'XBMC.Action(Info)'))
+         if ep_meta==None:
+               fanart = artwork + 'fanart.jpg'
+               addon.add_directory(params, {'title':name},contextmenu_items=contextMenuItems, img=thumb, fanart=fanart) 
+         else:
+               if meta['backdrop_url'] == '':
+                    fanart = artwork + 'fanart.jpg'
+               else:
+                    fanart = meta['backdrop_url']
+               ep_meta['title'] = name
+               addon.add_directory(params, ep_meta,contextmenu_items=contextMenuItems, fanart=fanart, img=thumb)
+        else:
+            addon.add_directory(params, {'title':name},contextmenu_items=contextMenuItems,fanart=fanart, img=thumb)            
      
 
 #Host directory function for  Host Dir , hthumb =  host thumb and should be grabbed using the 'GETHOSTTHUMB(host)' function before 

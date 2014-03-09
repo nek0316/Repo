@@ -8,6 +8,7 @@
 		<setting id="default-view" type="number" label="Default View" default="50" enable="!eq(-5,false)"/>
    	</category>
 
+
 <category label="Downloads">>
 <setting id="download_folder" type="folder" label="Downloads Folder" default="" />
 </category>

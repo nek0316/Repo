@@ -1,3 +1,6 @@
+V2.4.9
+Setup for Auto Update to start
+
 V2.4.8
 Quick Fix for sources not listing properly
 

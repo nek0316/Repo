@@ -14,6 +14,7 @@ import shutil
 from resources.modules import tvshow
 from metahandler import metahandlers
 from resources.modules import main
+from resources.utils import autoupdate
 
 try:
         from addon.common.addon import Addon
@@ -67,6 +68,56 @@ print 'Main Image is: ' + mainimg
 print 'Header_Dicts are ' + header_dict
 print 'Logged In Status is ' +loggedin
 #================DL END==================================
+def OPEN_URL(url):
+  req=urllib2.Request(url)
+  req.add_header('User-Agent','Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+  response=urllib2.urlopen(req)
+  link=response.read()
+  response.close()
+  return link
+
+def PRESTARTUP():
+        myversion=CheckVersion()
+        if myversion == True:
+                        print 'Version is TRUE'
+        
+        if myversion ==False:
+                        print 'Version is FALSE'
+        STARTUP()
+        
+def CheckVersion():        
+    curver=xbmc.translatePath(os.path.join('special://home/addons/plugin.video.twomovies/','addon.xml'))    
+    source= open( curver, mode = 'r' )
+    link = source . read( )
+    source . close ( )
+    match=re.compile('" version="(.+?)" name="2 Movies Evolved"').findall(link)
+    for vernum in match:
+            print 'Original Version is ' + vernum
+    try:
+        link=OPEN_URL('https://raw.github.com/Blazetamer/twomoviesautoupdate/master/plugin.video.twomovies/addon.xml')     
+    except:
+        link='nill'
+        
+    link=link.replace('\r','').replace('\n','').replace('\t','').replace('&nbsp;','')
+    match=re.compile('" version="(.+?)" name="2 Movies Evolved"').findall(link)
+    if len(match)>0:   
+        if vernum != str(match[0]):
+                print 'Two Movies needs update' 
+                dialog = xbmcgui.Dialog()
+                confirm=xbmcgui.Dialog().yesno('[B]Two Movies Update Available![/B]', "                              Your version is outdated." ,'                    The current available version is [COLOR gold]'+str(match[0])+'[/COLOR]','                         Would you like to update now?',"Cancel","Update")
+                #return False
+                if confirm:
+                        autoupdate.UPDATEFILES()
+                return False
+        else:
+                print 'Two Movies is current'
+                return True
+    
+    else:
+        print 'Couldnt check update file'    
+        return False
+   
+
 #########################Blazetamer's Log Module########################################
 cookiejar = addon.get_profile()
 cookiejar = os.path.join(cookiejar,'cookies.lwp')
@@ -733,7 +784,10 @@ print "Year: "+str(year)
 
 if mode==None or url==None or len(url)<1:
         print ""
-        STARTUP()
+        PRESTARTUP()
+
+elif mode=='startup':
+        STARTUP()        
         
 elif mode=='categories':
         print ""+loggedin
