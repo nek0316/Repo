@@ -1,3 +1,15 @@
+V2.0.9
+Fixed iLive....AGAIN!
+
+V2.0.8
+More iLive Sources
+
+V2.0.7
+Added Global Favorites toLive Streams and User Submitted
+ 
+V2.0.6
+Small Bug Fixes & Quicker Sync to live streams 
+
 V2.0.5
 Added ability to stream movies encoded for any url resolver
 capable url

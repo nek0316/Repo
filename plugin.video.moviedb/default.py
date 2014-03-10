@@ -89,6 +89,7 @@ loggedin = addon.queries.get('loggedin', '')
 season = addon.queries.get('season', '')
 episode = addon.queries.get('episode', '')
 repourl = addon.queries.get('repourl', '')
+gomode = addon.queries.get('gomode', '')
 #======================== END Alternate Param Stuff=======================
 
 #========================Advanced Log Stuff=======================
@@ -226,17 +227,19 @@ def CATEGORIES(loggedin):
                                 text_file = open(xbmc.translatePath("special://home/userdata/addon_data/plugin.video.moviedb/apc.69"), "w")
                                 text_file.write(pin)
                                 text_file.close()
-                live.addDir('[COLOR white]Adults Only[/COLOR]','none','adultcats',artwork +'adult.jpg','18+ Only - Adult Rated Video Section',artwork +'adult.jpg')
+                live.addDir('Adults Only','none','adultcats',artwork +'adult.jpg','18+ Only - Adult Rated Video Section',artwork +'adult.jpg')
                 
-        live.addDir('[COLOR white]Movies[/COLOR]','none','moviecat',artwork +'movies.jpg','Movies from several popular source sites such as MerDb and Datacenter movies',artwork +'movies.jpg')
-        live.addDir('[COLOR white]TV Shows[/COLOR]','none','tvcats',artwork +'tvshows.jpg','TV Shows from several popular source sites such as MerDb and Series Gate',artwork +'tvshows.jpg')
+        live.addDir('Movies','none','moviecat',artwork +'movies.jpg','Movies from several popular source sites such as MerDb and Datacenter movies',artwork +'movies.jpg')
+        live.addDir('TV Shows','none','tvcats',artwork +'tvshows.jpg','TV Shows from several popular source sites such as MerDb and Series Gate',artwork +'tvshows.jpg')
         if settings.getSetting('toons') == 'true':
-                live.addDir('[COLOR white]Cartoons[/COLOR]','none','cartooncats',artwork +'cartoons.jpg','Cartoons galore, Includes Anime from Chia-Anime and Cartoons from SuperToons',artwork +'cartoons.jpg')
-        if settings.getSetting('sports') == 'true':        
-                live.addDir('[COLOR white]Sports[/COLOR]','none','sportcats',artwork +'sports.jpg','Sports such as UFC and more!',artwork +'sports.jpg')
+                live.addDir('Cartoons','none','cartooncats',artwork +'cartoons.jpg','Cartoons galore, Includes Anime from Chia-Anime and Cartoons from SuperToons',artwork +'cartoons.jpg')
+        #if settings.getSetting('sports') == 'true':        
+                #live.addDir('Sports','none','sportcats',artwork +'sports.jpg','Sports such as UFC and more!',artwork +'sports.jpg')
         if settings.getSetting('streams') == 'true':        
-                live.addDir('[COLOR white]Live Streams[/COLOR]','http://goo.gl/1EMDrC','livecats',artwork +'live.jpg','Live streams from around the globe, User Sumbitted streams are also available, Be sure to check the special events section!!',artwork +'live.jpg')
-                live.addDir('[COLOR white]Live Streams(Favorites)[/COLOR]','none','viewfavs',artwork +'livefav.jpg','Manage and View your Favorite Live Streams',artwork +'livefav.jpg')
+                live.addDir('Live Streams','http://goo.gl/1EMDrC','livecats',artwork +'live.jpg','Live streams from around the globe, User Sumbitted streams are also available, Be sure to check the special events section!!',artwork +'live.jpg')
+                #live.addDir('[COLOR white]iLive Favorites[/COLOR]','none','viewfavs',artwork +'livefav.jpg','Manage and View your Favorite Live Streams',artwork +'livefav.jpg')
+                #live.addDir('[COLOR white]Other MDB Favorites[/COLOR]','none','viewstfavs',artwork +'mdbfavs.jpg','Manage and View your  Favorite Lists Here',artwork +'mdbfavs.jpg')
+        live.addDir('MDB Favorites','none','viewstfavs',artwork +'mdbfavs.jpg','Manage and View your  Favorite Lists Here',artwork +'mdbfavs.jpg')
         #==============Custom Menu Creation====================================== 
         link=OPEN_URL('http://goo.gl/5niFwn').replace('\n','').replace('\r','')
         match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail><mode>(.+?)</mode><desc>(.+?)</desc>').findall(link)
@@ -312,6 +315,9 @@ class TEST( xbmcgui.WindowXMLDialog ):
 def SHUTDOWNXBMC():
         xbmc.executebuiltin('XBMC.ActivateWindow(111)')
 
+def ALLFAVS():
+        live.addDir('iLive Favorites','none','viewfavs',artwork +'livefav.jpg','Manage and View your Favorite Live Streams',artwork +'livefav.jpg')
+        live.addDir('Other MDB Favorites','none','viewstfavs',artwork +'mdbfavs.jpg','Manage and View your  Favorite Lists Here',artwork +'mdbfavs.jpg')
 
 def MERDBMOVIES():
    try:        
@@ -1244,9 +1250,28 @@ elif mode=='viewfavs':
         print ""+url
         live.VIEWFAVS()
 
+elif mode=='addsttofavs':
+        print ""+url
+        live.ADDSTTOFAVS(name,url,thumb,gomode)
+
+elif mode=='removestfromfavs':
+        print ""+url
+        live.REMOVESTFROMFAVS(name,url,thumb,gomode)
+
+elif mode=='playstfavs':
+        print ""+url
+        live.PLAYSTFAVS(name,url,thumb)        
+
+elif mode=='viewstfavs':
+        print ""+url
+        live.VIEWSTFAVS()        
+
 elif mode=='resolver':
         print ""+url
-        live.RESOLVER(url,name)        
+        live.RESOLVER(url,name)
+
+elif mode=='allfavs':
+        ALLFAVS()        
 
 
 #=============END LIVE STREAMS
