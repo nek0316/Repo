@@ -78,32 +78,32 @@ settings = xbmcaddon.Addon(id='plugin.video.frightpix')
 
 
 
-def CATEGORIES():
-    
-    main.addDir('[COLOR white]New Arrivals[/COLOR]','http://www.frightpix.com/New-Arrivals-movies','index',artPath+'newarrival.png','','movies')
-    main.addDir('[COLOR white]Most Popular[/COLOR]','http://www.frightpix.com/most-popular-movies','index',artPath+'mostpopular.png','','movies')
-    main.addDir('[COLOR white]Sexy Horror[/COLOR]','http://www.frightpix.com/Sexy%20Horror-movies','indexdeep',artPath+'sexyhorror.png','','movies')
-    main.addDir('[COLOR white]Scary Good[/COLOR]','http://www.frightpix.com/Scary Good-movies','indexdeep',artPath+'scraygood.png','','movies')
-    main.addDir('[COLOR white]Troma[/COLOR]','http://www.frightpix.com/Troma-movies','indexdeep',artPath+'troma.png','','movies')
-    main.addDir('[COLOR white]Creature Feature[/COLOR]','http://www.frightpix.com/Creature Feature-movies','indexdeep',artPath+'creaturefeature.png','','movies')
-    main.addDir('[COLOR white]Slasher[/COLOR]','http://www.frightpix.com/Slasher-movies','indexdeep',artPath+'slasher.png','','movies')
-    main.addDir('[COLOR white]Vampires[/COLOR]','http://www.frightpix.com/Vampires-movies','indexdeep',artPath+'vampires.png','','movies')
-    main.addDir('[COLOR white]Zombie[/COLOR]','http://www.frightpix.com/Zombie-movies','indexdeep',artPath+'zombie.png','','movies')
-    main.addDir('[COLOR white]Something Wicked[/COLOR]','http://www.frightpix.com/Something Wicked-movies','indexdeep',artPath+'rnr.png','','movies')
-    main.addDir('[COLOR white]Supernatural[/COLOR]','http://www.frightpix.com/Supernatural-movies','indexdeep',artPath+'supernatural.png','','movies')
-    main.addDir('[COLOR white]Demons[/COLOR]','http://www.frightpix.com/Demons-movies','indexdeep',artPath+'demons.png','','movies')
-    main.addDir('[COLOR white]Cult[/COLOR]','http://www.frightpix.com/Cult-movies','indexdeep',artPath+'cult.png','','movies')
-    main.addDir('[COLOR white]The CAMP Ground[/COLOR]','http://www.frightpix.com/The CAMP Ground-movies','indexdeep',artPath+'campground.png','','movies')
-    main.addDir('[COLOR white]Horror-ble[/COLOR]','http://www.frightpix.com/Horror-ble-movies','indexdeep',artPath+'horrorble.png','','movies')
-    main.addDir('[COLOR red][B]Search[/B] >>>[/COLOR]','http://www.popcornflix.com/search?query=','searchit',artPath+'search.png','','')
+def CATEGORIES():                             
+    main.addDir('New Arrivals','http://www.frightpix.com/New-Arrivals-movies','index',artPath+'newarrival.png','','movies')
+    main.addDir('Most Popular','http://www.frightpix.com/most-popular-movies','index',artPath+'mostpopular.png','','movies')
+    main.addDir('Sexy Horror','http://www.frightpix.com/Sexy%20Horror-movies','indexdeep',artPath+'sexyhorror.png','','movies')
+    main.addDir('Scary Good','http://www.frightpix.com/Scary Good-movies','indexdeep',artPath+'scraygood.png','','movies')
+    main.addDir('Troma','http://www.frightpix.com/Troma-movies','indexdeep',artPath+'troma.png','','movies')
+    main.addDir('Creature Feature','http://www.frightpix.com/Creature Feature-movies','indexdeep',artPath+'creaturefeature.png','','movies')
+    main.addDir('Slasher','http://www.frightpix.com/Slasher-movies','indexdeep',artPath+'slasher.png','','movies')
+    main.addDir('Vampires','http://www.frightpix.com/Vampires-movies','indexdeep',artPath+'vampires.png','','movies')
+    main.addDir('Zombie','http://www.frightpix.com/Zombie-movies','indexdeep',artPath+'zombie.png','','movies')
+    main.addDir('Something Wicked','http://www.frightpix.com/Something Wicked-movies','indexdeep',artPath+'rnr.png','','movies')
+    main.addDir('Supernatural','http://www.frightpix.com/Supernatural-movies','indexdeep',artPath+'supernatural.png','','movies')
+    main.addDir('Demons','http://www.frightpix.com/Demons-movies','indexdeep',artPath+'demons.png','','movies')
+    main.addDir('Cult','http://www.frightpix.com/Cult-movies','indexdeep',artPath+'cult.png','','movies')
+    main.addDir('The CAMP Ground','http://www.frightpix.com/The CAMP Ground-movies','indexdeep',artPath+'campground.png','','movies')
+    main.addDir('Horror-ble','http://www.frightpix.com/Horror-ble-movies','indexdeep',artPath+'horrorble.png','','movies')
+    main.addDir('Search >>>','http://www.frightpix.com/search?query=','searchit',artPath+'search.png','','')
     main.addDir('[COLOR gold]Manage Downloads[/COLOR]','none','viewQueue',artPath +'downloads.png','','')
-    main.addDir('[COLOR white]Help and Extras[/COLOR]','none','statuscats',artPath +'help.png','','')
+    #main.addDir('Help and Extras','none','statuscats',artPath +'help.png','','')
     main.AUTO_VIEW('')
         
 def INDEX(url,favtype):
           params = {'url':url, 'favtype':favtype}
           link = net.http_GET(url).content
-          match=re.compile('<a href="(.+?)">\n\t\t  <img width="184" height="256" src="(.+?)" alt="(.+?)"/>').findall(link)
+          #match=re.compile('<a href="(.+?)">\n\t\t  <img width="184" height="256" src="(.+?)" alt="(.+?)"/>').findall(link)
+          match=re.compile('<a href="(.+?)">\n                    <img width="184" height="256" src="(.+?)" alt="(.+?)"/>').findall(link)
           for url,thumb,name in match:
                url = URL + url
                if settings.getSetting('metadata') == 'true':
@@ -121,7 +121,7 @@ def INDEX(url,favtype):
 def VIDEOLINKS(name,url,thumb,favtype):
         params = {'url':url, 'name':name, 'thumb':thumb, 'favtype':favtype}  
         link = net.http_GET(url).content
-        match=re.compile('id="flashContent" data-videosrc="(.+?)" data-videodata="(.+?)"></div>').findall(link)
+        match=re.compile('id="flashContent" data-videosrc="(.+?)"\n         data-videodata="(.+?)"></div>').findall(link)
         matchyear=re.compile('<span class="year">(.+?)</span>').findall(link)
         for url,url2 in match:
              #if 'undefined' in url:

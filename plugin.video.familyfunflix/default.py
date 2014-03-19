@@ -55,7 +55,7 @@ download_path = settings.getSetting('download_folder')
 
 #Family Fun Flix - Blazetamer.
 addon = xbmcaddon.Addon ('plugin.video.familyfunflix')
-URL= 'http://familyfunflix.com'
+URL= 'http://www.popcornflixkids.com'
 
 addonPath = addon.getAddonInfo('path')
 artPath = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/familyfunflix/images/', ''))
@@ -72,27 +72,28 @@ settings = xbmcaddon.Addon(id='plugin.video.familyfunflix')
 
 def CATEGORIES():
     
-    main.addDir('[COLOR white]New Arrivals[/COLOR]','http://www.familyfunflix.com/New-Arrivals-movies','index',artPath+'newarrival.png','','movies')
-    main.addDir('[COLOR white]Most Popular[/COLOR]','http://www.familyfunflix.com/most-popular-movies','index',artPath+'mostpopular.png','','movies')
-    main.addDir('[COLOR white]Pop Kids[/COLOR]','http://www.familyfunflix.com/Pop Kids-movies','indexdeep',artPath+'popkids.png','','movies')
-    main.addDir('[COLOR white]Pop Junior[/COLOR]','http://www.familyfunflix.com/Pop Junior-movies','indexdeep',artPath+'popkids.png','','movies')
-    main.addDir('[COLOR white]Teen Zone[/COLOR]','http://www.familyfunflix.com/Teen Zone-movies','indexdeep',artPath+'teenzone.png','','movies')
-    main.addDir('[COLOR white]Family Fun Movies[/COLOR]','http://www.familyfunflix.com/Fun For the Family-movies','indexdeep',artPath+'fun.png','','movies')
-    main.addDir('[COLOR white]Wild Kingdom[/COLOR]','http://www.familyfunflix.com/Wild Kingdom-movies','indexdeep',artPath+'wildkingdom.png','','movies')
-    main.addDir('[COLOR white]Fairy Tales[/COLOR]','http://www.familyfunflix.com/Fairy Tales-movies','indexdeep',artPath+'fairytales.png','','movies')
-    main.addDir('[COLOR white]Cartoons[/COLOR]','http://www.familyfunflix.com/Cartoons-movies','indexdeep',artPath+'animated.png','','movies')
-    main.addDir('[COLOR white]Musical[/COLOR]','http://www.familyfunflix.com/Musicals-movies','indexdeep',artPath+'musical.png','','movies')
-    main.addDir('[COLOR white]Girl Power[/COLOR]','http://www.familyfunflix.com/Girl Power-movies','indexdeep',artPath+'girlpower.png','','movies')
-    main.addDir('[COLOR white]Boys Rock[/COLOR]','http://www.familyfunflix.com/Boys Rock-movies','indexdeep',artPath+'boysrock.png','','movies')
-    main.addDir('[COLOR red][B]Search[/B] >>>[/COLOR]','http://www.familyfunflix.com/search?query=','searchit',artPath+'search.png','','')
+    main.addDir('[COLOR white]New Arrivals[/COLOR]','http://www.popcornflixkids.com/New-Arrivals-movies','index',artPath+'newarrival.png','','movies')
+    main.addDir('[COLOR white]Most Popular (1-4)[/COLOR]','http://www.popcornflixkids.com/most-popular-movies','index',artPath+'mostpopular.png','','movies')
+    main.addDir('[COLOR white]Popcorn Junior [/COLOR]','http://www.popcornflixkids.com/Pop Junior (1-4)-movies','indexdeep',artPath+'popkids.png','','movies')
+    main.addDir('[COLOR white]Popcorn Kids (4-10)[/COLOR]','http://www.popcornflixkids.com/Pop Kids (4-10)-movies','indexdeep',artPath+'popkids.png','','movies')
+    main.addDir('[COLOR white]Teen Zone[/COLOR]','http://www.popcornflixkids.com/Teen Zone-movies','indexdeep',artPath+'teenzone.png','','movies')
+    main.addDir('[COLOR white]Family Fun Movies[/COLOR]','http://www.popcornflixkids.com/Fun For the Family-movies','indexdeep',artPath+'fun.png','','movies')
+    main.addDir('[COLOR white]Wild Kingdom[/COLOR]','http://www.popcornflixkids.com/Wild Kingdom-movies','indexdeep',artPath+'wildkingdom.png','','movies')
+    main.addDir('[COLOR white]Fairy Tales[/COLOR]','http://www.popcornflixkids.com/Fairy Tales-movies','indexdeep',artPath+'fairytales.png','','movies')
+    main.addDir('[COLOR white]Cartoons[/COLOR]','http://www.popcornflixkids.com/Cartoons-movies','indexdeep',artPath+'animated.png','','movies')
+    main.addDir('[COLOR white]Musical[/COLOR]','http://www.popcornflixkids.com/Musicals-movies','indexdeep',artPath+'musical.png','','movies')
+    main.addDir('[COLOR white]Girl Power[/COLOR]','http://www.popcornflixkids.com/Girl Power-movies','indexdeep',artPath+'girlpower.png','','movies')
+    main.addDir('[COLOR white]Boys Rock[/COLOR]','http://www.popcornflixkids.com/Boys Rock-movies','indexdeep',artPath+'boysrock.png','','movies')
+    main.addDir('[COLOR red][B]Search[/B] >>>[/COLOR]','http://www.popcornflixkids.com/search?query=','searchit',artPath+'search.png','','')
     main.addDir('[COLOR gold]Manage Downloads[/COLOR]','none','viewQueue',artPath +'downloads.png','','')
-    main.addDir('[COLOR white]Help and Extras[/COLOR]','none','statuscats',artPath +'help.png','','')
+    #main.addDir('[COLOR white]Help and Extras[/COLOR]','none','statuscats',artPath +'help.png','','')
     main.AUTO_VIEW('')
         
 def INDEX(url,favtype):
           params = {'url':url, 'favtype':favtype}
           link = net.http_GET(url).content
-          match=re.compile('<a href="(.+?)">\n\t\t  <img width="184" height="256" src="(.+?)" alt="(.+?)"/>').findall(link)
+          #match=re.compile('<a href="(.+?)">\n\t\t  <img width="184" height="256" src="(.+?)" alt="(.+?)"/>').findall(link)
+          match=re.compile('<a href="(.+?)">\n                    <img width="184" height="256" src="(.+?)" alt="(.+?)"/>').findall(link)
           for url,thumb,name in match:
                url = URL + url
                if settings.getSetting('metadata') == 'true':
@@ -110,7 +111,8 @@ def INDEX(url,favtype):
 def VIDEOLINKS(name,url,thumb,favtype):
         params = {'url':url, 'name':name, 'thumb':thumb, 'favtype':favtype}  
         link = net.http_GET(url).content
-        match=re.compile('id="flashContent" data-videosrc="(.+?)" data-videodata="(.+?)"></div>').findall(link)
+        #match=re.compile('id="flashContent" data-videosrc="(.+?)" data-videodata="(.+?)"></div>').findall(link)
+        match=re.compile('id="flashContent" data-videosrc="(.+?)"\n         data-videodata="(.+?)"></div>').findall(link)
         matchyear=re.compile('<span class="year">(.+?)</span>').findall(link)
         for url,url2 in match:
                      url = url2
