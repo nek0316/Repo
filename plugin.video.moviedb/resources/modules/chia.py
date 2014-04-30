@@ -47,8 +47,10 @@ mainimg = addon.queries.get('mainimg', '')
 
 # Global Stuff
 settings = xbmcaddon.Addon(id=addon_id)
-artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
-#artwork = xbmc.translatePath(os.path.join('http://rowthreemedia.com/xbmchub/2movies/art/', ''))
+if settings.getSetting('theme') == '0':
+    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/', ''))
+else:
+    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
 grab=metahandlers.MetaData()
 net = Net()
 def LogNotify(title,message,times,icon):

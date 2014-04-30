@@ -2,7 +2,7 @@
 #Default moviedb - Blazetamer
 
 
-import urllib,urllib2,re,xbmcplugin,xbmcgui,xbmc, xbmcaddon, os, sys
+import urllib,urllib2,re,xbmcplugin,xbmcgui,xbmc, xbmcaddon, os, sys, os.path
 import urlresolver
 import cookielib
 from resources.modules import status
@@ -13,18 +13,19 @@ import datetime
 import shutil
 from resources.modules import tvshow
 from metahandler import metahandlers
-from resources.modules import main
+from resources.modules import main,flix
 from resources.modules import moviedc
-from resources.modules import sgate
+from resources.modules import sgate,streamlic
 from resources.modules import chia, supertoons, phub
 from resources.modules import chanufc, epornik, live
 from resources.utils import autoupdate
 from resources.utils import buggalo
-try:
-        from addon.common.addon import Addon
+from resources.modules import oneeighty,iwo
+from resources.sports import espn
 
-except:
-        from t0mm0.common.addon import Addon
+from addon.common.addon import Addon
+from addon.common.net import Net
+net = Net(http_debug=True)
         
 addon_id = 'plugin.video.moviedb'
 addon = main.addon
@@ -32,13 +33,8 @@ ADDON = xbmcaddon.Addon(id='plugin.video.moviedb')
 xmlpath = 'http://addonrepo.com/xbmchub/moviedb/messages/skins/DefaultSkin/720p/'
 
 
-try:
-        from addon.common.net import Net
 
-except:  
-        from t0mm0.common.net import Net
-        
-net = Net(http_debug=True)
+
 
 try:
      from sqlite3 import dbapi2 as lite
@@ -66,14 +62,17 @@ except: pass
 DownloadPath=os.path.join(datapaths,'Downloads')
 try: os.makedirs(DownloadPath)
 except: pass
-
-
-artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
 settings = xbmcaddon.Addon(id='plugin.video.moviedb')
+
+if settings.getSetting('theme') == '0':
+    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/', ''))
+    fanart = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg', ''))
+else:
+    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
+    fanart = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/fanart/fanart.jpg', ''))
+
 addon_path = os.path.join(xbmc.translatePath('special://home/addons'), '')
-fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'
-#vernum=settings.getAddonInfo('version')
-#print 'Loading version is  ' + vernum
+
 #========================Alternate Param Stuff=======================
 mode = addon.queries['mode']
 url = addon.queries.get('url', '')
@@ -135,20 +134,20 @@ def CheckVersion():
     source= open( curver, mode = 'r' )
     link = source . read( )
     source . close ( )
-    match=re.compile('" version="(.+?)" name="MDB Ultra"').findall(link)
+    match=re.compile('" version="(.+?)" name="Cliq!"').findall(link)
     for vernum in match:
             print 'Original Version is ' + vernum
     try:
-        link=OPEN_URL('https://raw.github.com/Blazetamer/mdbautoupdate/master/plugin.video.moviedb/addon.xml')
+        link=OPEN_URL('http://addonrepo.com/xbmchub/moviedb/cliqupdate/addon.xml')
     except:
         link='nill'
 
     link=link.replace('\r','').replace('\n','').replace('\t','').replace('&nbsp;','')
-    match=re.compile('" version="(.+?)" name="MDB Ultra"').findall(link)
+    match=re.compile('" version="(.+?)" name="Cliq!"').findall(link)
     if len(match)>0:
         if vernum != str(match[0]):
                 dialog = xbmcgui.Dialog()
-                confirm=xbmcgui.Dialog().yesno('[B]MDB Ultra Update Available![/B]', "                              Your version is outdated." ,'                    The current available version is [COLOR blue]'+str(match[0])+'[/COLOR]','                         Would you like to update now?',"Cancel","Update")
+                confirm=xbmcgui.Dialog().yesno('[B]CLIQ Update Available![/B]', "                              Your version is outdated." ,'                    The current available version is '+str(match[0]),'                         Would you like to update now?',"Cancel","Update")
                 #return False
                 if confirm:
                         autoupdate.UPDATEFILES()
@@ -167,6 +166,7 @@ def SPECIALANN():
    try:        
 
         link=OPEN_URL('http://goo.gl/vyPZNT').replace('\n','').replace('\r','')
+        
         match=re.compile('ate="(.+?)"').findall(link)
         for popdate in match: 
                 now   = datetime.date.today()
@@ -174,30 +174,33 @@ def SPECIALANN():
                 print 'TODAY IS ' + today
                 if settings.getSetting('announce') == 'true':
                          if today == popdate:
-                                 status.ADDONSTATUS('http://goo.gl/A6A9oe')
-                                 
+                               threshold = int(settings.getSetting('anno_intcliq') ) - 1
+                               now   = datetime.datetime.today()
+                               prev  = CHECKDATE(settings.getSetting('pop_time'))
+                               delta = now - prev
+                               nDays = delta.days
+
+                               doUpdate = (nDays > threshold)
+                               if  not doUpdate:
+                                       CATEGORIES('false')
+                               elif doUpdate:        
+                                      settings.setSetting('pop_time', str(now).split('.')[0])
+                                      status.ADDONSTATUS('http://goo.gl/A6A9oe')
+                                      CATEGORIES('false')
+                         else:CATEGORIES('false')        
               
-                CATEGORIES('false')
+                else :CATEGORIES('false')
    except Exception:
-        buggalo.onExceptionRaised()                
+        CATEGORIES('false')
+        #buggalo.onExceptionRaised()
+        
 
 def CHECK_POPUP():
    try:
-        if settings.getSetting('announce') == 'true':
-                threshold = int(settings.getSetting('anno_int') ) - 1
-                now   = datetime.datetime.today()
-                prev  = CHECKDATE(settings.getSetting('pop_time'))
-                delta = now - prev
-                nDays = delta.days
-
-                doUpdate = (nDays > threshold)
-                if  not doUpdate:
-                        CATEGORIES('false')
-                elif doUpdate:        
-                        settings.setSetting('pop_time', str(now).split('.')[0])          
+        if settings.getSetting('announce') == 'true':          
                         SPECIALANN()
         if settings.getSetting('announce') == 'false':                
-                CATEGORIES('false')
+                        CATEGORIES('false')
    except Exception:
         buggalo.onExceptionRaised()                
                                                   
@@ -227,82 +230,84 @@ def CATEGORIES(loggedin):
                                 text_file = open(xbmc.translatePath("special://home/userdata/addon_data/plugin.video.moviedb/apc.69"), "w")
                                 text_file.write(pin)
                                 text_file.close()
-                live.addDir('Adults Only','none','adultcats',artwork +'adult.jpg','18+ Only - Adult Rated Video Section',artwork +'adult.jpg')
+                live.addDir('Adults Only','none','adultcats',artwork +'adult.jpg','18+ Only - Adult Rated Video Section',fanart)
                 
-        live.addDir('Movies','none','moviecat',artwork +'movies.jpg','Movies from several popular source sites such as MerDb and Datacenter movies',artwork +'movies.jpg')
-        live.addDir('TV Shows','none','tvcats',artwork +'tvshows.jpg','TV Shows from several popular source sites such as MerDb and Series Gate',artwork +'tvshows.jpg')
+        live.addDir('Movies','none','moviecat',artwork +'movies.jpg','Movies from several popular source sites such as MerDb and Datacenter movies',fanart)
+        live.addDir('TV Shows','none','tvcats',artwork +'tvshows.jpg','TV Shows from several popular source sites such as MerDb and Series Gate',fanart)
         if settings.getSetting('toons') == 'true':
-                live.addDir('Cartoons','none','cartooncats',artwork +'cartoons.jpg','Cartoons galore, Includes Anime from Chia-Anime and Cartoons from SuperToons',artwork +'cartoons.jpg')
-        #if settings.getSetting('sports') == 'true':        
-                #live.addDir('Sports','none','sportcats',artwork +'sports.jpg','Sports such as UFC and more!',artwork +'sports.jpg')
+                live.addDir('Cartoons','none','cartooncats',artwork +'cartoons.jpg','Cartoons galore, Includes Anime from Chia-Anime and Cartoons from SuperToons',fanart)
+        if settings.getSetting('sports') == 'true':        
+                live.addDir('Sports','none','sportcats',artwork +'sports.jpg','Sports such as UFC and more!',fanart)
         if settings.getSetting('streams') == 'true':        
-                live.addDir('Live Streams','http://goo.gl/1EMDrC','livecats',artwork +'live.jpg','Live streams from around the globe, User Sumbitted streams are also available, Be sure to check the special events section!!',artwork +'live.jpg')
-                #live.addDir('[COLOR white]iLive Favorites[/COLOR]','none','viewfavs',artwork +'livefav.jpg','Manage and View your Favorite Live Streams',artwork +'livefav.jpg')
-                #live.addDir('[COLOR white]Other MDB Favorites[/COLOR]','none','viewstfavs',artwork +'mdbfavs.jpg','Manage and View your  Favorite Lists Here',artwork +'mdbfavs.jpg')
-        live.addDir('MDB Favorites','none','viewstfavs',artwork +'mdbfavs.jpg','Manage and View your  Favorite Lists Here',artwork +'mdbfavs.jpg')
-        #==============Custom Menu Creation====================================== 
-        link=OPEN_URL('http://goo.gl/5niFwn').replace('\n','').replace('\r','')
-        match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail><mode>(.+?)</mode><desc>(.+?)</desc>').findall(link)
-        for name,url,thumb,mode,desc in match:
-                print 'Description is  ' + desc
-                live.addDir(name,url,mode,thumb,desc,thumb)
-        #==============End Custom Menu Creation==================================        
+                live.addDir('Live Streams','http://goo.gl/1EMDrC','livecats',artwork +'live.jpg','Live streams from around the globe, User Sumbitted streams are also available, Be sure to check the special events section!!',fanart)        
+        
+        #==============Custom Menu Creation======================================
+        try:        
+             link=OPEN_URL('http://goo.gl/5niFwn').replace('\n','').replace('\r','')
+             match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail><mode>(.+?)</mode><desc>(.+?)</desc>').findall(link)
+             for name,url,thumb,mode,desc in match:
+                     print 'Description is  ' + desc
+                     live.addDir(name,url,mode,thumb,desc,fanart)
+        except: pass        
+        #==============End Custom Menu Creation==================================
+        live.addDir('CLIQ Favorites','none','viewstfavs',artwork +'mdbfavs.jpg','Manage and View your  Favorite Lists Here',fanart)        
+        live.addDir('Manage Downloads','none','viewQueue',artwork +'downloadsmanage.jpg','Manage your download queue, Start, stop and or remove items from the Queue',fanart)
+        live.addDir('Upload Logfile','none','uploadlogfile',artwork +'uploadlog.jpg','Need to upload a logfile? Here is the place to do it, Set your email from the addon settings area if you want a link emailed to you. .',fanart)
+        live.addDir('Display Latest Announcement(s)','http://goo.gl/A6A9oe','addonstatus',artwork +'announcements.jpg','In case you missed the latest announcements, You can view them manually here.',fanart)
         if settings.getSetting('resolver') == 'true':
-                live.addDir('[COLOR blue]Resolver Settings[/COLOR]','none','resolverSettings',artwork +'resolversettings.jpg','Adjust your resolver settings here',artwork +'resolversettings.jpg')
+                live.addDir('Resolver Settings','none','resolverSettings',artwork +'resolversettings.jpg','Adjust your resolver settings here',fanart)
         if settings.getSetting('addons') == 'true':        
-                live.addDir("[COLOR blue]Browse More Addons by Blazetamer[/COLOR]",'http://addons.xbmchub.com/author/Blazetamer/','addonlist',artwork +'moreaddons.jpg','Check out and install more of my add-ons here.',artwork +'moreaddons.jpg')
-                live.addDir('[COLOR blue]Get the Addon Browser Here[/COLOR]','http://addons.xbmchub.com/search/?keyword=browser','addonlist',artwork +'addonbrowser.jpg','Need the legendary Addon Browser?  Get it now!!',artwork +'addonbrowser.jpg')
-        if settings.getSetting('special') == 'true':        
-                live.addDir('[COLOR blue]Special Menus/Extras[/COLOR]','none','pop',artwork +'specialmenu.jpg','View Special Menus and more',artwork +'specialmenu.jpg')
-        live.addDir('[COLOR blue]Manage Downloads[/COLOR]','none','viewQueue',artwork +'downloadsmanage.jpg','Manage your download queue, Start, stop and or remove items from the Queue',artwork +'downloadsmanage.jpg')
-        live.addDir('[COLOR blue]Upload Logfile[/COLOR]','none','uploadlogfile',artwork +'uploadlog.jpg','Need to upload a logfile? Here is the place to do it, Set your email from the addon settings area if you want a link emailed to you. .',artwork +'uploadlog.jpg')
-        live.addDir('[COLOR blue]Display Latest Announcement(s)[/COLOR]','http://goo.gl/A6A9oe','addonstatus',artwork +'announcements.jpg','In case you missed the latest announcements, You can view them manually here.',artwork +'announcements.jpg')
+                live.addDir('More Addons by Blazetamer','http://addons.xbmchub.com/author/Blazetamer/','addonlist',artwork +'moreaddons.jpg','Check out and install more of my add-ons here.',fanart)
+                #live.addDir('[COLOR blue]Get the Addon Browser Here[/COLOR]','http://addons.xbmchub.com/search/?keyword=browser','addonlist',artwork +'addonbrowser.jpg','Need the legendary Addon Browser?  Get it now!!',fanart)
+        #if settings.getSetting('special') == 'true':        
+                #live.addDir('[COLOR blue]Special Menus/Extras[/COLOR]','none','pop',artwork +'specialmenu.jpg','View Special Menus and more',fanart)
 #======================Developer Testing Section========================================================================
         #live.addDir('[COLOR blue]Test Update[/COLOR]','none','updatefiles','','','')
         #live.addDir('[COLOR blue]Test Functions[/COLOR]','none','testfunction',artwork +'shutdown.png','','dir')
         
         main.AUTO_VIEW('')
    except Exception:
-        buggalo.onExceptionRaised()        
+        buggalo.onExceptionRaised()
+
+        
+
 
 def TESTFUNCTION():
-   try:
-        link=OPEN_URL('http://addonrepo.com/xbmchub/moviedb/controls/xmlcontroltest.txt').replace('\n','').replace('\r','')
-        match=re.compile('name="(.+?)"').findall(link)
-        for winxml in match1:
+     
+     #testwin = MyClass('skin.xml','http://addonrepo.com/xbmchub/moviedb/','DefaultSkin')
+     testwin = MyClass('AddonBrowser.xml',ADDON.getAddonInfo('path'),'DefaultSkin')    
+     testwin.doModal()
+     del testwin
+     
                 
-                testwin = TEST(winxml,'http://addonrepo.com/xbmchub/moviedb/','DefaultSkin',close_time=60,logo_path='%s/resources/skins/DefaultSkin/media/Logo/'%ADDON.getAddonInfo('path'))
-                testwin.doModal()
-                del testwin
-   except Exception:
-        buggalo.onExceptionRaised()  
-                
-class TEST( xbmcgui.WindowXMLDialog ): 
+class MyClass( xbmcgui.WindowXMLDialog ): 
     def __init__( self, *args, **kwargs ):
-        self.shut = kwargs['close_time'] 
+        #self.shut = kwargs['close_time'] 
         xbmc.executebuiltin( "Skin.Reset(AnimeWindowXMLDialogClose)" )
         xbmc.executebuiltin( "Skin.SetBool(AnimeWindowXMLDialogClose)" )
                                        
-    def onInit( self ):
-        '''xbmc.Player().play('%s/resources/skins/DefaultSkin/media/getit.mp3'%ADDON.getAddonInfo('path'))# Music.
-        xbmc.Player().play(''%ADDON.getAddonInfo('path'))# Music.
+    '''def onInit( self ):
+        #xbmc.Player().play('http://addonrepo.com/xbmchub/moviedb/getit.mp3'%ADDON.getAddonInfo('path'))# Music.
+        #xbmc.Player().play('https://ia700200.us.archive.org/1/items/testmp3testfile/mpthreetest.mp3')# Music.
         while self.shut > 0:
             xbmc.sleep(1000)
-            self.shut -= 1
+            self.shut = 10
         xbmc.Player().stop()
-        self._close_dialog()'''
+        self._close_dialog()
                 
     def onFocus( self, controlID ): pass
     
     def onClick( self, controlID ): 
         if controlID == 12:
             xbmc.Player().stop()
-            self._close_dialog()
+            self._close_dialog() 
 
     def onAction( self, action ):
         if action in [ 5, 6, 7, 9, 10, 92, 117 ] or action.getButtonCode() in [ 275, 257, 261 ]:
             xbmc.Player().stop()
             self._close_dialog()
+        if action == ACTION_PREVIOUS_MENU:
+           self.close() '''   
 
     def _close_dialog( self ):
         xbmc.executebuiltin( "Skin.Reset(AnimeWindowXMLDialogClose)" )
@@ -317,7 +322,7 @@ def SHUTDOWNXBMC():
 
 def ALLFAVS():
         live.addDir('iLive Favorites','none','viewfavs',artwork +'livefav.jpg','Manage and View your Favorite Live Streams',artwork +'livefav.jpg')
-        live.addDir('Other MDB Favorites','none','viewstfavs',artwork +'mdbfavs.jpg','Manage and View your  Favorite Lists Here',artwork +'mdbfavs.jpg')
+        live.addDir('Other CLIQ Favorites','none','viewstfavs',artwork +'mdbfavs.jpg','Manage and View your  Favorite Lists Here',artwork +'mdbfavs.jpg')
 
 def MERDBMOVIES():
    try:        
@@ -337,57 +342,89 @@ def MERDBMOVIES():
 
                        
 def MOVIECAT():
-        main.addDir('Movies [COLOR red](MerDB)[/COLOR] ','none','merdbmovies',artwork +'merdbmovies.jpg','','dir')
-        main.addDir('Movies [COLOR red](Movie DataCenter)[/COLOR]','none','moviedccats',artwork +'moviedcmovies.jpg','','dir')
-        main.addDir('[COLOR blue]**More Movies Coming Soon**[/COLOR]','none','moviecat',artwork +'merdbmovies.jpg','','dir')
+        live.addDir('MerDB ','none','merdbmovies',artwork +'merdbmovies.jpg','',fanart)
+        live.addDir('Movie DataCenter[COLOR red]OFFLINE[/COLOR]','none','moviedccats',artwork +'moviedcmovies.jpg','',fanart)
+        live.addDir('IWatchOnline','none','catiwo',artwork +'iwatchonline.jpg','',fanart)
+        live.addDir('ZMovies','none','catzeemovies',artwork +'zmovies.jpg','',fanart)
+        live.addDir('PopcornFlix','none','popcats',artwork +'popcornflix.jpg','',fanart)
+        #==============Custom Menu Creation======================================
+        try:
+             link=OPEN_URL('http://addonrepo.com/xbmchub/moviedb/controls/moviemenu.xml').replace('\n','').replace('\r','')
+             match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail><mode>(.+?)</mode><desc>(.+?)</desc>').findall(link)
+             for name,url,thumb,mode,desc in match:
+                     live.addDir(name,url,mode,thumb,desc,fanart)
+        except: pass            
+        #==============End Custom Menu Creation==================================
+        
         
         
         main.AUTO_VIEW('')
 
 def TVCATS():        
-        main.addDir('TV Shows [COLOR red](MerDB)[/COLOR]','none','merdbtvcats',artwork +'merdbtv.jpg','','dir')
-        main.addDir('TV Shows [COLOR red](Series Gate)[/COLOR]','none','sgcats',artwork +'sgatetv.jpg','','dir')
-        main.addDir('[COLOR blue]**More TV Shows Coming Soon**[/COLOR]','none','tvcats',artwork +'merdbtv.jpg','','dir')
+        live.addDir('TV Shows [COLOR red](MerDB)[/COLOR]','none','merdbtvcats',artwork +'merdbtv.jpg','',fanart)
+        live.addDir('TV Shows [COLOR red](Series Gate)[/COLOR]','none','sgcats',artwork +'sgatetv.jpg','',fanart)
+        #==============Custom Menu Creation======================================
+        try:
+             link=OPEN_URL('http://addonrepo.com/xbmchub/moviedb/controls/tvmenu.xml').replace('\n','').replace('\r','')
+             match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail><mode>(.+?)</mode><desc>(.+?)</desc>').findall(link)
+             for name,url,thumb,mode,desc in match:
+                     live.addDir(name,url,mode,thumb,desc,fanart)
+        except: pass            
+        #==============End Custom Menu Creation==================================
         
         main.AUTO_VIEW('')
   
 def CARTOONCATS():
-        main.addDir('[COLOR white]Chia-Anime[/COLOR]','none','chiacats',artwork +'chiaanime.jpg','','dir')
-        main.addDir('[COLOR white]SuperToons[/COLOR]','none','supertoonscats',artwork +'supertoons.jpg','','dir')
-        main.addDir('[COLOR blue]**More Cartoons Coming Soon**[/COLOR]','none','cartooncats',artwork +'comingsoon.jpg','','dir')
+        live.addDir('[COLOR white]Chia-Anime[/COLOR]','none','chiacats',artwork +'chiaanime.jpg','',fanart)
+        live.addDir('[COLOR white]SuperToons[/COLOR]','none','supertoonscats',artwork +'supertoons.jpg','',fanart)
+        #==============Custom Menu Creation======================================
+        try:
+             link=OPEN_URL('http://addonrepo.com/xbmchub/moviedb/controls/cartoonmenu.xml').replace('\n','').replace('\r','')
+             match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail><mode>(.+?)</mode><desc>(.+?)</desc>').findall(link)
+             for name,url,thumb,mode,desc in match:
+                     live.addDir(name,url,mode,thumb,desc,fanart)
+        except: pass            
+        #==============End Custom Menu Creation==================================
         
 def SPORTCATS():
-        main.addDir('[COLOR white]UFC[/COLOR]','none','chanufccats',artwork +'ufc.jpg','','dir')
-        main.addDir('[COLOR blue]**More Sports Coming Soon** [/COLOR]','none','sportcats',artwork +'comingsoon.jpg','','dir')
+        #live.addDir('UFC','none','chanufccats',artwork +'ufc.jpg','',fanart)
+        live.addDir('ESPN','none','espnmain',artwork +'espn.jpg','',fanart)
+        #==============Custom Menu Creation======================================
+        try:
+             link=OPEN_URL('http://addonrepo.com/xbmchub/moviedb/controls/sportsmenu.xml').replace('\n','').replace('\r','')
+             match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail><mode>(.+?)</mode><desc>(.+?)</desc>').findall(link)
+             for name,url,thumb,mode,desc in match:
+                     live.addDir(name,url,mode,thumb,desc,fanart)
+        except: pass            
+        #==============End Custom Menu Creation==================================
         
 def ADULTCATS():
-        main.addDir('[COLOR white]PornHub[/COLOR]','none','phcategories',artwork +'pornhub.png','','dir')
-        main.addDir('[COLOR white]Eporn[/COLOR]','none','epornikCategories',artwork +'eporn.jpg','','dir')
-        main.addDir('[COLOR blue]Adult Streams [COLOR green]Online[/COLOR]','http://addonrepo.com/xbmchub/moviedb/streams/adultstreams.xml','livecatslist',artwork +'adult.jpg','','dir')
+        live.addDir('[COLOR white]PornHub[/COLOR]','none','phcategories',artwork +'pornhub.png','',fanart)
+        live.addDir('[COLOR white]Eporn[/COLOR]','none','epornikCategories',artwork +'eporn.jpg','',fanart)
         
         
 
 def GENRES():
    try:        
         genurl = 'http://www.merdb.ru/?genre='
-        main.addDir('Action',genurl +'Action','movieindex',artwork +'action.jpg','','dir')
-        main.addDir('Adventure',genurl +'Adventure','movieindex',artwork +'adventure.jpg','','dir')
-        main.addDir('Animation',genurl +'Animation','movieindex',artwork +'animation.jpg','','dir')
-        main.addDir('Biography',genurl +'Biography','movieindex',artwork +'biography.jpg','','dir')
-        main.addDir('Comedy',genurl +'Comedy','movieindex',artwork +'comedy.jpg','','dir')
-        main.addDir('Crime',genurl +'Crime','movieindex',artwork +'crime.jpg','','dir')
-        main.addDir('Documentary',genurl +'Documentary','movieindex',artwork +'documentary.jpg','','dir')
-        main.addDir('Drama',genurl +'Drama','movieindex',artwork +'drama.jpg','','dir')
-        main.addDir('Family',genurl +'Family','movieindex',artwork +'family.jpg','','dir')
-        main.addDir('Fantasy',genurl +'Fantasy','movieindex',artwork +'fantasy.jpg','','dir')
-        main.addDir('History',genurl +'History','movieindex',artwork +'history.jpg','','dir')
-        main.addDir('Horror',genurl +'Horror','movieindex',artwork +'horror.jpg','','dir')
-        main.addDir('Music',genurl +'Music','movieindex',artwork +'music.jpg','','dir')
-        main.addDir('Mystery',genurl +'Mystery','movieindex',artwork +'mystery.jpg','','dir')
-        main.addDir('Romance',genurl +'Romance','movieindex',artwork +'romance.jpg','','dir')
-        main.addDir('Sci-Fi',genurl +'Sci-Fi','movieindex',artwork +'scifi.jpg','','dir')
-        main.addDir('Thriller',genurl +'Thriller','movieindex',artwork +'thriller.jpg','','dir')
-        main.addDir('War',genurl +'War','movieindex',artwork +'western.jpg','','dir')
+        live.addDir('Action',genurl +'Action','movieindex',artwork +'action.jpg','',fanart)
+        live.addDir('Adventure',genurl +'Adventure','movieindex',artwork +'adventure.jpg','',fanart)
+        live.addDir('Animation',genurl +'Animation','movieindex',artwork +'animation.jpg','',fanart)
+        live.addDir('Biography',genurl +'Biography','movieindex',artwork +'biography.jpg','',fanart)
+        live.addDir('Comedy',genurl +'Comedy','movieindex',artwork +'comedy.jpg','',fanart)
+        live.addDir('Crime',genurl +'Crime','movieindex',artwork +'crime.jpg','',fanart)
+        live.addDir('Documentary',genurl +'Documentary','movieindex',artwork +'documentary.jpg','',fanart)
+        live.addDir('Drama',genurl +'Drama','movieindex',artwork +'drama.jpg','',fanart)
+        live.addDir('Family',genurl +'Family','movieindex',artwork +'family.jpg','',fanart)
+        live.addDir('Fantasy',genurl +'Fantasy','movieindex',artwork +'fantasy.jpg','',fanart)
+        live.addDir('History',genurl +'History','movieindex',artwork +'history.jpg','',fanart)
+        live.addDir('Horror',genurl +'Horror','movieindex',artwork +'horror.jpg','',fanart)
+        live.addDir('Music',genurl +'Music','movieindex',artwork +'music.jpg','',fanart)
+        live.addDir('Mystery',genurl +'Mystery','movieindex',artwork +'mystery.jpg','',fanart)
+        live.addDir('Romance',genurl +'Romance','movieindex',artwork +'romance.jpg','',fanart)
+        live.addDir('Sci-Fi',genurl +'Sci-Fi','movieindex',artwork +'scifi.jpg','',fanart)
+        live.addDir('Thriller',genurl +'Thriller','movieindex',artwork +'thriller.jpg','',fanart)
+        live.addDir('War',genurl +'War','movieindex',artwork +'western.jpg','',fanart)
         
         main.AUTO_VIEW('')
    except Exception:
@@ -1147,10 +1184,7 @@ elif mode=='chiaresolvedl':
 elif mode=='shutdownxbmc':
         print ""+url
         SHUTDOWNXBMC()
-#===========TEST FUNCTIONS================
-elif mode=='testfunction':
-        print ""+url
-        TESTFUNCTION()
+   
 
 #==========ChannelCut UFC================
 
@@ -1317,6 +1351,16 @@ elif mode=='phsearch':
         print ""+url
         phub.PHSEARCH(url)
 
+#===============181FM===============================
+elif mode=='oneeightymain':
+        oneeighty.ONEEIGHTYMAIN()
+
+elif mode=='oneeightylist':
+        oneeighty.ONEEIGHTYLIST(name,url)
+
+elif mode=='oneeightylink':
+        oneeighty.ONEEIGHTYLINK(name,url)        
+        
 #==================LOG FILE UPLOAD==================
 
 elif mode=='uploadlogfile':UPLOADLOGFILE()
@@ -1326,10 +1370,132 @@ elif mode=='advert':ADVERT()
 
 elif mode=='updatefiles':
         autoupdate.UPDATEFILES()
+
+#===============IwatchOnline=========================
+elif mode=='catiwo':
+        print ""+url
+        iwo.CATIWO(url)
+
+elif mode=='iwogenres':
+        print ""+url
+        iwo.IWOGENRES(url)
+
+elif mode=='iwoalph':
+        print ""+url
+        iwo.IWOALPH()
+
+elif mode=='iwohd':
+        print ""+url
+        iwo.IWOHD()
+
+elif mode=='iwohdalph':
+        print ""+url
+        iwo.IWOHDALPH()        
+        
+elif mode=='iwomovies':
+        print ""+url
+        iwo.IWOMOVIES(url)
+
+elif mode=='iwovidpage':
+        print ""+url
+        iwo.IWOVIDPAGE(url,name)
+        
+elif mode=='iwoforvid':
+        print ""+url
+        iwo.IWOFORVID(url,name)
+
+#==================Zee Movies=======================
+elif mode=='catzeemovies':
+        print ""+url
+        iwo.CATZEEMOVIES(url)
+
+elif mode=='zeemovies':
+        print ""+url
+        iwo.ZEEMOVIES(url)
+
+elif mode=='zeegenres':
+        print ""+url
+        iwo.ZEEGENRES(url)
+
+elif mode=='zeevidpage':
+        print ""+url
+        iwo.ZEEVIDPAGE(url,name)
+
+elif mode=='zeerepass':
+        print ""+url
+        iwo.ZEEREPASS(url,name)        
+        
+        
+
+#==================ESPN==============================
+elif mode=='espnmain':
+        espn.ESPNMAIN()
+
+elif mode=='espnlist':
+        espn.ESPNLIST(url)
+
+elif mode=='espnlink':
+        espn.ESPNLINK(name,url,thumb)
+
+#===================FLIXSERIES======================
+
+elif mode=='popcats':
+        print ""+url
+        flix.POPCATS()
+       
+elif mode=='flixindex':
+        print ""+url
+        flix.FLIXINDEX(url,favtype)
+        
+
+elif mode=='flixvideolinks':
+        print ""+url
+        flix.FLIXVIDEOLINKS(name,url,thumb,favtype)
+
+elif mode=='flixaddlink':
+        print ""+url
+        flix.FLIXADDLINK(name,url,thumb)                                   
+
+
+elif mode=='flixindexdeep':
+        print ""+url
+        flix.FLIXINDEX_DEEP(url,favtype)
+
+elif mode=='popcornsearch':
+        print ""+url
+        flix.POPCORNSEARCH(url)
+
+elif mode=='frightpxsearch':
+        print ""+url
+        flix.FRIGHTPXSEARCH(url)
+
+#==================StreamLicensing=====================
+
+elif mode=='streamlic':
+        print ""+url
+        streamlic.STREAMLIC(url)
+
+elif mode=='streamlicindex':
+        streamlic.STREAMLICINDEX()
+
+elif mode=='streamlicgenre':
+        streamlic.STREAMLICGENRE()
+
+elif mode=='streamlicsearch':
+        print ""+url
+        streamlic.STREAMLICSEARCH(url)
+
+#===========TEST FUNCTIONS================
+elif mode=='testfunction':
+        print ""+url
+        TESTFUNCTION()
+
+elif mode=='myclass':
+        print ""+url
+        MyClass()             
         
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
 #CHECK_POPUP()
-
 

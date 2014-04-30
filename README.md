@@ -1,4 +1,0 @@
-Repo
-====
-
-Official XBMC Repo

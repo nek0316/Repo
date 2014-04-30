@@ -49,10 +49,20 @@ fanart = addon.queries.get('fanart', '')
 
 
 download_path = settings.getSetting('download_folder')
-artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
-fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'
+if settings.getSetting('theme') == '0':
+    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/', ''))
+    fanart = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg', ''))
+else:
+    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
+    fanart = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/fanart/fanart.jpg', ''))
 #================Threading===========================================
-
+def OPEN_URL(url):
+  req=urllib2.Request(url)
+  req.add_header('User-Agent','Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+  response=urllib2.urlopen(req)
+  link=response.read()
+  response.close()
+  return link
 
 class downloadThread (threading.Thread):
     def __init__(self, name, url, thumb, console, ext):
@@ -237,7 +247,7 @@ def nameCleaner(name):
           name = name.replace('&#8211;','')
           name = name.replace("&#8217;","")
           name = name.replace("&#039;s","'s")
-          name = unicode(name, errors='ignore')
+          #name = unicode(name, errors='ignore')
           return(name)
      
 
@@ -280,7 +290,7 @@ def addDiralt(name,url,mode,thumb):
      if thumb == '':
           thumb = artwork + 'noepisode.jpg'
      params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'year':year, 'types':'movie'}
-     addon.add_directory(params, {'title':name}, img= thumb, fanart= artwork + 'fanart.jpg')
+     addon.add_directory(params, {'title':name}, img= thumb, fanart= fanart)
 
 
 
@@ -289,6 +299,9 @@ def addDiralt(name,url,mode,thumb):
 def addDLDir(name,url,mode,thumb,labels,dlfoldername,favtype,mainimg):
         contextMenuItems = []
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername, 'favtype':favtype, 'mainimg':mainimg}
+        gomode=mode
+        contextMenuItems.append(('[COLOR red]Add to CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'addsttofavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
+        contextMenuItems.append(('[COLOR red]Remove From CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removestfromfavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
         contextMenuItems.append(('[COLOR gold]Download This File[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'url':url, 'mode':'dlvidpage', 'name':name, 'thumb':mainimg, 'console':console, 'dlfoldername':dlfoldername,'favtype':favtype})))
         addon.add_directory(params, {'title':name}, contextmenu_items=contextMenuItems, img= thumb)                             
        
@@ -297,6 +310,9 @@ def addDLDir(name,url,mode,thumb,labels,dlfoldername,favtype,mainimg):
 def addTVDLDir(name,url,mode,thumb,labels,dlfoldername,favtype,mainimg):
         contextMenuItems = []
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername, 'favtype':favtype,'mainimg':mainimg}
+        gomode=mode
+        contextMenuItems.append(('[COLOR red]Add to CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'addsttofavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
+        contextMenuItems.append(('[COLOR red]Remove From CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removestfromfavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
         contextMenuItems.append(('[COLOR gold]Download This File[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'url':url, 'mode':'dltvvidpage', 'name':name, 'thumb':mainimg, 'console':console, 'dlfoldername':dlfoldername,'favtype':favtype})))
         addon.add_directory(params, {'title':name}, contextmenu_items=contextMenuItems, img= thumb)
      
@@ -304,6 +320,9 @@ def addTVDLDir(name,url,mode,thumb,labels,dlfoldername,favtype,mainimg):
 def addUFCDLDir(name,url,mode,thumb,labels,dlfoldername,favtype,mainimg):
         contextMenuItems = []
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername, 'favtype':favtype,'mainimg':mainimg}
+        gomode=mode
+        contextMenuItems.append(('[COLOR red]Add to CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'addsttofavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
+        contextMenuItems.append(('[COLOR red]Remove From CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removestfromfavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
         contextMenuItems.append(('[COLOR gold]Download This File[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'url':url, 'mode':'dlsportvidpage', 'name':name, 'thumb':mainimg, 'console':console, 'dlfoldername':dlfoldername,'favtype':favtype})))
         addon.add_directory(params, {'title':name}, contextmenu_items=contextMenuItems, img= thumb)
 
@@ -422,14 +441,15 @@ def add2HELPDir(name,url,mode,iconimage,fanart,description,filetype):
      
 # Standard addDir
 def addDir(name,url,mode,thumb,labels,favtype):
+        name = nameCleaner(name)
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb,  'dlfoldername':dlfoldername, 'mainimg':mainimg}
         contextMenuItems = []
+        gomode=mode
+        contextMenuItems.append(('[COLOR red]Add to CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'addsttofavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
+        contextMenuItems.append(('[COLOR red]Remove From CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removestfromfavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
         sitethumb = thumb
         sitename = name
-        if thumb == artwork + 'ufc.jpg':
-                fanart = 'http://addonrepo.com/xbmchub/moviedb/images/ufcfanart.jpg'
-        else:     
-                fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'
+        fanart = 'http://addonrepo.com/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg'
        
         try:
                 name = data['title']
@@ -458,10 +478,54 @@ def addDir(name,url,mode,thumb,labels,favtype):
              liz.setProperty( "Fanart_Image", fanart )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok
+
+
+
+def addMDCDir(name,url,mode,thumb,labels,favtype):
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb,  'dlfoldername':dlfoldername, 'mainimg':mainimg}
+        contextMenuItems = []
+        gomode=mode
+        contextMenuItems.append(('[COLOR red]Add to CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'addsttofavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
+        contextMenuItems.append(('[COLOR red]Remove From CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removestfromfavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
+        sitethumb = thumb
+        sitename = name
+        fanart = 'http://addonrepo.com/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg'
+       
+        try:
+                name = data['title']
+                thumb = data['cover_url']
+                fanart = data['backdrop_url']
+        except:
+                name = sitename
+                
+        if thumb == '':
+                thumb = sitethumb       
+        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
+        ok=True
+        liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumb)
+        liz.setInfo( type="Video", infoLabels=labels )
+        if favtype == 'movie':
+                contextMenuItems.append(('[COLOR gold]Movie Information[/COLOR]', 'XBMC.Action(Info)'))
+        elif favtype == 'tvshow':
+                contextMenuItems.append(('[COLOR gold]TV Show  Information[/COLOR]', 'XBMC.Action(Info)'))
+        elif favtype == 'episode':
+                contextMenuItems.append(('[COLOR gold]Episode  Information[/COLOR]', 'XBMC.Action(Info)'))       
+                
+        liz.addContextMenuItems(contextMenuItems, replaceItems=False)
+        try:
+             liz.setProperty( "Fanart_Image", labels['backdrop_url'] )
+        except:
+             liz.setProperty( "Fanart_Image", fanart )
+        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
+        return ok
+
 # AddDir for TV SHows to add a year forpass
 
 def addTVDir(name,url,mode,thumb,labels,favtype,year):
         contextMenuItems = []
+        gomode=mode
+        contextMenuItems.append(('[COLOR red]Add to CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'addsttofavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
+        contextMenuItems.append(('[COLOR red]Remove From CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removestfromfavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
         sitethumb = thumb
         sitename = name
         try:
@@ -500,15 +564,18 @@ def addSDir(name,url,mode,thumb,year,types):
      contextMenuItems = []
      meta = {}
      params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'year':year, 'types':types, 'show':name}
+     gomode=mode
+     contextMenuItems.append(('[COLOR red]Add to CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'addsttofavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
+     contextMenuItems.append(('[COLOR red]Remove From CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removestfromfavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
 
      if settings.getSetting('metadata') == 'true':
           meta = grab.get_meta('tvshow',name)
           if meta['backdrop_url'] == '':
-               fanart = artwork + 'fanart.jpg'
+               fanart = fanart
           else:
                fanart = meta['backdrop_url']
      else:
-          fanart = artwork + 'fanart.jpg'
+          fanart = fanart
           
 
      if settings.getSetting('metadata') == 'true':
@@ -539,6 +606,9 @@ def addEPDir(name,url,thumb,mode,show,dlfoldername,mainimg,season,episode):
         show_id = None
         meta = None
         othumb = thumb
+        gomode=mode
+        contextMenuItems.append(('[COLOR red]Add to CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'addsttofavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
+        contextMenuItems.append(('[COLOR red]Remove From CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removestfromfavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
         if settings.getSetting('metadata') == 'true':
           #meta = grab.get_meta('tvshow',dlfoldername,'',season,episode)
           inc = 0
@@ -556,7 +626,8 @@ def addEPDir(name,url,thumb,mode,show,dlfoldername,mainimg,season,episode):
           show_id = meta['imdb_id']
           print 'IMDB ID is ' +show_id
         else:
-          fanart = artwork + 'fanart.jpg'
+          fanart = 'http://addonrepo.com/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg'
+          thumb = 'http://addonrepo.com/xbmchub/moviedb/showgunart/images/icon.png'
         s,e = GET_EPISODE_NUMBERS(name)
         if settings.getSetting('metadata') == 'true':
           try:
@@ -571,7 +642,7 @@ def addEPDir(name,url,thumb,mode,show,dlfoldername,mainimg,season,episode):
                thumb = mainimg
              
         else:
-          thumb = othumb
+          thumb = 'http://addonrepo.com/xbmchub/moviedb/showgunart/images/icon.png'
           if thumb == '':
                thumb = mainimg
      
@@ -579,11 +650,11 @@ def addEPDir(name,url,thumb,mode,show,dlfoldername,mainimg,season,episode):
         if settings.getSetting('metadata') == 'true':
          contextMenuItems.append(('[COLOR gold]Tv Show Information[/COLOR]', 'XBMC.Action(Info)'))
          if ep_meta==None:
-               fanart = artwork + 'fanart.jpg'
-               addon.add_directory(params, {'title':name},contextmenu_items=contextMenuItems, img=thumb, fanart=fanart) 
+               fanart = 'http://addonrepo.com/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg'
+               addon.add_directory(params, {'title':name},contextmenu_items=contextMenuItems, img=thumb) 
          else:
                if meta['backdrop_url'] == '':
-                    fanart = artwork + 'fanart.jpg'
+                    fanart = 'http://addonrepo.com/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg'
                else:
                     fanart = meta['backdrop_url']
                ep_meta['title'] = name
@@ -599,6 +670,9 @@ def addEPNOCLEANDir(name,url,thumb,mode,show,dlfoldername,mainimg,season,episode
         show_id = None
         meta = None
         othumb = thumb
+        gomode=mode
+        contextMenuItems.append(('[COLOR red]Add to CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'addsttofavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
+        contextMenuItems.append(('[COLOR red]Remove From CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removestfromfavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
         if settings.getSetting('metadata') == 'true':
           #meta = grab.get_meta('tvshow',dlfoldername,'',season,episode)
           inc = 0
@@ -618,7 +692,7 @@ def addEPNOCLEANDir(name,url,thumb,mode,show,dlfoldername,mainimg,season,episode
           show_id = meta['imdb_id']
           print 'IMDB ID is ' +show_id
         else:
-          fanart = artwork + 'fanart.jpg'
+          fanart = fanart
         s,e = GET_EPISODE_NUMBERS(name)
         if settings.getSetting('metadata') == 'true':
           try:
@@ -641,11 +715,11 @@ def addEPNOCLEANDir(name,url,thumb,mode,show,dlfoldername,mainimg,season,episode
         if settings.getSetting('metadata') == 'true':
          contextMenuItems.append(('[COLOR gold]Tv Show Information[/COLOR]', 'XBMC.Action(Info)'))
          if ep_meta==None:
-               fanart = artwork + 'fanart.jpg'
+               fanart = fanart
                addon.add_directory(params, {'title':name},contextmenu_items=contextMenuItems, img=thumb, fanart=fanart) 
          else:
                if meta['backdrop_url'] == '':
-                    fanart = artwork + 'fanart.jpg'
+                    fanart = fanart
                else:
                     fanart = meta['backdrop_url']
                ep_meta['title'] = name
@@ -762,8 +836,10 @@ def GETHOSTTHUMB(host):
      if host.startswith('www.'):
              host = host[4:]
      
-     
-     host = artwork + '/hosts/' + host +'.jpg'
+     if settings.getSetting('theme') == '0':
+             host = artwork + '/hosts/' + host +'.png'
+     else:
+             host = artwork + '/hosts/' + host +'.jpg'
      return(host)
 
 #Episode directory function to be used when adding a Episode, all metadata scrapes and context menu items are handled within_________
@@ -771,13 +847,16 @@ def addEDir(name,url,mode,thumb,show):
      ep_meta = None
      show_id = None
      meta = None
-     othumb = thumb           
+     othumb = thumb
+     gomode=mode
+     contextMenuItems.append(('[COLOR red]Add to CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'addsttofavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
+     contextMenuItems.append(('[COLOR red]Remove From CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removestfromfavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
      if settings.getSetting('metadata') == 'true':
           data = GRABTVMETA('tvshow',show)
           
 
      else:
-          fanart = artwork + 'fanart.jpg'
+          fanart = fanart
      
      s,e = GET_EPISODE_NUMBERS(name)
 
@@ -800,11 +879,11 @@ def addEDir(name,url,mode,thumb,show):
      if settings.getSetting('metadata') == 'true':
 
           if ep_meta==None:
-               fanart = artwork + 'fanart.jpg'
+               fanart = fanart
                addon.add_directory(params, {'title':name}, img=thumb, fanart=fanart) 
           else:
                if data['backdrop_url'] == '':
-                    fanart = artwork + 'fanart.jpg'
+                    fanart = fanart
                else:
                     fanart = data['backdrop_url']
                ep_meta['title'] = name

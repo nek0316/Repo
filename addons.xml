@@ -50,7 +50,7 @@
 </extension>
 </addon>
 
-<addon id="plugin.video.frightpix" version="1.2.0" name="FrightPix" provider-name="Blazetamer">
+<addon id="plugin.video.frightpix" version="1.2.5" name="FrightPix" provider-name="Blazetamer">
 <requires>
 <import addon="xbmc.python" version="2.1.0"/>
 <import addon="script.module.urlresolver"  version="2.1.2"/>
@@ -67,7 +67,7 @@
 </extension>
 </addon>
 
-<addon id="plugin.video.moviedb" version="2.0.9" name="MDB Ultra" provider-name="Blazetamer">
+<addon id="plugin.video.moviedb" version="2.2.6" name="Cliq!" provider-name="Blazetamer">
 <requires>
 <import addon="xbmc.python" version="2.1.0"/>
 <import addon="script.module.urlresolver"  version="2.1.2"/>
@@ -83,8 +83,10 @@
 <provides>video</provides>
 </extension>
 <extension point="xbmc.addon.metadata">
-<summary>MDb ULTRA Live Streams Movies/TV</summary>
-<description>- MDB Ultra ** Includes iLive Streams and Streams  Submitted by users, Movies, Tv Shows, Cartoons and Sports from several source websites. Content is updated daily. Download Movies and Shows to your libray with a Queue!! See the Special Menus section within the addon for more information!</description>
+<summary>Cliq! Live Streams Movies/TV</summary>
+<description> "Cliq" formally MDB Ultra Includes iLive Streams, Movies, Tv Shows, Cartoons and Sports from several source websites. Content is updated daily. Download Movies and Shows to your library with a Queue!! Has add-on Wide Favorites! If you want it all Just Cliq!!!</description>
+<disclaimer>The author does not host or distribute any of the content displayed by this addon. The author does not have any affiliation with the content providers.</disclaimer>
+
 <forum>http://www.xbmchub.com/forums/blazetamers-repository/17959-%5Brelease%5D-mdb-ultra-video-addon.html</forum>
 <website>http://www.xbmchub.com/</website>
 
@@ -92,7 +94,7 @@
 </extension>
 </addon>
 
-<addon id="plugin.video.popcornflix" version="1.9.0" name="PopcornFlix" provider-name="Blazetamer">
+<addon id="plugin.video.popcornflix" version="2.0.0" name="PopcornFlix" provider-name="Blazetamer">
 <requires>
 <import addon="xbmc.python" version="2.1.0"/>
 <import addon="script.module.urlresolver"  version="2.1.2"/>
@@ -155,11 +157,11 @@
 </extension>
 </addon>
 
-<addon id="repository.BlazeRepo" name="Blazetamer's Repository" version="2.7" provider-name="Blazetamer">
+<addon id="repository.BlazeRepo" name="Blazetamer's Repository" version="2.8" provider-name="Blazetamer">
 	<extension point="xbmc.addon.repository" name="Blazetamer's Addon Repository">
-		<info compressed="false">http://github.com/Blazetamer/Repo/raw/master/addons.xml</info>
-		<checksum>http://github.com/Blazetamer/Repo/raw/master/addons.xml.md5</checksum>
-		<datadir zip="true">http://github.com/Blazetamer/Repo/raw/master/zips</datadir>
+		<info compressed="false">http://addonrepo.com/xbmchub/Blazetamer/Repository/addons.xml</info>
+		<checksum>http://addonrepo.com/xbmchub/Blazetamer/Repository/addons.xml.md5</checksum>
+		<datadir zip="true">http://addonrepo.com/xbmchub/Blazetamer/Repository/zips</datadir>
 	</extension>
 	<extension point="xbmc.addon.metadata">
 		<summary>Install all of Blazetamer's Addons</summary>

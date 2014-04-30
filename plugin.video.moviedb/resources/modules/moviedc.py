@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 # MovieDataCenter Module by: Blazetamer
 
 
@@ -53,7 +53,10 @@ episode = addon.queries.get('episode', '')
 cookiejar = addon.get_profile()
 cookiejar = os.path.join(cookiejar,'cookies.lwp')
 settings = xbmcaddon.Addon(id=addon_id)
-artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
+if settings.getSetting('theme') == '0':
+    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/', ''))
+else:
+    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
 grab=metahandlers.MetaData()
 net = Net()
 
@@ -64,10 +67,12 @@ def LogNotify(title,message,times,icon):
 
 def MOVIEDCCATS():
 
-    
-          main.addDir('Popular DataCenter Movies','http://www.moviesdatacenter.com/Popular_Movies.html','moviedcindex',artwork + 'popular.jpg','','dir')
-          main.addDir('Top 10 DataCenter Movies','http://www.moviesdatacenter.com/IMDB_TopRated_Movies.html','moviedcindexsec',artwork + 'rating.jpg','','dir')
-          main.addDir('[COLOR gold]Search DataCenter Movies[/COLOR]','http://www.moviesdatacenter.com/find/within-movies/','searchmoviedc',artwork + 'search.jpg','','dir')
+            
+          main.addMDCDir('Featured DataCenter Movies','http://www.moviesdatacenter.ch/','moviedcindex',artwork + 'featured.jpg','','dir')
+          #main.addMDCDir('Latest DataCenter Movies','http://www.moviesdatacenter.ch/Latest_Movies.html','moviedcindex',artwork + 'latest.jpg','','dir')
+          #main.addMDCDir('Latest DataCenter Movies','http://www.moviesdatacenter.ch/Latest_Movies.html','moviedcindex',artwork + 'latest.jpg','','dir')
+          main.addMDCDir('Top 10 DataCenter Movies','http://www.moviesdatacenter.com/IMDB_TopRated_Movies.html','moviedcindexsec',artwork + 'rating.jpg','','dir')
+          main.addMDCDir('[COLOR gold]Search DataCenter Movies[/COLOR]','http://www.moviesdatacenter.com/find/within-movies/','searchmoviedc',artwork + 'search.jpg','','dir')
           
           main.AUTO_VIEW('')    
 
@@ -97,14 +102,14 @@ def MOVIEDCINDEX (url):
                   thumb = sitethumb
                    
             favtype = 'movie'
-            main.addDir(name+ ' (' + year +')',base_url + url,'moviedclinkpage',thumb,data,favtype)
+            main.addMDCDir(name+ ' (' + year +')',base_url + url,'moviedclinkpage',thumb,data,favtype)
                 
                 
          #nmatch=re.compile('<span class="currentpage">.+?</span></li><li><a href="(.+?)">(.+?)</a></li><li>').findall(link)
          #if len(nmatch) > 0: 
           #for pageurl,pageno in nmatch:
                      
-                #main.addDir('Page'+ pageno,basetv_url + pageurl,'movieindex',artwork +'nextpage.jpg','','dir')
+                #main.addMDCDir('Page'+ pageno,basetv_url + pageurl,'movieindex',artwork +'nextpage.jpg','','dir')
              
         main.AUTO_VIEW('movies')
 
@@ -126,14 +131,14 @@ def MOVIEDCINDEXSEC (url):
                   thumb = sitethumb
                    
             favtype = 'movie'
-            main.addDir('[COLOR red] '+rate+' [/COLOR]'+ name+ ' (' + year +')',base_url + url,'moviedclinkpage',thumb,data,favtype)
+            main.addMDCDir('[COLOR red] '+rate+' [/COLOR]'+ name+ ' (' + year +')',base_url + url,'moviedclinkpage',thumb,data,favtype)
                 
                 
          #nmatch=re.compile('<span class="currentpage">.+?</span></li><li><a href="(.+?)">(.+?)</a></li><li>').findall(link)
          #if len(nmatch) > 0: 
           #for pageurl,pageno in nmatch:
                      
-                #main.addDir('Page'+ pageno,basetv_url + pageurl,'movieindex',artwork +'nextpage.jpg','','dir')
+                #main.addMDCDir('Page'+ pageno,basetv_url + pageurl,'movieindex',artwork +'nextpage.jpg','','dir')
              
         main.AUTO_VIEW('movies')
         
@@ -157,14 +162,14 @@ def MOVIEDCSEARCH(url):
                   thumb = sitethumb
                    
             favtype = 'movie'
-            main.addDir(name+ ' (' + year +')',base_url + url,'moviedclinkpage',thumb,data,favtype)
+            main.addMDCDir(name+ ' (' + year +')',base_url + url,'moviedclinkpage',thumb,data,favtype)
                 
                 
          #nmatch=re.compile('<span class="currentpage">.+?</span></li><li><a href="(.+?)">(.+?)</a></li><li>').findall(link)
          #if len(nmatch) > 0: 
           #for pageurl,pageno in nmatch:
                      
-                #main.addDir('Page'+ pageno,basetv_url + pageurl,'movieindex',artwork +'nextpage.jpg','','dir')
+                #main.addMDCDir('Page'+ pageno,basetv_url + pageurl,'movieindex',artwork +'nextpage.jpg','','dir')
              
         main.AUTO_VIEW('movies')             
 

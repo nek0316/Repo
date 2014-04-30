@@ -7,19 +7,11 @@ import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,urlresolver,xbmc,os,xbmcaddon,ma
 from metahandler import metahandlers
 from resources.utils import buggalo
 import urlresolver
-try:
-        from addon.common.addon import Addon
 
-except:
-        from t0mm0.common.addon import Addon
+from addon.common.addon import Addon
 addon_id = 'plugin.video.moviedb'
 
-
-try:
-        from addon.common.net import Net
-
-except:  
-        from t0mm0.common.net import Net
+from addon.common.net import Net
 net = Net()
 try:
      import StorageServer
@@ -50,7 +42,12 @@ gomode = addon.queries.get('gomode', '')
 
 # Global Stuff
 settings = xbmcaddon.Addon(id=addon_id)
-artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
+if settings.getSetting('theme') == '0':
+    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/', ''))
+    fanart = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg', ''))
+else:
+    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
+    fanart = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/fanart/fanart.jpg', ''))
 grab=metahandlers.MetaData()
 net = Net()
 def LogNotify(title,message,times,icon):
@@ -106,46 +103,46 @@ def LIVECATSLIST(url):
         match=re.compile('<name>(.+?)</name><link>(.+?)</link><thumbnail>(.+?)</thumbnail><mode>(.+?)</mode><desc>(.+?)</desc>').findall(link)
         for name,url,thumb,mode,desc in match:
                 print 'Description is  ' + desc
-                addSTFavDir(name,url,mode,thumb,desc,thumb)                        
-        
+                #addDir(name,url,mode,thumb,desc,thumb)                        
+                addSTFavDir(name,url,mode,thumb,'','',isFolder=False, isPlayable=True)
         link=OPEN_URL(mainurl).replace('\n','').replace('\r','')
         match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail>').findall(link)
         for name,url,thumb in match:
-                addSTFavDir(name,url,'liveresolve',thumb,'',thumb)       
-            
+                #addDir(name,url,'liveresolve',thumb,'',thumb)       
+                addSTFavDir(name,url,'liveresolve',thumb,'','',isFolder=False, isPlayable=True)
 
         main.AUTO_VIEW('movies')   
    except Exception:
         buggalo.onExceptionRaised()
 
 
+def ILIVERESOLVE(name,url,iconimage):
+         liz = xbmcgui.ListItem(name, iconImage=iconimage, thumbnailImage=iconimage)
+ 
+         liz.setInfo( type="Video", infoLabels={ "Title": name} )
+         liz.setPath(url)
 
-
+         xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, liz)
+         
 
 
 def LIVERESOLVE(name,url,thumb):
          params = {'url':url, 'name':name, 'thumb':thumb}
          addon.add_video_item(params, {'title':name}, img=thumb)
          liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumb)
-         xbmc.sleep(1000)
+         #xbmc.sleep(1000)
          xbmc.Player ().play(str(url), liz, False)
-
-         main.AUTO_VIEW('')
-
+         
 
   
 
 def addDir(name,url,mode,thumb,desc,favtype):
         
-        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'desc':desc}
-        fanart = thumb
-        if thumb == artwork + 'icon.png':
-                fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'
-        elif thumb == '-':
-                fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'        
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'desc':desc}        
         if desc == '':
                 desc = 'Description not available at this level'
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
+        fanart = 'http://addonrepo.com/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg'
         ok=True
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumb)
         liz.setInfo( type="Video", infoLabels={ "title": name, "Plot": desc } )
@@ -164,10 +161,7 @@ def ILIVEMAIN():
         addDir('Animation','animation','ilivelists',artwork+'/ilive.png','Animation Stream Listings','')
         addDir('Entertainment(English)','entertainmentenglish','ilivelists',artwork+'/ilive.png','English Entertainment Streams from iLive','')
         addDir('Entertainment','entertainment','ilivelists',artwork+'/ilive.png','All Entertainment Streams from iLive','')
-        addDir('Family','family','ilivelists',artwork+'/ilive.png','Family Streams','')
-        addDir('Gaming','gaming','ilivelists',artwork+'/ilive.png','Gaming Streams','')
         addDir('General','general','ilivelists',artwork+'/ilive.png','General Streams','')
-        addDir('Lifecaster','lifecaster','ilivelists',artwork+'/ilive.png','Lifecaster Streams','')
         addDir('Music','music','ilivelists',artwork+'/ilive.png','Current Listed Music Streams','')
         addDir('News','news','ilivelists',artwork+'/ilive.png','Current News Streams','')
         addDir('Sports(English)','sportsenglish','ilivelists',artwork+'/ilive.png','Live English Sports Streams from iLive','')
@@ -243,10 +237,18 @@ def ILIVELISTS(menuurl):
         dialogWait.update(0,'[COLOR gold][B]Loading.....[/B][/COLOR]',remaining_display)
         for durl in urllist:
                 link=OPEN_URL(durl)
-                link=link.replace('\r','').replace('\n','').replace('\t','').replace('&nbsp;','')
+                link=link.replace('\r','').replace('\n','').replace('\t','').replace('&nbsp;','').replace('  ','')
+                #Changed regex for main menu load 
                 match=re.compile('src=".+?" alt=".+?<img width=".+?" height=".+?" src="([^<]+)" alt=".+?"/></noscript></a><a href="(.+?)"><strong>(.*?)</strong></a><br/>').findall(link)
+                #match=re.compile('src=".+?" alt=".+?<img width=".+?" height=".+?" src="([^<]+)" alt=".+?</noscript></a><a href="(.+?)"><strong>(.*?)</strong></a><br/>').findall(link)
                 for thumb,url,name in match:
-                        addSTFavDir(name,url,'iliveplaylink',thumb,'','')
+                        if settings.getSetting('adult') == 'true':
+                                addSTFavDir(name,url,'iliveplaylink',thumb,'','',isFolder=False, isPlayable=True)
+                                
+                        else:        
+                                if 'venus' not in name.lower() and '+16' not in name.lower() and '+18' not in name.lower() and 'hongkong' not in name.lower() and   'playboy' not in name.lower() and   'sex' not in name.lower() and   'girls' not in name.lower() and   'fuck' not in name.lower() and   'hardcore' not in name.lower() and   'softcore' not in name.lower() and   'pussy' not in name.lower() and   'dick' not in name.lower() and   'anal' not in name.lower() and   'cum' not in name.lower() and   'blowjob' not in name.lower() and   'adult' not in name.lower() and   '18+' not in name.lower() and  '16+' not in name.lower():
+                                        addSTFavDir(name,url,'iliveplaylink',thumb,'','',isFolder=False, isPlayable=True)
+                                        
                                       
                 gotpages = gotpages + 1
                 percent = (gotpages * 100)/gotpages
@@ -263,55 +265,72 @@ def ILIVELISTS(menuurl):
 
 def ILIVEPLAYLINK(name,menuurl,thumb):
    try:        
-                LogNotify('Attempting to play Stream', 'Please Wait...', '5000', artwork+'/ilive.png')
-        #try:
+                #LogNotify('Attempting to play Stream', 'Please Wait...', '5000', artwork+'/ilive.png')
+
                 #headers = {'Referer': 'http://www.ilive.to/'}
-                #url = 'http://www.ilive.to/server.php?'
+                #url = 'http://www.ilive.to/server2.php?id=1395967160'
                 #html = net.http_GET(url, headers=headers).content
                 #match=re.compile('{"token":"(.+?)"}').findall(html)
                 #for token in match:
-                #        token = token
-        #except:               
+                        #print 'SERVERTOKEN IS  '+ token
+                        #token = token
+               
         
-                link=OPEN_URL('http://goo.gl/bLOqUg')
-                link=link.replace('\r','').replace('\n','').replace('\t','').replace('&nbsp;','')
-                match=re.compile('<token>(.+?)</token><swf>.+?</swf>').findall(link)
-                for token in match:     
-                 print'TOKEN IS ' +token        
-                 link=OPEN_URL(menuurl)
-                 ok=True
-                 if link:
+                #link=OPEN_URL('http://goo.gl/bLOqUg')
+                #link=link.replace('\r','').replace('\n','').replace('\t','').replace('&nbsp;','')
+                #match=re.compile('<token>(.+?)</token><swf>(.+?)</swf>').findall(link)
+                #for token,swfold in match:     
+                 #print'SWF IS ' +swfold        
+                link=OPEN_URL(menuurl)
+                ok=True
+                if link:
                                 playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
                                 playlist.clear()
                                 link=link.replace('\r','').replace('\n','').replace('\t','').replace('&nbsp;','')
+                                matchserv=re.compile('''.*getJSON\("([^'"]+)".*''').findall(link)
+                                for server in matchserv:
+                                        print 'Server IS ' +server
+                                        headers = {'Referer': 'http://www.ilive.to/'}
+                                        url = server
+                                        html = net.http_GET(url, headers=headers).content
+                                        match=re.compile('{"token":"(.+?)"}').findall(html)
+                                        for token in match:
+                                                print 'SERVERTOKEN IS  '+ token
+                                                token = token
+
                                 match=re.compile('http://www.ilive.to/embed/(.+?)&width=.+?&height=.+?&autoplay=true').findall(link)
                                 for vid in match:
                                         pageUrl='http://www.ilive.to/m/channel.php?n='+vid
                                         playpath=re.compile('''.*file[:,]\s*['"]([^'"]+).flv['"]''').findall(link)
                                         playpath = playpath[0]
-                                        newplaypath =str(playpath)
-                                        swff=re.compile('flashplayer: "(.+?)"').findall(link)
-                                        #swf= swf[0]
-                                        for swf in swff:
-                                            #token='motngaynew1'
-                                            rtmp=re.compile('streamer: "(.+?)"').findall(link)
-                                            rtmp= rtmp[0]
-                                            newrtmp = str(rtmp)
-                                            newrtmp = newrtmp.replace('\/','/').replace('\\','')
-                                            try:
+                                        newplaypath =str(playpath)        
+                                        rtmp=re.compile('streamer: "(.+?)"').findall(link)
+                                        rtmp= rtmp[0]
+                                        newrtmp = str(rtmp)
+                                        newrtmp = newrtmp.replace('\/','/').replace('\\','')
+                                        try:
                                               app = newrtmp.replace('rtmp://watch.ilive.to:1935/','')
-                                            except:        
+                                        except:        
                                               app = newrtmp.replace('rtmp://watch1.ilive.to:1935/','')
-                                            try:        
+                                        try:        
                                               app = newrtmp.replace('rtmp://watch2.ilive.to:1935/','')
 
-                                            except:        
+                                        except:        
                                               app = newrtmp.replace('rtmp://watch.ilive.to:1935/','')        
-                                            newapp = str(app)
-                                            playable =newrtmp + ' app=' + newapp + ' playpath=' + newplaypath + ' swfUrl=http://www.ilive.to/' + swf + ' live=1 timeout=15 token=' + token + ' swfVfy=1 pageUrl=http://www.ilive.to'
+                                        newapp = str(app)
+                                        link=OPEN_URL(pageUrl)
+                                        swff=re.compile("type: \'flash\', src: \'(.+?)'").findall(link)
+                                        for swf in swff:
+                                                swf= swf
+                                                #swf= swf[0]
+                                                #Manual SWF Added
+                                                #swf = 'http://www.ilive.to/player/player.swf'
+                                                print 'SWF IS ' + swf
+                                        playable =newrtmp + ' app=' + newapp + ' playpath=' + newplaypath + ' swfUrl=' + swf + ' live=1 timeout=15 token=' + token + ' swfVfy=1 pageUrl=http://www.ilive.to'
                                         
                                         print 'RTMP IS ' +  playable
-                                        LIVERESOLVE(name,playable,thumb)
+                                        ILIVERESOLVE(name,playable,thumb)
+                                        
    except Exception:
         buggalo.onExceptionRaised()                                
 
@@ -344,7 +363,7 @@ def SEARCHLINKS(urllist):
                 match=re.compile('src=".+?" alt=".+?<img width=".+?" height=".+?" src="([^<]+)" alt=".+?"/></noscript></a><a href="(.+?)"><strong>(.*?)</strong></a><br/>').findall(link)
                 if len(match) > 0:
                         for thumb,url,name in match:
-                                addSTFavDir(name,url,'iliveplaylink',thumb,'','')
+                                addSTFavDir(name,url,'iliveplaylink',thumb,'','', isFolder=False, isPlayable=True)
                                   
                 else:
                         addDir('[COLOR red]None Found Try again[/COLOR]','http://www.ilive.to/channels/?q=','searchilive','','','')
@@ -368,12 +387,12 @@ def PLAYFAVS(name,url,thumb):
 
 
 #====================Standard Favorites===================================
-def addSTFavDir(name,url,mode,thumb,desc,favtype):
+def addSTFavDir(name,url,mode,thumb,desc,favtype, isFolder=True, isPlayable=False):
         gomode=mode
         contextMenuItems = []
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'desc':desc}
-        contextMenuItems.append(('[COLOR red]Add to MDB Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'addsttofavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
-        contextMenuItems.append(('[COLOR red]Remove From MDB Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removestfromfavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
+        contextMenuItems.append(('[COLOR red]Add to CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'addsttofavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
+        contextMenuItems.append(('[COLOR red]Remove From CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removestfromfavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
         fanart = thumb
         if thumb == artwork + 'icon.png':
                 fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'
@@ -381,19 +400,24 @@ def addSTFavDir(name,url,mode,thumb,desc,favtype):
                 fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'        
         if desc == '':
                 desc = 'Description not available at this level'
-        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
+        #u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
+        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&thumb="+urllib.quote_plus(thumb)
         ok=True
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumb)
         liz.setInfo( type="Video", infoLabels={ "title": name, "Plot": desc } )
         liz.setProperty( "Fanart_Image", fanart )
-        liz.addContextMenuItems(contextMenuItems, replaceItems=True)
-        addon.add_directory(params, {'title':name}, contextmenu_items=contextMenuItems,context_replace=True, img= thumb)
+        liz.addContextMenuItems(contextMenuItems, replaceItems=False)
+        #addon.add_directory(params, {'title':name}, contextmenu_items=contextMenuItems,context_replace=False, img= thumb)
+        if isPlayable:
+            liz.setProperty("IsPlayable","true")
+            ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=isFolder)
+        return ok
 
 def addSTRemoveDir(name,url,mode,thumb,gomode):
         gomode=mode
         contextMenuItems = []
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb,'gomode': gomode}
-        contextMenuItems.append(('[COLOR red]Remove From MDB Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removestfromfavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
+        contextMenuItems.append(('[COLOR red]Remove From CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removestfromfavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
         fanart = thumb
         if thumb == artwork + 'icon.png':
                 fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'
@@ -404,8 +428,8 @@ def addSTRemoveDir(name,url,mode,thumb,gomode):
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumb)
         liz.setInfo( type="Video", infoLabels={ "title": name, "Plot": desc } )
         liz.setProperty( "Fanart_Image", fanart )
-        liz.addContextMenuItems(contextMenuItems, replaceItems=True)
-        addon.add_directory(params, {'title':name}, contextmenu_items=contextMenuItems,context_replace=True, img= thumb)            
+        liz.addContextMenuItems(contextMenuItems, replaceItems=False)
+        addon.add_directory(params, {'title':name}, contextmenu_items=contextMenuItems,context_replace=False, img= thumb)            
      
 def ADDSTTOFAVS(name,url,thumb,gomode):
    try:        
@@ -455,7 +479,7 @@ def RESOLVER(url,name):
         if hmf:
                 host = hmf.get_host()
                 dlurl = urlresolver.resolve(urls)
-                LIVERESOLVE(name,dlurl,'')
+                ILIVERESOLVE(name,dlurl,'')
                                   
    except Exception:
         buggalo.onExceptionRaised()

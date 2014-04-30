@@ -52,7 +52,10 @@ episode = addon.queries.get('episode', '')
 cookiejar = addon.get_profile()
 cookiejar = os.path.join(cookiejar,'cookies.lwp')
 settings = xbmcaddon.Addon(id=addon_id)
-artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
+if settings.getSetting('theme') == '0':
+    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/', ''))
+else:
+    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
 grab=metahandlers.MetaData()
 net = Net()
 
@@ -63,7 +66,7 @@ def LogNotify(title,message,times,icon):
 def CHANUFCCATS():
    try:
     
-          main.addDir('UFC [COLOR red](ChannelCut)[/COLOR]','http://www.channelcut.me/category/ufc','chanufcindex',artwork + 'ufc.jpg','','dir')
+          main.addDir('UFC [COLOR red](ChannelCut)[/COLOR]','http://www.channelcut.me/?s=ufc&searchsubmit=Search','chanufcindex',artwork + 'ufc.jpg','','dir')
           
           
           main.AUTO_VIEW('')

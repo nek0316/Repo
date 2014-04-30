@@ -1,3 +1,29 @@
+V2.2.5
+More Favorites fixes and "Useless" Submenu Removal "HAHA" 
+
+V2.2.4
+Ability to add iLive Streams to XBMC Favs
+
+V2.2.3
+Added Several Music Sources Including Big Radio and 
+Stream Licensing Radio
+Code Cosmetics 
+
+V2.1.8 - V2.2.2
+Bug Fixes and Prep for Music Aditions
+
+V2.1.7
+Added Host File Icons and adjusted stream call strings 
+
+V2.1.6
+Fixes Episode meta data error in fanart container
+
+V2.1.5
+MDB is now Cliq!!
+
+V2.1.0
+Ilive bug fix 
+
 V2.0.9
 Fixed iLive....AGAIN!
 

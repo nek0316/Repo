@@ -54,7 +54,10 @@ show = addon.queries.get('show', '')
 cookiejar = addon.get_profile()
 cookiejar = os.path.join(cookiejar,'cookies.lwp')
 settings = xbmcaddon.Addon(id=addon_id)
-artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
+if settings.getSetting('theme') == '0':
+    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/', ''))
+else:
+    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
 grab=metahandlers.MetaData()
 net = Net()
 

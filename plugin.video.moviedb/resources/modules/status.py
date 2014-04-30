@@ -26,7 +26,10 @@ net = Net()
 settings=xbmcaddon.Addon(id='plugin.video.moviedb')
 #==============ADD Addon Instaler========================
 base_url = 'http://addons.xbmchub.com/'
-artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
+if settings.getSetting('theme') == '0':
+    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/', ''))
+else:
+    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
 
 def ADDONLIST(url):
     fanart = ''

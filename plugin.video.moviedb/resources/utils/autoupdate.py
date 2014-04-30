@@ -2,34 +2,26 @@
 import urllib,urllib2,re,xbmcplugin,xbmcgui,xbmc,xbmcaddon,os,sys,time,shutil
 import downloader
 import extract
-
-
-try:
-        from addon.common.addon import Addon
-
-except:
-        from t0mm0.common.addon import Addon
+from addon.common.addon import Addon
 addon_id = 'plugin.video.moviedb'
 ADDON = xbmcaddon.Addon(id='plugin.video.moviedb')
-#addon = Addon(addon_id, sys.argv)
+from addon.common.net import Net
 
-
-try:
-        from addon.common.net import Net
-
-except:  
-        from t0mm0.common.net import Net
 net = Net()
-
-settings=xbmcaddon.Addon(id='plugin.video.moviedb')
-artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
+settings = xbmcaddon.Addon(id='plugin.video.moviedb')
+if settings.getSetting('theme') == '0':
+    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/', ''))
+    fanart = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg', ''))
+else:
+    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
+    fanart = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/fanart/fanart.jpg', ''))
 #====================Start update procedures=======================
 
 def UPDATEFILES():
-        url='https://raw.github.com/Blazetamer/mdbautoupdate/master/plugin.video.moviedb.zip'
+        url='http://addonrepo.com/xbmchub/moviedb/cliqupdate/plugin.video.moviedb.zip'
         path=xbmc.translatePath(os.path.join('special://home/addons','packages'))
         addonpath=xbmc.translatePath(os.path.join('special://','home/addons'))
-        name= 'mdbupdatepackage.zip'
+        name= 'cliqupdatepackage.zip'
         lib=os.path.join(path,name)
         try: os.remove(lib)
         except: pass

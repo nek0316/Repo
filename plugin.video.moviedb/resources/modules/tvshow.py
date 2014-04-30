@@ -54,7 +54,10 @@ episode = addon.queries.get('episode', '')
 cookiejar = addon.get_profile()
 cookiejar = os.path.join(cookiejar,'cookies.lwp')
 settings = xbmcaddon.Addon(id=addon_id)
-artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
+if settings.getSetting('theme') == '0':
+    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/', ''))
+else:
+    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
 grab=metahandlers.MetaData()
 net = Net()
 
@@ -97,7 +100,7 @@ def TVINDEX (url):
                 year = str(yeargrab)               
 
                 favtype = 'tvshow'
-                main.addDir(movie_name +'('+ year +')',basetv_url + url,'episodes',thumb,data,favtype)
+                addMERDBDir(movie_name +'('+ year +')',basetv_url + url,'episodes',thumb,data,favtype)
                 
                 #main.addSDir(movie_name +'('+ year +')',basetv_url + url,'episodes',thumb,year,favtype)
                 
@@ -171,7 +174,7 @@ def EPISODES(url,name,thumb):
               se = s+e
               name = se + ' ' + epname
               favtype = 'episodes'
-              main.addEPDir(name,base_url + url,thumb,'tvlinkpage',show,dlfoldername,mainimg,season,epnum)
+              addMERDBEPDir(name,base_url + url,thumb,'tvlinkpage',show,dlfoldername,mainimg,season,epnum)
              
               main.AUTO_VIEW('episode')
    except Exception:
@@ -258,7 +261,117 @@ def SEARCHTV(url):
 	main.AUTO_VIEW('movies')
 
 
+def addMERDBDir(name,url,mode,thumb,labels,favtype):
+        name = name.replace('&#8211;','')
+        name = name.replace("&#8217;","")
+        name = name.replace("&#039;s","'s")
+        name = unicode(name, errors='ignore')
+        #name.decode('utf-8', errors='replace')
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb,  'dlfoldername':dlfoldername, 'mainimg':mainimg}
+        contextMenuItems = []
+        gomode=mode
+        contextMenuItems.append(('[COLOR red]Add to CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'addsttofavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
+        contextMenuItems.append(('[COLOR red]Remove From CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removestfromfavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
+        sitethumb = thumb
+        sitename = name
+        fanart = 'http://addonrepo.com/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg'
+       
+        try:
+                name = data['title']
+                thumb = data['cover_url']
+                fanart = data['backdrop_url']
+        except:
+                name = sitename
+                
+        if thumb == '':
+                thumb = sitethumb       
+        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
+        ok=True
+        liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumb)
+        liz.setInfo( type="Video", infoLabels=labels )
+        if favtype == 'movie':
+                contextMenuItems.append(('[COLOR gold]Movie Information[/COLOR]', 'XBMC.Action(Info)'))
+        elif favtype == 'tvshow':
+                contextMenuItems.append(('[COLOR gold]TV Show  Information[/COLOR]', 'XBMC.Action(Info)'))
+        elif favtype == 'episode':
+                contextMenuItems.append(('[COLOR gold]Episode  Information[/COLOR]', 'XBMC.Action(Info)'))       
+                
+        liz.addContextMenuItems(contextMenuItems, replaceItems=False)
+        try:
+             liz.setProperty( "Fanart_Image", labels['backdrop_url'] )
+        except:
+             liz.setProperty( "Fanart_Image", fanart )
+        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
+        return ok
 
+def addMERDBEPDir(name,url,thumb,mode,show,dlfoldername,mainimg,season,episode):
+        name = name.replace('&#8211;','')
+        name = name.replace("&#8217;","")
+        name = name.replace("&#039;s","'s")
+        name = unicode(name, errors='ignore')
+        #name.decode('utf-8', errors='replace')
+        contextMenuItems = []
+        fullname = name
+        ep_meta = None
+        show_id = None
+        meta = None
+        othumb = thumb
+        gomode=mode
+        contextMenuItems.append(('[COLOR red]Add to CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'addsttofavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
+        contextMenuItems.append(('[COLOR red]Remove From CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removestfromfavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
+        if settings.getSetting('metadata') == 'true':
+          #meta = grab.get_meta('tvshow',dlfoldername,'',season,episode)
+          inc = 0
+          movie_name = show[:-6]
+          year = show[-6:]
+          print 'Meta Year is ' +year
+          print 'Meta Name is ' +movie_name
+          
+              
+          meta = main.GRABTVMETA(movie_name,year)
+          thumb = meta['cover_url']               
+          yeargrab = meta['year']
+          year = str(yeargrab)       
+          #meta = grab.get_meta('tvshow',name,'')
+          show_id = meta['imdb_id']
+          print 'IMDB ID is ' +show_id
+        else:
+          fanart = 'http://addonrepo.com/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg'
+          thumb = 'http://addonrepo.com/xbmchub/moviedb/showgunart/images/icon.png'
+        s,e = main.GET_EPISODE_NUMBERS(name)
+        if settings.getSetting('metadata') == 'true':
+          try:
+              
+              ep_meta = main.GRABEPISODEMETA(show_id,season,episode,'')
+              if ep_meta['cover_url'] == '':
+                    thumb = mainimg
+              else:
+                    thumb = str(ep_meta['cover_url'])
+          except:
+               ep_meta=None
+               thumb = mainimg
+             
+        else:
+          thumb = 'http://addonrepo.com/xbmchub/moviedb/showgunart/images/icon.png'
+          if thumb == '':
+               thumb = mainimg
+     
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'season':season, 'episode':episode, 'show':show, 'types':'episode','dlfoldername':dlfoldername, 'mainimg':mainimg}        
+        if settings.getSetting('metadata') == 'true':
+         contextMenuItems.append(('[COLOR gold]Tv Show Information[/COLOR]', 'XBMC.Action(Info)'))
+         if ep_meta==None:
+               fanart = 'http://addonrepo.com/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg'
+               addon.add_directory(params, {'title':name},contextmenu_items=contextMenuItems, img=thumb) 
+         else:
+               if meta['backdrop_url'] == '':
+                    fanart = 'http://addonrepo.com/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg'
+               else:
+                    fanart = meta['backdrop_url']
+               ep_meta['title'] = name
+               addon.add_directory(params, ep_meta,contextmenu_items=contextMenuItems, fanart=fanart, img=thumb)
+        else:
+            addon.add_directory(params, {'title':name},contextmenu_items=contextMenuItems,fanart=fanart, img=thumb)
+     
 
 #NAME METHOD*****************************
 

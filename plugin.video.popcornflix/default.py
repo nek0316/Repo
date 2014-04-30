@@ -100,7 +100,8 @@ def CATEGORIES():
 def INDEX(url,favtype):
           params = {'url':url, 'favtype':favtype}
           link = net.http_GET(url).content
-          match=re.compile('<a href="(.+?)">\n\t\t  <img width="184" height="256" src="(.+?)" alt="(.+?)"/>').findall(link)
+          #match=re.compile('<a href="(.+?)">\n\t\t  <img width="184" height="256" src="(.+?)" alt="(.+?)"/>').findall(link)
+          match=re.compile('<a href="(.+?)">\n                    <img width="184" height="256" src="(.+?)" alt="(.+?)"/>').findall(link)
           for url,thumb,name in match:
                url = URL + url
                if settings.getSetting('metadata') == 'true':
@@ -118,7 +119,8 @@ def INDEX(url,favtype):
 def VIDEOLINKS(name,url,thumb,favtype):
         params = {'url':url, 'name':name, 'thumb':thumb, 'favtype':favtype}  
         link = net.http_GET(url).content
-        match=re.compile('id="flashContent" data-videosrc="(.+?)" data-videodata="(.+?)"></div>').findall(link)
+        #match=re.compile('id="flashContent" data-videosrc="(.+?)" data-videodata="(.+?)"></div>').findall(link)
+        match=re.compile('id="flashContent" data-videosrc="(.+?)"\n         data-videodata="(.+?)"></div>').findall(link)
         matchyear=re.compile('<span class="year">(.+?)</span>').findall(link)
         for url,url2 in match:
              #if 'undefined' in url:
@@ -129,8 +131,8 @@ def VIDEOLINKS(name,url,thumb,favtype):
                        match4=re.compile('"poster":"(.+?)","slider":".+?","duration":.+?,"rating":"(.+?)","language":".+?","cuepoints":".+?","urls":{".+?":"(.+?)"}').findall(link)
                        for thumb,rating,url in match4:
                               #replace odd strings
-                              thumb = thumb.replace("\\","")
-                              url = url.replace("\\","")
+                              thumb = thumb.replace("\/","/")
+                              url = url.replace("\/","/")
                               mainimg = thumb
                               
                               link = net.http_GET(url).content
