@@ -138,7 +138,7 @@ def CheckVersion():
     for vernum in match:
             print 'Original Version is ' + vernum
     try:
-        link=OPEN_URL('http://addonrepo.com/xbmchub/moviedb/cliqupdate/addon.xml')
+        link=OPEN_URL('https://raw.githubusercontent.com/Blazetamer/cliqupdate/master/addon.xml')
     except:
         link='nill'
 

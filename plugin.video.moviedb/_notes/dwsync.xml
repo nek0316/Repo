@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <dwsync>
-<file name="addon.xml" server="ftp.addonrepo.com" local="130429562228446273" remote="130429564800000000" Dst="2" />
-<file name="changelog.txt" server="ftp.addonrepo.com" local="130420810512878074" remote="130429564800000000" Dst="2" />
-<file name="downloader.py" server="ftp.addonrepo.com" local="130420810513108087" remote="130429564800000000" Dst="2" />
-<file name="default.py" server="ftp.addonrepo.com" local="130429557810393575" remote="130429564800000000" Dst="2" />
-<file name="download.py" server="ftp.addonrepo.com" local="130420810513048084" remote="130429564800000000" Dst="2" />
-<file name="extract.py" server="ftp.addonrepo.com" local="130420810513168090" remote="130429564800000000" Dst="2" />
-<file name="icon.png" server="ftp.addonrepo.com" local="130420810513298098" remote="130429564800000000" Dst="2" />
-<file name="fanart.jpg" server="ftp.addonrepo.com" local="130420810513248095" remote="130429564800000000" Dst="2" />
-<file name="settings.py" server="ftp.addonrepo.com" local="130420810517758353" remote="130429564800000000" Dst="2" />
-<file name="storageserverdummy.py" server="ftp.addonrepo.com" local="130420810517788355" remote="130429564800000000" Dst="2" />
-<file name="gui.py" server="ftp.addonrepo.com" local="130428426632407981" remote="130429564800000000" Dst="2" />
+<file name="addon.xml" server="ftp.addonrepo.com" local="130398503067475595" remote="130398399000000000" Dst="2" />
+<file name="changelog.txt" server="ftp.addonrepo.com" local="130395936833025671" remote="130398399000000000" Dst="2" />
+<file name="downloader.py" server="ftp.addonrepo.com" local="130395936833565701" remote="130398399000000000" Dst="2" />
+<file name="default.py" server="ftp.addonrepo.com" local="130398499589826685" remote="130398399000000000" Dst="2" />
+<file name="download.py" server="ftp.addonrepo.com" local="130395936833455695" remote="130398399000000000" Dst="2" />
+<file name="extract.py" server="ftp.addonrepo.com" local="130395936833635705" remote="130398399000000000" Dst="2" />
+<file name="icon.png" server="ftp.addonrepo.com" local="130395936833815716" remote="130398399000000000" Dst="2" />
+<file name="fanart.jpg" server="ftp.addonrepo.com" local="130395936833785714" remote="130398399000000000" Dst="2" />
+<file name="settings.py" server="ftp.addonrepo.com" local="130395936838115962" remote="130398399000000000" Dst="2" />
+<file name="storageserverdummy.py" server="ftp.addonrepo.com" local="130395936838145963" remote="130398399000000000" Dst="2" />
 </dwsync>

@@ -18,7 +18,8 @@ else:
 #====================Start update procedures=======================
 
 def UPDATEFILES():
-        url='http://addonrepo.com/xbmchub/moviedb/cliqupdate/plugin.video.moviedb.zip'
+        #https://raw.githubusercontent.com/Blazetamer/cliqupdate/master/
+        url='https://raw.githubusercontent.com/Blazetamer/cliqupdate/master/plugin.video.moviedb.zip'
         path=xbmc.translatePath(os.path.join('special://home/addons','packages'))
         addonpath=xbmc.translatePath(os.path.join('special://','home/addons'))
         name= 'cliqupdatepackage.zip'

@@ -286,7 +286,7 @@ def ILIVEPLAYLINK(name,menuurl,thumb):
                 if link:
                                 playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
                                 playlist.clear()
-                                link=link.replace('\r','').replace('\n','').replace('\t','').replace('&nbsp;','')
+                                link=link.replace('\r','').replace('\n','').replace('\t','').replace('&nbsp;','').replace("\/",'/')
                                 matchserv=re.compile('''.*getJSON\("([^'"]+)".*''').findall(link)
                                 for server in matchserv:
                                         print 'Server IS ' +server
@@ -304,20 +304,11 @@ def ILIVEPLAYLINK(name,menuurl,thumb):
                                         playpath=re.compile('''.*file[:,]\s*['"]([^'"]+).flv['"]''').findall(link)
                                         playpath = playpath[0]
                                         newplaypath =str(playpath)        
-                                        rtmp=re.compile('streamer: "(.+?)"').findall(link)
-                                        rtmp= rtmp[0]
-                                        newrtmp = str(rtmp)
-                                        newrtmp = newrtmp.replace('\/','/').replace('\\','')
-                                        try:
-                                              app = newrtmp.replace('rtmp://watch.ilive.to:1935/','')
-                                        except:        
-                                              app = newrtmp.replace('rtmp://watch1.ilive.to:1935/','')
-                                        try:        
-                                              app = newrtmp.replace('rtmp://watch2.ilive.to:1935/','')
-
-                                        except:        
-                                              app = newrtmp.replace('rtmp://watch.ilive.to:1935/','')        
-                                        newapp = str(app)
+                                        rtmp=re.compile('''streamer: "([^"]+?)"''').findall(link)
+                                        app=rtmp[0].split('?xs=')
+                                        #newrtmp = str(rtmp)
+                                        #newrtmp = newrtmp.replace('\/','/').replace('\\','')        
+                                        #newapp = str(app)
                                         link=OPEN_URL(pageUrl)
                                         swff=re.compile("type: \'flash\', src: \'(.+?)'").findall(link)
                                         for swf in swff:
@@ -326,7 +317,7 @@ def ILIVEPLAYLINK(name,menuurl,thumb):
                                                 #Manual SWF Added
                                                 #swf = 'http://www.ilive.to/player/player.swf'
                                                 print 'SWF IS ' + swf
-                                        playable =newrtmp + ' app=' + newapp + ' playpath=' + newplaypath + ' swfUrl=' + swf + ' live=1 timeout=15 token=' + token + ' swfVfy=1 pageUrl=http://www.ilive.to'
+                                        playable =rtmp[0]+' app=edge/?xs='+app[1]+' playpath=' + newplaypath + ' swfUrl=' + swf + ' live=1 timeout=15 token=' + token + ' swfVfy=1 pageUrl=http://www.ilive.to'
                                         
                                         print 'RTMP IS ' +  playable
                                         ILIVERESOLVE(name,playable,thumb)
