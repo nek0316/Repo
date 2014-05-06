@@ -43,11 +43,11 @@ gomode = addon.queries.get('gomode', '')
 # Global Stuff
 settings = xbmcaddon.Addon(id=addon_id)
 if settings.getSetting('theme') == '0':
-    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/', ''))
-    fanart = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg', ''))
+    artwork = xbmc.translatePath(os.path.join('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/', ''))
+    fanart = xbmc.translatePath(os.path.join('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg', ''))
 else:
-    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
-    fanart = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/fanart/fanart.jpg', ''))
+    artwork = xbmc.translatePath(os.path.join('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/images/', ''))
+    fanart = xbmc.translatePath(os.path.join('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/images/fanart/fanart.jpg', ''))
 grab=metahandlers.MetaData()
 net = Net()
 def LogNotify(title,message,times,icon):
@@ -142,7 +142,7 @@ def addDir(name,url,mode,thumb,desc,favtype):
         if desc == '':
                 desc = 'Description not available at this level'
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
-        fanart = 'http://addonrepo.com/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg'
+        fanart = 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg'
         ok=True
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumb)
         liz.setInfo( type="Video", infoLabels={ "title": name, "Plot": desc } )
@@ -166,11 +166,18 @@ def ILIVEMAIN():
         addDir('News','news','ilivelists',artwork+'/ilive.png','Current News Streams','')
         addDir('Sports(English)','sportsenglish','ilivelists',artwork+'/ilive.png','Live English Sports Streams from iLive','')
         addDir('Sports','sports','ilivelists',artwork+'/ilive.png','Live Sports Streams from iLive','')
-        link=OPEN_URL('http://goo.gl/WrDOJi').replace('\n','').replace('\r','')
+        link=OPEN_URL('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/streams/ilivemenu.xml').replace('\n','').replace('\r','')
         match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail><mode>(.+?)</mode><desc>(.+?)</desc>').findall(link)
         for name,url,thumb,mode,desc in match:
                 print 'Description is  ' + desc
                 addDir(name,url,mode,thumb,desc,thumb)
+#Start Tester Phase===========================================
+        '''link=OPEN_URL('http://addonrepo.com/tester.xml').replace('\n','').replace('\r','')
+        match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail><mode>(.+?)</mode><desc>(.+?)</desc>').findall(link)
+        for name,url,thumb,mode,desc in match:
+                print 'Description is  ' + desc
+                addDir(name,url,mode,thumb,desc,thumb)'''
+#END Tester Phase===============================================                
         main.AUTO_VIEW('movies')
    except Exception:
         buggalo.onExceptionRaised()
@@ -386,9 +393,9 @@ def addSTFavDir(name,url,mode,thumb,desc,favtype, isFolder=True, isPlayable=Fals
         contextMenuItems.append(('[COLOR red]Remove From CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removestfromfavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
         fanart = thumb
         if thumb == artwork + 'icon.png':
-                fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'
+                fanart = 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/images/fanart2.jpg'
         elif thumb == '-':
-                fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'        
+                fanart = 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/images/fanart2.jpg'        
         if desc == '':
                 desc = 'Description not available at this level'
         #u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
@@ -411,9 +418,9 @@ def addSTRemoveDir(name,url,mode,thumb,gomode):
         contextMenuItems.append(('[COLOR red]Remove From CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removestfromfavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
         fanart = thumb
         if thumb == artwork + 'icon.png':
-                fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'
+                fanart = 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/images/fanart2.jpg'
         elif thumb == '-':
-                fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'        
+                fanart = 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/images/fanart2.jpg'        
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
         ok=True
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumb)
@@ -485,9 +492,9 @@ def addFavDir(name,url,mode,thumb,desc,favtype):
         contextMenuItems.append(('[COLOR red]Remove From Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removefromfavs', 'name': name,'url': url,'thumb': thumb})))
         fanart = thumb
         if thumb == artwork + 'icon.png':
-                fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'
+                fanart = 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/images/fanart2.jpg'
         elif thumb == '-':
-                fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'        
+                fanart = 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/images/fanart2.jpg'        
         if desc == '':
                 desc = 'Description not available at this level'
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
@@ -504,9 +511,9 @@ def addRemoveDir(name,url,mode,thumb,desc,favtype):
         contextMenuItems.append(('[COLOR red]Remove From Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removefromfavs', 'name': name,'url': url,'thumb': thumb})))
         fanart = thumb
         if thumb == artwork + 'icon.png':
-                fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'
+                fanart = 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/images/fanart2.jpg'
         elif thumb == '-':
-                fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'        
+                fanart = 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/images/fanart2.jpg'        
         if desc == '':
                 desc = 'Description not available at this level'
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)

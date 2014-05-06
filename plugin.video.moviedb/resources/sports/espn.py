@@ -12,11 +12,11 @@ addon = main.addon
 ADDON = xbmcaddon.Addon(id='plugin.video.moviedb')
 settings = xbmcaddon.Addon(id='plugin.video.moviedb')
 if settings.getSetting('theme') == '0':
-    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/', ''))
-    fanart = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg', ''))
+    artwork = xbmc.translatePath(os.path.join('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/', ''))
+    fanart = xbmc.translatePath(os.path.join('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg', ''))
 else:
-    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
-    fanart = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/fanart/fanart.jpg', ''))
+    artwork = xbmc.translatePath(os.path.join('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/images/', ''))
+    fanart = xbmc.translatePath(os.path.join('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/images/fanart/fanart.jpg', ''))
     
 
 

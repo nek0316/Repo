@@ -11,10 +11,10 @@ import extract
 import time,re
 import datetime
 import shutil
-from resources.modules import tvshow
+from resources.modules import tvshow, ninestreams
 from metahandler import metahandlers
 from resources.modules import main,flix
-from resources.modules import moviedc
+from resources.modules import moviedc, afdah
 from resources.modules import sgate,streamlic
 from resources.modules import chia, supertoons, phub
 from resources.modules import chanufc, epornik, live
@@ -30,7 +30,7 @@ net = Net(http_debug=True)
 addon_id = 'plugin.video.moviedb'
 addon = main.addon
 ADDON = xbmcaddon.Addon(id='plugin.video.moviedb')
-xmlpath = 'http://addonrepo.com/xbmchub/moviedb/messages/skins/DefaultSkin/720p/'
+xmlpath = 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/messages/skins/DefaultSkin/720p/'
 
 
 
@@ -65,11 +65,11 @@ except: pass
 settings = xbmcaddon.Addon(id='plugin.video.moviedb')
 
 if settings.getSetting('theme') == '0':
-    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/', ''))
-    fanart = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg', ''))
+    artwork = xbmc.translatePath(os.path.join('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/', ''))
+    fanart = xbmc.translatePath(os.path.join('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg', ''))
 else:
-    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
-    fanart = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/fanart/fanart.jpg', ''))
+    artwork = xbmc.translatePath(os.path.join('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/images/', ''))
+    fanart = xbmc.translatePath(os.path.join('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/images/fanart/fanart.jpg', ''))
 
 addon_path = os.path.join(xbmc.translatePath('special://home/addons'), '')
 
@@ -89,6 +89,7 @@ season = addon.queries.get('season', '')
 episode = addon.queries.get('episode', '')
 repourl = addon.queries.get('repourl', '')
 gomode = addon.queries.get('gomode', '')
+page = addon.queries.get('page', '')
 #======================== END Alternate Param Stuff=======================
 
 #========================Advanced Log Stuff=======================
@@ -165,7 +166,7 @@ def CheckVersion():
 def SPECIALANN():
    try:        
 
-        link=OPEN_URL('http://goo.gl/vyPZNT').replace('\n','').replace('\r','')
+        link=OPEN_URL('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/controls/popupdate.txt').replace('\n','').replace('\r','')
         
         match=re.compile('ate="(.+?)"').findall(link)
         for popdate in match: 
@@ -185,7 +186,7 @@ def SPECIALANN():
                                        CATEGORIES('false')
                                elif doUpdate:        
                                       settings.setSetting('pop_time', str(now).split('.')[0])
-                                      status.ADDONSTATUS('http://goo.gl/A6A9oe')
+                                      status.ADDONSTATUS('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/controls/announcepop.txt')
                                       CATEGORIES('false')
                          else:CATEGORIES('false')        
               
@@ -239,11 +240,11 @@ def CATEGORIES(loggedin):
         if settings.getSetting('sports') == 'true':        
                 live.addDir('Sports','none','sportcats',artwork +'sports.jpg','Sports such as UFC and more!',fanart)
         if settings.getSetting('streams') == 'true':        
-                live.addDir('Live Streams','http://goo.gl/1EMDrC','livecats',artwork +'live.jpg','Live streams from around the globe, User Sumbitted streams are also available, Be sure to check the special events section!!',fanart)        
+                live.addDir('Live Streams','https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/streams/menus.xml','livecats',artwork +'live.jpg','Live streams from around the globe, User Sumbitted streams are also available, Be sure to check the special events section!!',fanart)        
         
         #==============Custom Menu Creation======================================
         try:        
-             link=OPEN_URL('http://goo.gl/5niFwn').replace('\n','').replace('\r','')
+             link=OPEN_URL('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/controls/mainmenu.xml').replace('\n','').replace('\r','')
              match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail><mode>(.+?)</mode><desc>(.+?)</desc>').findall(link)
              for name,url,thumb,mode,desc in match:
                      print 'Description is  ' + desc
@@ -253,7 +254,7 @@ def CATEGORIES(loggedin):
         live.addDir('CLIQ Favorites','none','viewstfavs',artwork +'mdbfavs.jpg','Manage and View your  Favorite Lists Here',fanart)        
         live.addDir('Manage Downloads','none','viewQueue',artwork +'downloadsmanage.jpg','Manage your download queue, Start, stop and or remove items from the Queue',fanart)
         live.addDir('Upload Logfile','none','uploadlogfile',artwork +'uploadlog.jpg','Need to upload a logfile? Here is the place to do it, Set your email from the addon settings area if you want a link emailed to you. .',fanart)
-        live.addDir('Display Latest Announcement(s)','http://goo.gl/A6A9oe','addonstatus',artwork +'announcements.jpg','In case you missed the latest announcements, You can view them manually here.',fanart)
+        live.addDir('Display Latest Announcement(s)','https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/controls/announcepop.txt','addonstatus',artwork +'announcements.jpg','In case you missed the latest announcements, You can view them manually here.',fanart)
         if settings.getSetting('resolver') == 'true':
                 live.addDir('Resolver Settings','none','resolverSettings',artwork +'resolversettings.jpg','Adjust your resolver settings here',fanart)
         if settings.getSetting('addons') == 'true':        
@@ -264,17 +265,35 @@ def CATEGORIES(loggedin):
 #======================Developer Testing Section========================================================================
         #live.addDir('[COLOR blue]Test Update[/COLOR]','none','updatefiles','','','')
         #live.addDir('[COLOR blue]Test Functions[/COLOR]','none','testfunction',artwork +'shutdown.png','','dir')
+        #live.addDir('[COLOR blue]Whats My IP[/COLOR]','none','myip','','','dir')      
+        live.addDir('[COLOR gold]My Custom Streams[/COLOR]','none','ninemain','https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/icon.png','','dir')        
         
         main.AUTO_VIEW('')
    except Exception:
         buggalo.onExceptionRaised()
 
         
+################################
+###          My IP           ###
+################################
 
+def MYIP():
+    url = 'http://www.iplocation.net/'
+    match = re.compile("<td width='80'>(.+?)</td><td>(.+?)</td><td>(.+?)</td><td>.+?</td><td>(.+?)</td>").findall(net.http_GET(url).content)
+    inc = 1
+    for ip, region, country, isp in match:
+            if inc <2:
+                    dialog = xbmcgui.Dialog()
+                    dialog.ok("Cliq Knows!", "[B][COLOR gold]Your IP Address is: [/COLOR][/B] %s" % ip, '[B][COLOR gold]Your IP is based in: [/COLOR][/B] %s' % country, '[B][COLOR gold]Your Service Provider is:[/COLOR][/B] %s' % isp)
+            inc = inc+1
+
+################################
+###        End My IP         ###
+################################
 
 def TESTFUNCTION():
      
-     #testwin = MyClass('skin.xml','http://addonrepo.com/xbmchub/moviedb/','DefaultSkin')
+     #testwin = MyClass('skin.xml','https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/','DefaultSkin')
      testwin = MyClass('AddonBrowser.xml',ADDON.getAddonInfo('path'),'DefaultSkin')    
      testwin.doModal()
      del testwin
@@ -287,7 +306,7 @@ class MyClass( xbmcgui.WindowXMLDialog ):
         xbmc.executebuiltin( "Skin.SetBool(AnimeWindowXMLDialogClose)" )
                                        
     '''def onInit( self ):
-        #xbmc.Player().play('http://addonrepo.com/xbmchub/moviedb/getit.mp3'%ADDON.getAddonInfo('path'))# Music.
+        #xbmc.Player().play('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/getit.mp3'%ADDON.getAddonInfo('path'))# Music.
         #xbmc.Player().play('https://ia700200.us.archive.org/1/items/testmp3testfile/mpthreetest.mp3')# Music.
         while self.shut > 0:
             xbmc.sleep(1000)
@@ -342,6 +361,7 @@ def MERDBMOVIES():
 
                        
 def MOVIECAT():
+        live.addDir('Afdah Movies','none','afdahcats',artwork +'afdahmovies.jpg','',fanart)
         live.addDir('MerDB ','none','merdbmovies',artwork +'merdbmovies.jpg','',fanart)
         live.addDir('Movie DataCenter[COLOR red]OFFLINE[/COLOR]','none','moviedccats',artwork +'moviedcmovies.jpg','',fanart)
         live.addDir('IWatchOnline','none','catiwo',artwork +'iwatchonline.jpg','',fanart)
@@ -349,7 +369,7 @@ def MOVIECAT():
         live.addDir('PopcornFlix','none','popcats',artwork +'popcornflix.jpg','',fanart)
         #==============Custom Menu Creation======================================
         try:
-             link=OPEN_URL('http://addonrepo.com/xbmchub/moviedb/controls/moviemenu.xml').replace('\n','').replace('\r','')
+             link=OPEN_URL('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/controls/moviemenu.xml').replace('\n','').replace('\r','')
              match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail><mode>(.+?)</mode><desc>(.+?)</desc>').findall(link)
              for name,url,thumb,mode,desc in match:
                      live.addDir(name,url,mode,thumb,desc,fanart)
@@ -365,7 +385,7 @@ def TVCATS():
         live.addDir('TV Shows [COLOR red](Series Gate)[/COLOR]','none','sgcats',artwork +'sgatetv.jpg','',fanart)
         #==============Custom Menu Creation======================================
         try:
-             link=OPEN_URL('http://addonrepo.com/xbmchub/moviedb/controls/tvmenu.xml').replace('\n','').replace('\r','')
+             link=OPEN_URL('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/controls/tvmenu.xml').replace('\n','').replace('\r','')
              match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail><mode>(.+?)</mode><desc>(.+?)</desc>').findall(link)
              for name,url,thumb,mode,desc in match:
                      live.addDir(name,url,mode,thumb,desc,fanart)
@@ -379,7 +399,7 @@ def CARTOONCATS():
         live.addDir('[COLOR white]SuperToons[/COLOR]','none','supertoonscats',artwork +'supertoons.jpg','',fanart)
         #==============Custom Menu Creation======================================
         try:
-             link=OPEN_URL('http://addonrepo.com/xbmchub/moviedb/controls/cartoonmenu.xml').replace('\n','').replace('\r','')
+             link=OPEN_URL('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/controls/cartoonmenu.xml').replace('\n','').replace('\r','')
              match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail><mode>(.+?)</mode><desc>(.+?)</desc>').findall(link)
              for name,url,thumb,mode,desc in match:
                      live.addDir(name,url,mode,thumb,desc,fanart)
@@ -391,7 +411,7 @@ def SPORTCATS():
         live.addDir('ESPN','none','espnmain',artwork +'espn.jpg','',fanart)
         #==============Custom Menu Creation======================================
         try:
-             link=OPEN_URL('http://addonrepo.com/xbmchub/moviedb/controls/sportsmenu.xml').replace('\n','').replace('\r','')
+             link=OPEN_URL('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/controls/sportsmenu.xml').replace('\n','').replace('\r','')
              match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail><mode>(.+?)</mode><desc>(.+?)</desc>').findall(link)
              for name,url,thumb,mode,desc in match:
                      live.addDir(name,url,mode,thumb,desc,fanart)
@@ -635,18 +655,18 @@ def ADVERT():
           
       if xbmc.getCondVisibility('system.platform.ios'):
         if not xbmc.getCondVisibility('system.platform.atv'):
-            popup = PUM('advert1.xml','http://addonrepo.com/xbmchub/moviedb/','DefaultSkin')
+            popup = PUM('advert1.xml','https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/','DefaultSkin')
       elif xbmc.getCondVisibility('system.platform.android'):
-        popup = PUM('advert1.xml','http://addonrepo.com/xbmchub/moviedb/','DefaultSkin')
+        popup = PUM('advert1.xml','https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/','DefaultSkin')
       else:
-        popup = PUM('advert.xml','http://addonrepo.com/xbmchub/moviedb/','DefaultSkin')
+        popup = PUM('advert.xml','https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/','DefaultSkin')
 
       popup.doModal()
       del popup
 
 
 def POP():
-     link=OPEN_URL('http://addonrepo.com/xbmchub/moviedb/controls/xmlcontrol.txt').replace('\n','').replace('\r','')
+     link=OPEN_URL('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/controls/xmlcontrol.txt').replace('\n','').replace('\r','')
      match=re.compile('ame="(.+?)".+?ndroid="(.+?)"').findall(link)
      for xml,xmlone in match:       
                 #status.ADDONSTATUS(url) 
@@ -655,11 +675,11 @@ def POP():
     
       if xbmc.getCondVisibility('system.platform.ios'):
         if not xbmc.getCondVisibility('system.platform.atv'):
-            popup = PUM(xmlone,'http://addonrepo.com/xbmchub/moviedb/','DefaultSkin')
+            popup = PUM(xmlone,'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/','DefaultSkin')
       elif xbmc.getCondVisibility('system.platform.android'):
-        popup = PUM(xmlone,'http://addonrepo.com/xbmchub/moviedb/','DefaultSkin')
+        popup = PUM(xmlone,'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/','DefaultSkin')
       else:
-        popup = PUM(xml,'http://addonrepo.com/xbmchub/moviedb/','DefaultSkin')
+        popup = PUM(xml,'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/','DefaultSkin')
 
       popup.doModal()
       del popup
@@ -1485,6 +1505,46 @@ elif mode=='streamlicsearch':
         print ""+url
         streamlic.STREAMLICSEARCH(url)
 
+
+#==========9Streams======================
+elif mode=='ninemain':
+        print ""+url
+        ninestreams.NINEMAIN()
+
+elif mode=='ninelists':
+        print ""+url
+        ninestreams.NINELISTS(url)
+
+
+elif mode=='nineplaylink':
+        print ""+url
+        ninestreams.NINEPLAYLINK(name,url,thumb,page)        
+#=======================AFDAH MODES===========================
+
+elif mode=='afdahlinkpage':
+        print ""+url
+        afdah.AFDAHLINKPAGE(url,name,thumb,mainimg)
+
+elif mode=='afdahindex':
+        print ""+url
+        afdah.AFDAHINDEX(url)
+        
+elif mode=='afdahindexsec':
+        print ""+url
+        afdah.AFDAHINDEXSEC(url)
+        
+elif mode=='afdahcats':
+        print ""
+        afdah.AFDAHCATS()        
+
+elif mode=='searchmovieafdah':
+        print ""+url
+        afdah.SEARCHMOVIEAFDAH(url)
+
+elif mode=='afdahgenre':
+        print ""+url
+        afdah.AFDAHGENRE(url)        
+
 #===========TEST FUNCTIONS================
 elif mode=='testfunction':
         print ""+url
@@ -1492,7 +1552,11 @@ elif mode=='testfunction':
 
 elif mode=='myclass':
         print ""+url
-        MyClass()             
+        MyClass()
+
+elif mode=='myip':
+        print ""+url
+        MYIP()          
         
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
 

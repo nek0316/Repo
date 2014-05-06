@@ -29,7 +29,7 @@ ADDON = xbmcaddon.Addon(id='plugin.video.moviedb')
 net = Net(http_debug=True)
 base_url = 'http://www.epornik.com'
 
-artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
+artwork = xbmc.translatePath(os.path.join('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/images/', ''))
 settings = xbmcaddon.Addon(id='plugin.video.moviedb')
 
 #========================DLStuff=======================

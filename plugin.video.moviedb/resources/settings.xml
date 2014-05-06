@@ -28,6 +28,11 @@
 <setting id="download_folder" type="folder" label="Downloads Folder" default="" />
 </category>
 
+<category label="Custom">>
+<setting id="custom_streams" type="text" label="URL" default="" />
+<setting id="custom_name" type="text" label="Name" default="" />
+
+</category>
 
 
 

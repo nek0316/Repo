@@ -62,16 +62,16 @@ download_path = settings.getSetting('download_folder')
 
 
 #Popcorn Flix - Blazetamer.
-addon = xbmcaddon.Addon ('plugin.video.frightpix')
+addon = xbmcaddon.Addon ('plugin.video.moviedb')
 URL= 'http://frightpix.com'
 
 addonPath = addon.getAddonInfo('path')
-artPath = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/frightpix/images/', ''))
-fanartPath = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/frightpix/images/fanart/', ''))
+artPath = xbmc.translatePath(os.path.join('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/frightpix/images/', ''))
+fanartPath = xbmc.translatePath(os.path.join('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/frightpix/images/fanart/', ''))
 
 
 #HOOKS
-settings = xbmcaddon.Addon(id='plugin.video.frightpix')
+settings = xbmcaddon.Addon(id='plugin.video.moviedb')
 
 
 

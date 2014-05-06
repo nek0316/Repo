@@ -55,9 +55,9 @@ cookiejar = addon.get_profile()
 cookiejar = os.path.join(cookiejar,'cookies.lwp')
 settings = xbmcaddon.Addon(id=addon_id)
 if settings.getSetting('theme') == '0':
-    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/', ''))
+    artwork = xbmc.translatePath(os.path.join('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/', ''))
 else:
-    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
+    artwork = xbmc.translatePath(os.path.join('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/images/', ''))
 grab=metahandlers.MetaData()
 net = Net()
 
@@ -274,7 +274,7 @@ def addMERDBDir(name,url,mode,thumb,labels,favtype):
         contextMenuItems.append(('[COLOR red]Remove From CLIQ Favorites[/COLOR]', 'XBMC.RunPlugin(%s)' % addon.build_plugin_url({'mode': 'removestfromfavs', 'name': name,'url': url,'thumb': thumb,'gomode': gomode})))
         sitethumb = thumb
         sitename = name
-        fanart = 'http://addonrepo.com/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg'
+        fanart = 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg'
        
         try:
                 name = data['title']
@@ -336,8 +336,8 @@ def addMERDBEPDir(name,url,thumb,mode,show,dlfoldername,mainimg,season,episode):
           show_id = meta['imdb_id']
           print 'IMDB ID is ' +show_id
         else:
-          fanart = 'http://addonrepo.com/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg'
-          thumb = 'http://addonrepo.com/xbmchub/moviedb/showgunart/images/icon.png'
+          fanart = 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg'
+          thumb = 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/icon.png'
         s,e = main.GET_EPISODE_NUMBERS(name)
         if settings.getSetting('metadata') == 'true':
           try:
@@ -352,7 +352,7 @@ def addMERDBEPDir(name,url,thumb,mode,show,dlfoldername,mainimg,season,episode):
                thumb = mainimg
              
         else:
-          thumb = 'http://addonrepo.com/xbmchub/moviedb/showgunart/images/icon.png'
+          thumb = 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/icon.png'
           if thumb == '':
                thumb = mainimg
      
@@ -360,11 +360,11 @@ def addMERDBEPDir(name,url,thumb,mode,show,dlfoldername,mainimg,season,episode):
         if settings.getSetting('metadata') == 'true':
          contextMenuItems.append(('[COLOR gold]Tv Show Information[/COLOR]', 'XBMC.Action(Info)'))
          if ep_meta==None:
-               fanart = 'http://addonrepo.com/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg'
+               fanart = 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg'
                addon.add_directory(params, {'title':name},contextmenu_items=contextMenuItems, img=thumb) 
          else:
                if meta['backdrop_url'] == '':
-                    fanart = 'http://addonrepo.com/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg'
+                    fanart = 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg'
                else:
                     fanart = meta['backdrop_url']
                ep_meta['title'] = name

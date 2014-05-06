@@ -48,9 +48,9 @@ mainimg = addon.queries.get('mainimg', '')
 # Global Stuff
 settings = xbmcaddon.Addon(id=addon_id)
 if settings.getSetting('theme') == '0':
-    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/', ''))
+    artwork = xbmc.translatePath(os.path.join('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/', ''))
 else:
-    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
+    artwork = xbmc.translatePath(os.path.join('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/images/', ''))
 grab=metahandlers.MetaData()
 net = Net()
 def LogNotify(title,message,times,icon):

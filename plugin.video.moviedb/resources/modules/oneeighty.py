@@ -10,9 +10,9 @@ addon_id = 'plugin.video.moviedb'
 ADDON=xbmcaddon.Addon(id='plugin.video.moviedb')
 settings = xbmcaddon.Addon(id=addon_id)
 if settings.getSetting('theme') == '0':
-    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/', ''))
+    artwork = xbmc.translatePath(os.path.join('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/', ''))
 else:
-    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
+    artwork = xbmc.translatePath(os.path.join('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/images/', ''))
 def LogNotify(title,message,times,icon):
         xbmc.executebuiltin("XBMC.Notification("+title+","+message+","+times+","+icon+")")
 def OPEN_URL(url):
@@ -60,9 +60,9 @@ def addDir(name,url,mode,thumb,desc,favtype):
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'desc':desc}
         fanart = thumb
         if thumb == artwork + 'icon.png':
-                fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'
+                fanart = 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/images/fanart2.jpg'
         elif thumb == '-':
-                fanart = 'http://addonrepo.com/xbmchub/moviedb/images/fanart2.jpg'        
+                fanart = 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/images/fanart2.jpg'        
         if desc == '':
                 desc = 'Description not available at this level'
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)

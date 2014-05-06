@@ -27,9 +27,9 @@ settings=xbmcaddon.Addon(id='plugin.video.moviedb')
 #==============ADD Addon Instaler========================
 base_url = 'http://addons.xbmchub.com/'
 if settings.getSetting('theme') == '0':
-    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/showgunart/images/', ''))
+    artwork = xbmc.translatePath(os.path.join('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/', ''))
 else:
-    artwork = xbmc.translatePath(os.path.join('http://addonrepo.com/xbmchub/moviedb/images/', ''))
+    artwork = xbmc.translatePath(os.path.join('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/images/', ''))
 
 def ADDONLIST(url):
     fanart = ''
@@ -41,7 +41,7 @@ def ADDONLIST(url):
         
 
 def ADDONINDEX(name,url,filetype):
-    fanart = 'http://addonrepo.com/xbmchub/Blazetamer/Repo/fanart.jpg'
+    fanart = 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/Blazetamer/Repo/fanart.jpg'
     link=OPEN_URL(url)
     #match=re.compile('<img src="(.+?)" alt=".+?" class="pic" /></span>\r\n\t\t\t\t<h2>(.+?)</h2>\r\n\t\t\t\t<strong>Author:</strong> <a href=".+?">.+?</a><br /><strong>Version:</strong> .+?<br /><strong>Released:</strong> .+?<br /><strong>Repository:</strong> <a href="(.+?)" rel="nofollow">.+?</a><div class="description"><h4>Description:</h4><p> (.+?)</p></div><ul class="addonLinks"><li><strong>Forum Discussion:</strong><br /><a href=".+?" target="_blank"><img src="images/forum.png" alt="Forum discussion" /></a></li><li><strong>Source Code:</strong><br /><img src="images/codebw.png" alt="Source code" /></li><li><strong>Website:</strong><br /><a href=".+?" target="_blank"><img src="images/website.png" alt="Website" /></a></li><li><strong>Direct Download:</strong><br /><a href="(.+?)" rel="nofollow">').findall(link)
     description = 'Description not available at this time'
@@ -165,7 +165,7 @@ def ADDONINSTALL(name,url,description,filetype,repourl):
         #REBOOTCHECK()
         '''reboot=xbmcgui.Dialog().yesno("Instalation complete!","                   Please restart XBMC for changes to take effect.","                   Brought To You By Blazetamer ","","Later","Reboot Now")
         if reboot:
-                main.addDir("[COLOR gold]Browse Blazetamer's Addons[/COLOR]",'http://addons.xbmchub.com/author/Blazetamer/','addonlist','http://addonrepo.com/xbmchub/Blazetamer/Repo/icon.png','','')
+                main.addDir("[COLOR gold]Browse Blazetamer's Addons[/COLOR]",'http://addons.xbmchub.com/author/Blazetamer/','addonlist','https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/Blazetamer/Repo/icon.png','','')
                 main.AUTO_VIEW('')'''
                 
                 
@@ -183,8 +183,8 @@ def REBOOTCHECK():
         print 'REBOOT RETURN IS ' +reboot1
         if '0' in reboot1:
                 print 'REBOOT RETURN 2 IS' +reboot1        
-                main.addDir('[COLOR gold]Announcements/Info[/COLOR]','http://addonrepo.com/xbmchub/moviedb/messages/addonannouncements.txt','addonstatus',artwork +'announcements.jpg','','')
-                main.addDir("[COLOR gold]Browse Blazetamer's Addons[/COLOR]",'http://addons.xbmchub.com/author/Blazetamer/','addonlist','http://addonrepo.com/xbmchub/Blazetamer/Repo/icon.png','','')
+                main.addDir('[COLOR gold]Announcements/Info[/COLOR]','https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/messages/addonannouncements.txt','addonstatus',artwork +'announcements.jpg','','')
+                main.addDir("[COLOR gold]Browse Blazetamer's Addons[/COLOR]",'http://addons.xbmchub.com/author/Blazetamer/','addonlist','https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/Blazetamer/Repo/icon.png','','')
                 main.AUTO_VIEW('')
         
 
