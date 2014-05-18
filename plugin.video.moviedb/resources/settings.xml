@@ -29,9 +29,12 @@
 </category>
 
 <category label="Custom">>
-<setting id="custom_streams" type="text" label="URL" default="" />
+<setting id="custom_streams" type="text" label="External URL" default="" />
 <setting id="custom_name" type="text" label="Name" default="" />
+<setting type="sep"/>
 
+<setting id="local_file" type="file"  label="Local Playlist File" value="" />
+<setting id="local_custom_name" type="text" label="Name" default="" />
 </category>
 
 

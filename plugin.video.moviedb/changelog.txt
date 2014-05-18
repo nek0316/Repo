@@ -1,3 +1,16 @@
+V2.3.5
+Added ability for user streams to be in a Menu Format
+
+V2.3.2
+Adds ability for end user to add LOCAL stream files
+that need resolver or not
+Also prep for More User submitted streams and Box Sets 
+
+
+V2.3.1
+Added Series Gate Movie Section
+Added Source Name to "most" titles in Playable sections
+
 V2.3.0
 Added Afdah Movie Source
 

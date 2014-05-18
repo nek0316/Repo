@@ -67,13 +67,13 @@ def OPEN_URL(url):
 
 
 
-def NINEINDEX(url):       
-        link=OPEN_URL(url).replace('\n','').replace('\r','')
-        match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail><mode>(.+?)</mode><desc>(.+?)</desc>').findall(link)
-        for name,url,thumb,mode,desc in match:
-                print 'Description is  ' + desc
-                live.addDir(name,url,mode,thumb,desc,thumb)                        
-        main.AUTO_VIEW('movies')
+def NINEINDEX():       
+     live.addDir('External Stream File' ,'none','ninemain','','Your Own Custom Playlist','')
+     live.addDir('Local Stream File' ,'none','ninemainlocal','','Your Own Local Playlist','')
+     live.addDir('URL Tester' ,'none','addfile','','Test your playable url','')
+     #live.addDir('Developer Testing Tester' ,'none ','ninelists','','Dev Testing Mode','')
+                    
+     main.AUTO_VIEW('movies')
           
         
 
@@ -121,15 +121,47 @@ def NINEMAIN():
         live.addDir(customname,customstream,'ninelists','','Your Own Custom Playlist','')
         
         main.AUTO_VIEW('movies')
+
+def NINEMAINLOCAL():
+     customstream =settings.getSetting('local_file')
+     customname =settings.getSetting('local_custom_name')
+     if customname =='':
+          customname= 'Custom Local Stream'
+     if customstream =='':
+                dialog = xbmcgui.Dialog()
+                ok = dialog.ok('Source Not Set', '               Please Choose Custom Tab and Add Source')
+                if ok:
+                        LogNotify('Choose Custom Tab ', 'Add Local Source & Name', '5000', 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/icon.png')        
+                        print 'Source Not Set!'
+                        addon.show_settings()
+     else:     
+          
+        live.addDir(customname,customstream,'ninelocallists','','Your Own Custom Playlist','')
+        
+        main.AUTO_VIEW('movies')                 
    
         
 def NINELISTS(url):
 
-        link=OPEN_URL(url).replace('\n','').replace('\r','')
-        match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail>').findall(link)
-        for name,url,thumb in match:
-                #addDir(name,url,'liveresolve',thumb,'',thumb)       
-                live.addSTFavDir(name,url,'liveresolve',thumb,'','',isFolder=False, isPlayable=True)                   
+     link=OPEN_URL(url).replace('\n','').replace('\r','')
+     match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail>').findall(link)
+     for name,url,thumb in match:
+          live.addSTFavDir(name,url,'nineresolver',thumb,'','',isFolder=False, isPlayable=True)
+     match=re.compile('<name>(.+?)</name><thumbnail>(.+?)</thumbnail><link>(.+?)</link>').findall(link)
+     for name,thumb,url in match:
+          live.addDir(name,url,'ninelists',thumb,'',thumb)
+     match=re.compile('<name>(.+?)</name><link>(.+?)</link><thumbnail>(.+?)</thumbnail>').findall(link)
+     for name,url,thumb in match:
+          live.addDir(name,url,'ninelists',thumb,'',thumb)     
+
+def NINELOCALLISTS(url):
+     file = open(url, 'r')
+     file = file.read()
+     file = str(file).replace('\n','').replace('\r','')
+     print 'FILE CONTENT IS ' +file
+     match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail>').findall(file)
+     for name,url,thumb in match:
+          live.addSTFavDir(name,url,'nineresolver',thumb,'','',isFolder=False, isPlayable=True)               
 
 
 def NINEPLAYLINK(name,url,thumb,stream):
@@ -145,5 +177,52 @@ def NINEPLAYLINK(name,url,thumb,stream):
 
 
         
+def NINERESOLVER(url,name):
+     try:        
+        dlfoldername = name                            
+        urls = url
+        hmf = urlresolver.HostedMediaFile(urls)
+        if hmf:
+                host = hmf.get_host()
+                dlurl = urlresolver.resolve(urls)
+                live.ILIVERESOLVE(name,dlurl,'')
+        else:
+                live.ILIVERESOLVE(name,urls,'')        
+                                  
+     except Exception:
+        buggalo.onExceptionRaised()
 
 
+
+#Start Search Function
+def _get_keyboard( default="", heading="", hidden=False ):
+	keyboard = xbmc.Keyboard( default, heading, hidden )
+	keyboard.doModal()
+	if keyboard.isConfirmed() :
+		return keyboard.getText()
+	return default
+
+                
+def ADDFILE():
+	vq = _get_keyboard( heading="Add your url" )
+	if ( not vq ): return False, 0
+	url = vq  
+	print "Searching URL: " + url 
+	#NINERESOLVER(url,'URL TESTER')
+	live.addSTFavDir('Click to Try URL',url,'nineresolver','','','',isFolder=False, isPlayable=True)
+     
+        
+def URLTEST(url):
+     try:        
+        name= 'URL TESTER'                           
+        urls = url
+        hmf = urlresolver.HostedMediaFile(urls)
+        if hmf:
+                host = hmf.get_host()
+                dlurl = urlresolver.resolve(urls)
+                live.ILIVERESOLVE(name,dlurl,'')
+        else:
+                live.ILIVERESOLVE(name,urls,'')        
+                                  
+     except Exception:
+        buggalo.onExceptionRaised()

@@ -842,6 +842,36 @@ def GETHOSTTHUMB(host):
              host = 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/hosts/' + host +'.jpg'
      return(host)
 
+#========================Returns Hostname For Directory ======================
+def GETHOSTNAME(host):
+     if host.endswith('.com'):
+          host = host[:-4]
+     if host.endswith('.org'):
+          host = host[:-4]
+     if host.endswith('.eu'):
+          host = host[:-3]
+     if host.endswith('.ch'):
+          host = host[:-3]
+     if host.endswith('.in'):
+          host = host[:-3]
+     if host.endswith('.es'):
+          host = host[:-3]
+     if host.endswith('.tv'):
+          host = host[:-3]
+     if host.endswith('.net'):
+          host = host[:-4]
+     if host.endswith('.me'):
+          host = host[:-3]
+     if host.endswith('.ws'):
+          host = host[:-3]
+     if host.endswith('.sx'):
+          host = host[:-3]
+     if host.startswith('www.'):
+             host = host[4:]
+     hostname=' *'+host+'*' 
+     
+     return(hostname)
+
 #Episode directory function to be used when adding a Episode, all metadata scrapes and context menu items are handled within_________
 def addEDir(name,url,mode,thumb,show):
      ep_meta = None

@@ -7,6 +7,7 @@ import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,urlresolver,xbmc,os,xbmcaddon,ma
 from metahandler import metahandlers
 from resources.utils import buggalo
 import urlresolver
+import ninestreams
 
 from addon.common.addon import Addon
 addon_id = 'plugin.video.moviedb'
@@ -82,7 +83,25 @@ def COMMONSTREAMS(url):
                 addDir(name,url,'livecatslist',thumb,'',thumb)                        
         main.AUTO_VIEW('movies')
    except Exception:
-        buggalo.onExceptionRaised()        
+        buggalo.onExceptionRaised()
+
+def USERSTREAMS(url):
+   try:
+             link=OPEN_URL(url).replace('\n','').replace('\r','')
+             match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail>').findall(link)
+             for name,url,thumb in match:
+                     addDir(name,url,'ninelists',thumb,'',thumb)
+             match=re.compile('<name>(.+?)</name><thumbnail>(.+?)</thumbnail><link>(.+?)</link>').findall(link)
+             for name,thumb,url in match:
+                     addDir(name,url,'ninelists',thumb,'',thumb)
+             match=re.compile('<name>(.+?)</name><link>(.+?)</link><thumbnail>(.+?)</thumbnail>').findall(link)
+             for name,url,thumb in match:
+                     addDir(name,url,'ninelists',thumb,'',thumb)         
+             main.AUTO_VIEW('movies')
+   except Exception:
+        buggalo.onExceptionRaised()
+
+        
         
 def USERSUB(url):
    try:        

@@ -1,5 +1,5 @@
 
-# AFDAH Module by: Blazetamer
+# Series Gate Movie Module by: Blazetamer
 
 
 import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,urlresolver,xbmc,os,xbmcaddon,main
@@ -60,96 +60,106 @@ else:
 grab=metahandlers.MetaData()
 net = Net()
 
-base_url ='http://afdah.com/'
-base_genre ='http://afdah.com/genre/'
+base_url ='http://seriesgate.me/'
 def LogNotify(title,message,times,icon):
         xbmc.executebuiltin("XBMC.Notification("+title+","+message+","+times+","+icon+")")
 
 
-def AFDAHCATS():
+def SGMOVIECATS():
 
-            
-          main.addMDCDir('All Movies','http://afdah.com/category/watch-movies/','afdahindex',artwork + 'allmovies.jpg','','dir')
-          main.addMDCDir('Featured Movies','http://afdah.com/category/featured/','afdahindex',artwork + 'featured.jpg','','dir')
-          main.addMDCDir('Cinema Movies *Mostly Cams*','http://afdah.com/category/cinema/','afdahindex',artwork + 'cinema.jpg','','dir')
-          main.addMDCDir('HD Movies','http://afdah.com/category/hd/','afdahindex',artwork + 'hdmovies.jpg','','dir')
-          main.addMDCDir('Movies by Year','http://afdah.com/years/','afdahindexsec',artwork + 'years.jpg','','dir')
-          main.addMDCDir('Movies by Country','http://afdah.com/country/','afdahindexsec',artwork + 'country.jpg','','dir')
-          main.addMDCDir('Movies by Language','http://afdah.com/language/','afdahindexsec',artwork + 'language.jpg','','dir')
-          main.addMDCDir('Movies by Genre','http://afdah.com/','afdahgenre',artwork + 'genre.jpg','','dir')
-          main.addMDCDir('Search Movies','http://afdah.com/?s=','searchmovieafdah',artwork + 'search.jpg','','dir')
+          main.addMDCDir('All SeriesGate Movies','http://seriesgate.me/movies/browse/','sgmovieindex',artwork + 'all.jpg','','dir')  
+          #main.addMDCDir('Featured Movies','http://seriesgate.me/movies/','sgmovieindex',artwork + 'featured.jpg','','dir')
+          main.addMDCDir('Latest Movies','http://seriesgate.me/movies/latest/','sgmovieindex',artwork + 'latest.jpg','','dir')
+          main.addMDCDir('Popular Movies','http://seriesgate.me/movies/popular/','sgmovieindex',artwork + 'popular.jpg','','dir')
+          main.addMDCDir('By Genre','http://seriesgate.me/movies/browse/','sgmovieindexsec',artwork + 'genre.jpg','','dir')
+          #main.addMDCDir('[COLOR gold]Search SeriesGate Movies[/COLOR]','http://www.moviesdatacenter.com/find/within-movies/','searchsgmovie',artwork + 'search.jpg','','dir')
+          
           main.AUTO_VIEW('')    
 
-
         
-def AFDAHINDEX (url):
+def SGMOVIEINDEX (url):
         link = net.http_GET(url).content
-        match=re.compile('<img src="(.+?)" width=".+?" height=".+?" alt="(.+?)" /></a></div><h3 class="entry-title"><a href="(.+?)"').findall(link)
-        for sitethumb, name,url in match:
-                inc = 0
-                movie_name = name[:-6]
-                year = name[-6:]
-                movie_name = movie_name.decode('UTF-8','ignore')
-              
-                data = main.GRABMETA(movie_name,year)
+        match=re.compile('"caption_title"><a  href = "(.+?)" >(.+?)</a></div><div class = "caption_imdb">(.+?)</div><div class = "caption_date_m">(.+?) </div>').findall(link)
+        if len(match) > 0:
+         for url,name,rate,year in match:     
+                data = main.GRABMETA(name,year)
                 thumb = data['cover_url']               
                 yeargrab = data['year']
-                year = str(yeargrab)
-                           
+                year = str(yeargrab)               
+                if thumb == '':
+                  thumb = ''
+                   
                 favtype = 'movie'
-                main.addDir(name,url,'afdahlinkpage',thumb,data,favtype)
-        nmatch=re.compile('<link rel=\'next\' href=\'(.+?)\'').findall(link)
-        if len(nmatch) > 0: 
-          for pageurl in nmatch:
-                     
-                main.addDir('Next Page',pageurl,'afdahindex',artwork +'nextpage.jpg','','dir')        
-        main.AUTO_VIEW('movies')
-
-        
-def AFDAHINDEXSEC (url):
-        link = net.http_GET(url).content
-        match=re.compile('<td><a href="(.+?)">(.+?)</a>').findall(link)
-        for url,name in match:        
-            favtype = 'movie'
-            main.addDir(name,base_url + url,'afdahindex','','',dir)
+                main.addMDCDir(name+ ' (' + year +')',base_url + url,'sgmovielinkpage',thumb,data,favtype)
              
         main.AUTO_VIEW('movies')
+
+        
+def SGMOVIEINDEXSEC (url):
+        genre_url='http://seriesgate.me/movies/browse/#!All/All/'
+        link = net.http_GET(url).content
+        match=re.compile('"each_genre" id = "g_.+?" style = "">(.+?)</div>').findall(link)
+        for genre in match:
+                   
+            favtype = 'movie'
+            main.addMDCDir(genre,genre_url + url,'sgmovieindex','','',favtype)
+                
+                
+        main.AUTO_VIEW('movies')
         
 
 
 
-def AFDAHGENRE(url):
+def SGMOVIESEARCH(url):
         link = net.http_GET(url).content
-        match=re.compile('<a href="/genre/(.+?)"><span>(.+?)<').findall(link)
-        for url,name in match:        
+        match=re.compile('<img src="(.+?)" height=".+?" width=".+?" alt="Watch Movies: .+?" border=".+?" /></a></div><div class=".+?"><div class="title" style="display:inline-block;">.+? <a href="(.+?)" title=".+? >>> (.+?)">').findall(link)
+        if len(match) > 0:
+         for sitethumb,url,name in match:
+            matchyear=re.compile('>Release:</td><td class="res"  style="padding:2px 0 6px 0;">.+?,(.+?)</td>').findall(link)     
+            for year in matchyear:       
+                data = main.GRABMETA(name,year)
+                thumb = data['cover_url']               
+                yeargrab = data['year']
+                year = str(yeargrab)               
+                if thumb == '':
+                  thumb = sitethumb
+                   
             favtype = 'movie'
-            main.addDir(name,base_genre + url,'afdahindex','','',dir)
+            main.addMDCDir(name+ ' (' + year +')',base_url + url,'sgmovielinkpage',thumb,data,favtype)
+             
+        main.AUTO_VIEW('movies')             
 
 
-def AFDAHLINKPAGE(url,name,thumb,mainimg):
+                                
+
+
+
+def SGMOVIELINKPAGE(url,name,thumb,mainimg):
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername,'mainimg':mainimg}
         inc = 0
         mainimg = mainimg
         link = net.http_GET(url).content
-        match=re.compile('<a rel="nofollow" href="(.+?)" target="_blank">').findall(link)
+        match=re.compile('class="hre_watch" href="(.+?)"><img src=".+?"').findall(link)
   
         for url in match:
            print 'host url look is' + url    
             
                    
            if inc < 50:
-                
                    urls = url
                    hmf = urlresolver.HostedMediaFile(urls)
+                  ##########################################
                    print 'URLS is ' +urls
                    if hmf:
                           #try:
                                   host = hmf.get_host()
                                   hthumb = main.GETHOSTTHUMB(host)
+                                  #dlurl = urlresolver.resolve(vidUrl)
                                   data = main.GRABTVMETA(name,'')
                                   thumb = data['cover_url']
                                   favtype = 'movie'
                                   hostname = main.GETHOSTNAME(host)
+
                                   try:    
                                         main.addDLDir(name+'[COLOR lime]'+hostname+'[/COLOR]',urls,'vidpage',hthumb,data,dlfoldername,favtype,mainimg)
                                         inc +=1
@@ -170,14 +180,14 @@ def _get_keyboard( default="", heading="", hidden=False ):
 	return default
 
                 
-def SEARCHMOVIEAFDAH(url):
+def SEARCHSGMOVIE(url):
 	searchUrl = url 
-	vq = _get_keyboard( heading="Searching for AFDAH Movies" )
+	vq = _get_keyboard( heading="Searching for SeriesGate Movies" )
 	if ( not vq ): return False, 0
 	title = urllib.quote_plus(vq)
-	searchUrl += title + '&x=0&y=0&type=title' 
+	searchUrl += title + '.html' 
 	print "Searching URL: " + searchUrl 
-	AFDAHINDEX (searchUrl)
+	SGMOVIESEARCH (searchUrl)
 
 	main.AUTO_VIEW('movies')
 

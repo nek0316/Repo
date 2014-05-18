@@ -13,7 +13,7 @@ import datetime
 import shutil
 from resources.modules import tvshow, ninestreams
 from metahandler import metahandlers
-from resources.modules import main,flix
+from resources.modules import main,flix,sgmovie
 from resources.modules import moviedc, afdah
 from resources.modules import sgate,streamlic
 from resources.modules import chia, supertoons, phub
@@ -265,8 +265,8 @@ def CATEGORIES(loggedin):
 #======================Developer Testing Section========================================================================
         #live.addDir('[COLOR blue]Test Update[/COLOR]','none','updatefiles','','','')
         #live.addDir('[COLOR blue]Test Functions[/COLOR]','none','testfunction',artwork +'shutdown.png','','dir')
-        #live.addDir('[COLOR blue]Whats My IP[/COLOR]','none','myip','','','dir')      
-        live.addDir('[COLOR gold]My Custom Streams[/COLOR]','none','ninemain','https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/icon.png','','dir')        
+        #live.addDir('[COLOR blue]Whats My IP[/COLOR]','none','myip',artwork +'myip.png','','dir')      
+        live.addDir('[COLOR gold]My Custom Streams[/COLOR]','none','nineindex','https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/icon.png','','dir')        
         
         main.AUTO_VIEW('')
    except Exception:
@@ -294,7 +294,7 @@ def MYIP():
 def TESTFUNCTION():
      
      #testwin = MyClass('skin.xml','https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/','DefaultSkin')
-     testwin = MyClass('AddonBrowser.xml',ADDON.getAddonInfo('path'),'DefaultSkin')    
+     testwin = MyClass('skin.xml',ADDON.getAddonInfo('path'),'DefaultSkin')    
      testwin.doModal()
      del testwin
      
@@ -363,6 +363,7 @@ def MERDBMOVIES():
 def MOVIECAT():
         live.addDir('Afdah Movies','none','afdahcats',artwork +'afdahmovies.jpg','',fanart)
         live.addDir('MerDB ','none','merdbmovies',artwork +'merdbmovies.jpg','',fanart)
+        live.addDir('SeriesGate Movies ','none','sgmoviecats',artwork +'sgatetv.jpg','',fanart)
         live.addDir('Movie DataCenter[COLOR red]OFFLINE[/COLOR]','none','moviedccats',artwork +'moviedcmovies.jpg','',fanart)
         live.addDir('IWatchOnline','none','catiwo',artwork +'iwatchonline.jpg','',fanart)
         live.addDir('ZMovies','none','catzeemovies',artwork +'zmovies.jpg','',fanart)
@@ -552,8 +553,9 @@ def LINKPAGE(url,name):
                                   thumb = data['cover_url']
                                   favtype = 'movie'
                                   mainimg = thumb
+                                  hostname = main.GETHOSTNAME(host)
                                   try:
-                                          main.addDLDir(movie_name,urls,'vidpage',hthumb,data,dlfoldername,favtype,mainimg)
+                                          main.addDLDir(movie_name+'[COLOR lime]'+hostname+'[/COLOR]',urls,'vidpage',hthumb,data,dlfoldername,favtype,mainimg)
                                           inc +=1
                                   except:
                                           continue
@@ -1091,6 +1093,32 @@ elif mode=='moviedcsearch':
         print ""+url
         moviedc.MOVIEDCSEARCH(url)
 
+# ===============Series Gate Movies=====================================
+
+elif mode=='sgmovielinkpage':
+        print ""+url
+        sgmovie.SGMOVIELINKPAGE(url,name,thumb,mainimg)
+
+elif mode=='sgmovieindex':
+        print ""+url
+        sgmovie.SGMOVIEINDEX(url)
+        
+elif mode=='sgmovieindexsec':
+        print ""+url
+        sgmovie.SGMOVIEINDEXSEC(url)
+        
+elif mode=='sgmoviecats':
+        print ""
+        sgmovie.SGMOVIECATS()        
+
+elif mode=='searchsgmovie':
+        print ""+url
+        sgmovie.SEARCHSGMOVIE(url)
+
+elif mode=='sgmoviesearch':
+        print ""+url
+        sgmovie.SGMOVIESEARCH(url)
+
 #==================SGATE======================================
 
 elif mode=='sgcats':
@@ -1325,7 +1353,15 @@ elif mode=='resolver':
         live.RESOLVER(url,name)
 
 elif mode=='allfavs':
-        ALLFAVS()        
+        ALLFAVS()
+
+elif mode=='userstreams':
+        print ""+url
+        live.USERSTREAMS(url)
+
+elif mode=='usercatslist':
+        print ""+url
+        live.USERCATSLIST(url)        
 
 
 #=============END LIVE STREAMS
@@ -1507,13 +1543,34 @@ elif mode=='streamlicsearch':
 
 
 #==========9Streams======================
+elif mode=='nineindex':
+        print ""+url
+        ninestreams.NINEINDEX()
+        
+        
 elif mode=='ninemain':
         print ""+url
         ninestreams.NINEMAIN()
 
+elif mode=='nineresolver':
+        print ""+url
+        ninestreams.NINERESOLVER(url,name)        
+        
+elif mode=='ninemainlocal':
+        print ""+url
+        ninestreams.NINEMAINLOCAL()
+        
 elif mode=='ninelists':
         print ""+url
         ninestreams.NINELISTS(url)
+
+elif mode=='ninelocallists':
+        print ""+url
+        ninestreams.NINELOCALLISTS(url)
+
+elif mode=='addfile':
+        print ""+url
+        ninestreams.ADDFILE()          
 
 
 elif mode=='nineplaylink':

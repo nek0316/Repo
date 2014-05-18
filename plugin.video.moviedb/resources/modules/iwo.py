@@ -262,11 +262,10 @@ def ZEEVIDPAGE(url,name):
                 if hmf:
                           #try:
                                     host = hmf.get_host()
-                                    hthumb = main.GETHOSTTHUMB(host)
-                                      
+                                    hthumb = main.GETHOSTTHUMB(host)  
                                     favtype = 'movie'
-                    
-                                    main.addDLDir(titlename,urls,'vidpage',hthumb,'',dlfoldername,favtype,'')
+                                    hostname = main.GETHOSTNAME(host)
+                                    main.addDLDir(titlename+'[COLOR lime]'+hostname+'[/COLOR]',urls,'vidpage',hthumb,'',dlfoldername,favtype,'')
                                     favtype = 'movie'
                                     main.AUTO_VIEW('')
 

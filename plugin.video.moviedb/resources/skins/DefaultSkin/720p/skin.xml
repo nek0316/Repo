@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <window>
   <defaultcontrol>9000</defaultcontrol>
   <allowoverlays>false</allowoverlays>
@@ -10,7 +10,7 @@
       <width>1280</width>
       <height>720</height>
       <fadetime>500</fadetime>
-      <texture>backtrek.jpg</texture>
+      <!--texture>background1.jpg</texture-->
     </control>
     <control type="videowindow" id="101">
       <description>video preview window</description>
@@ -29,12 +29,12 @@
       <texture>background2.png</texture>
     </control>
     <control type="image" id="104">
-      <description>MDB LOGO</description>
+      <description>Navi-X logo top left corner</description>
       <posx>15</posx>
       <posy>4</posy>
       <width>24</width>
       <height>24</height>
-      <texture>http://addonrepo.com/xbmchub/moviedb/images/icon.png</texture>
+      <texture>navi-x3.png</texture>
     </control>
     <control type="image" id="105">
       <description>thumb image </description>
@@ -58,7 +58,7 @@
       <posy>670</posy>
       <width>40</width>
       <height>25</height>
-      <texture>http://addonrepo.com/xbmchub/moviedb/images/downloadsmanage.jpg</texture>
+      <texture>icon_download.png</texture>
     </control>
     <control type="label" id="106">
       <description>URL label</description>
@@ -96,7 +96,7 @@
       <posy>670</posy>
       <width>450</width>
       <height>30</height>
-      <label>TEXT 108</label>
+      <label>Loading...</label>
       <textcolor>FFFFFFFF</textcolor>
     </control>
     <control type="label" id="109">
@@ -105,7 +105,7 @@
       <posy>670</posy>
       <width>500</width>
       <height>30</height>
-      <label>LABEL 109</label>
+      <!--label></label-->
       <textcolor>FFFFFFFF</textcolor>
     </control>
     <control type="label" id="110">
@@ -114,7 +114,7 @@
       <posy>100</posy>
       <width>450</width>
       <height>30</height>
-      <label>Label 110</label>
+      <label>Please wait</label>
       <textcolor>FFFFFFFF</textcolor>
     </control>
     <control type="label" id="111">
@@ -123,7 +123,7 @@
       <posy>670</posy>
       <width>400</width>
       <height>30</height>
-      <label>LABEL 111</label>
+      <label>1 of 5</label>
       <!--textcolor>FFFFFFFF</textcolor-->
       <textcolor>FF2DA2FA</textcolor>
     </control>
@@ -600,12 +600,12 @@
           <texture>background_menu_left.png</texture>
         </control>
         <control type="image" id="152">        
-         <description>MDB Logo</description>
+         <description>navi-x image</description>
           <posx>30</posx>
           <posy>60</posy>
           <width>180</width>
           <height>70</height>
-          <texture>icon.png</texture>
+          <texture>navi-x.png</texture>
         </control>        
         <control type="list" id="122">
           <description>Left menu displayed when pressing left key.</description>

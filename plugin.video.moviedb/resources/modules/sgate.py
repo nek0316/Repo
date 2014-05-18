@@ -102,7 +102,7 @@ def SGINDEX (url):
          if len(nmatch) > 0: 
           for pageurl,pageno in nmatch:
                      
-                main.addDir('Page'+ pageno,basetv_url + pageurl,'movieindex',artwork +'nextpage.jpg','','dir')
+                main.addDir('Page'+ pageno,basetv_url + pageurl,'sgindex',artwork +'nextpage.jpg','','dir')
              
         main.AUTO_VIEW('movies')
    except Exception:
@@ -131,6 +131,7 @@ def SGEPISODELIST(url,name,thumb):
     dlfoldername = name
     mainimg = thumb
     show = name
+    url2=url
     link = net.http_GET(url).content
     #match=re.compile('<a href="(.+?)">&raquo S(.+?) - E(.+?)  (.+?)</a><span>(.+?)</span>').findall(link)
     match=re.compile('<a href="(.+?)">&raquo S(.+?) - E(.+?)  (.+?)</a>').findall(link)
@@ -140,7 +141,7 @@ def SGEPISODELIST(url,name,thumb):
               se = s+e
               name = se + ' ' + epname
               favtype = 'episodes'
-              main.addEPNOCLEANDir(name,basetv_url + url,thumb,'sgtvlinkpage',show,dlfoldername,mainimg,season,epnum)
+              main.addEPNOCLEANDir(name,url2+'/season'+season+'/episode'+epnum+'/searchresult',thumb,'sgtvlinkpage',show,dlfoldername,mainimg,season,epnum)
              
               main.AUTO_VIEW('movies')              
    except Exception:
@@ -184,7 +185,7 @@ def SGTVLINKPAGE(url,name,thumb,mainimg):
         if inc < 50:
                  link = net.http_GET(url).content
                  #hostmatch=re.compile('<a rel="nofollow" href="(.+?)" TARGET="_blank" >(.+?)</a>').findall(link)
-                 hostmatch=re.compile('hre_watch" href="(.+?)">').findall(link)
+                 hostmatch=re.compile('hre_watch_tt" href="(.+?)">').findall(link)
                  #for urls,sourcename in hostmatch:
                  for urls in hostmatch:        
                    print 'Pre HMF url is  ' +urls
@@ -199,8 +200,9 @@ def SGTVLINKPAGE(url,name,thumb,mainimg):
                                   data = main.GRABTVMETA(name,'')
                                   thumb = data['cover_url']
                                   favtype = 'movie'
+                                  hostname = main.GETHOSTNAME(host)
                                   try:    
-                                        main.addTVDLDir(name,urls,'vidpage',hthumb,data,dlfoldername,favtype,mainimg)
+                                        main.addTVDLDir(name+'[COLOR lime]'+hostname+'[/COLOR]',urls,'vidpage',hthumb,data,dlfoldername,favtype,mainimg)
                                         inc +=1
                                   except:
                                         continue
