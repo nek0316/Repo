@@ -241,7 +241,7 @@ def CATEGORIES(loggedin):
                 live.addDir('Sports','none','sportcats',artwork +'sports.jpg','Sports such as UFC and more!',fanart)
         if settings.getSetting('streams') == 'true':        
                 live.addDir('Live Streams','https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/streams/menus.xml','livecats',artwork +'live.jpg','Live streams from around the globe, User Sumbitted streams are also available, Be sure to check the special events section!!',fanart)        
-        
+        #live.addDir('User Submitted Playlists' ,'http://goo.gl/JQzOhw','database',artwork +'submitted.jpg','User Submitted Playlists ',fanart)
         #==============Custom Menu Creation======================================
         try:        
              link=OPEN_URL('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/controls/mainmenu.xml').replace('\n','').replace('\r','')
@@ -1575,7 +1575,15 @@ elif mode=='addfile':
 
 elif mode=='nineplaylink':
         print ""+url
-        ninestreams.NINEPLAYLINK(name,url,thumb,page)        
+        ninestreams.NINEPLAYLINK(name,url,thumb,page)
+
+elif mode=='previousmenu':
+        print ""+url
+        ninestreams.PREVIOUSMENU()
+
+elif mode=='database':
+        print ""+url
+        ninestreams.DATABASE(url)        
 #=======================AFDAH MODES===========================
 
 elif mode=='afdahlinkpage':

@@ -70,7 +70,8 @@ def LIVECATS(url):
         match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail><mode>(.+?)</mode><desc>(.+?)</desc>').findall(link)
         for name,url,thumb,mode,desc in match:
                 print 'Description is  ' + desc
-                addDir(name,url,mode,thumb,desc,thumb)                        
+                addDir(name,url,mode,thumb,desc,thumb)
+        #addDir('User Submitted Playlists' ,'http://goo.gl/JQzOhw','database',artwork +'submitted.jpg','User Submitted Playlists ',fanart)        
         main.AUTO_VIEW('movies')
    except Exception:
         buggalo.onExceptionRaised()        

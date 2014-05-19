@@ -72,6 +72,7 @@ def NINEINDEX():
      live.addDir('Local Stream File' ,'none','ninemainlocal','','Your Own Local Playlist','')
      live.addDir('URL Tester' ,'none','addfile','','Test your playable url','')
      #live.addDir('Developer Testing Tester' ,'none ','ninelists','','Dev Testing Mode','')
+     #live.addDir('User Playlists From WEB' ,'http://goo.gl/JQzOhw','database','','','')
                     
      main.AUTO_VIEW('movies')
           
@@ -79,8 +80,12 @@ def NINEINDEX():
 
 
 
-        
+def DATABASE(url):
 
+     link=OPEN_URL(url).replace('\n','').replace('\r','')        
+     match=re.compile('<name>(.+?)</name><link>(.+?)</link>').findall(link)
+     for name,url in match:
+          live.addDir(name,url,'ninelists','','','')
 
 
          
@@ -144,15 +149,26 @@ def NINEMAINLOCAL():
 def NINELISTS(url):
 
      link=OPEN_URL(url).replace('\n','').replace('\r','')
-     match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail>').findall(link)
-     for name,url,thumb in match:
-          live.addSTFavDir(name,url,'nineresolver',thumb,'','',isFolder=False, isPlayable=True)
+     #===============Info/Messages========================
+     match=re.compile('<info>(.+?)</info>').findall(link)
+     for name in match:
+          live.addDir(name,'','ninelists','','','')
      match=re.compile('<name>(.+?)</name><thumbnail>(.+?)</thumbnail><link>(.+?)</link>').findall(link)
      for name,thumb,url in match:
           live.addDir(name,url,'ninelists',thumb,'',thumb)
+     match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail>').findall(link)
+     for name,url,thumb in match:
+          live.addSTFavDir(name,url,'nineresolver',thumb,'','',isFolder=False, isPlayable=True)     
      match=re.compile('<name>(.+?)</name><link>(.+?)</link><thumbnail>(.+?)</thumbnail>').findall(link)
      for name,url,thumb in match:
-          live.addDir(name,url,'ninelists',thumb,'',thumb)     
+          live.addDir(name,url,'ninelists',thumb,'',thumb)
+     if '<poster>schedule' in link:
+          match=re.compile('<name>(.+?)</name>').findall(link)
+          for name in match:
+               live.addDir(name,'','ninelists','','','')
+               
+def PREVIOUSMENU(url):
+     xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method": "Input.Back", "id": 1 }')
 
 def NINELOCALLISTS(url):
      file = open(url, 'r')

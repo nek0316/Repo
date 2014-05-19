@@ -1,3 +1,6 @@
+V2.3.6
+Added Automatic Database Inclusion
+
 V2.3.5
 Added ability for user streams to be in a Menu Format
 
