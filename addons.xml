@@ -67,7 +67,7 @@
 </extension>
 </addon>
 
-<addon id="plugin.video.moviedb" version="2.3.6" name="Cliq!" provider-name="Blazetamer">
+<addon id="plugin.video.moviedb" version="2.3.9" name="Cliq!" provider-name="Blazetamer">
 <requires>
 <import addon="xbmc.python" version="2.1.0"/>
 <import addon="script.module.urlresolver"  version="2.1.2"/>

@@ -1,3 +1,13 @@
+V2.3.9
+Added Sublink capabilities to User Submissions
+Fixed Iwatchonline Movies
+
+V2.3.8
+Additional Tools and Playlist Submission fixes
+
+V2.3.7
+You can now submit playlists from the web Visit www.cliqaddon.com
+
 V2.3.6
 Added Automatic Database Inclusion
 

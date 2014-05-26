@@ -90,6 +90,7 @@ episode = addon.queries.get('episode', '')
 repourl = addon.queries.get('repourl', '')
 gomode = addon.queries.get('gomode', '')
 page = addon.queries.get('page', '')
+key = addon.queries.get('key', '')
 #======================== END Alternate Param Stuff=======================
 
 #========================Advanced Log Stuff=======================
@@ -266,8 +267,8 @@ def CATEGORIES(loggedin):
         #live.addDir('[COLOR blue]Test Update[/COLOR]','none','updatefiles','','','')
         #live.addDir('[COLOR blue]Test Functions[/COLOR]','none','testfunction',artwork +'shutdown.png','','dir')
         #live.addDir('[COLOR blue]Whats My IP[/COLOR]','none','myip',artwork +'myip.png','','dir')      
-        live.addDir('[COLOR gold]My Custom Streams[/COLOR]','none','nineindex','https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/icon.png','','dir')        
-        
+        live.addDir('[COLOR gold]My Custom Streams[/COLOR]','none','nineindex',artwork +'customs.png','','dir')        
+        live.addDir('[COLORgold]Testing Tools[/COLOR]','none','ninetools',artwork +'tools.png','','dir')
         main.AUTO_VIEW('')
    except Exception:
         buggalo.onExceptionRaised()
@@ -577,7 +578,11 @@ def VIDPAGE(url,name):
 
 def DLVIDPAGE(url,name):
         params = {'url':url, 'mode':mode, 'name':name, 'thumb':mainimg, 'dlfoldername':dlfoldername,}
-        main.RESOLVEDL(name,url,thumb)                
+        main.RESOLVEDL(name,url,thumb)
+
+def DLSPECIAL(url,name):
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':mainimg, 'dlfoldername':dlfoldername,}
+        main.SPECIALDL(name,url,thumb)        
                 
                 
 
@@ -946,6 +951,10 @@ elif mode=='vidpage':
 elif mode=='dlvidpage':
         print ""+url
         DLVIDPAGE(url,name)
+
+elif mode=='dlspecial':
+        print ""+url
+        DLSPECIAL(url,name)        
 
 elif mode=='dltvvidpage':
         print ""+url
@@ -1546,7 +1555,10 @@ elif mode=='streamlicsearch':
 elif mode=='nineindex':
         print ""+url
         ninestreams.NINEINDEX()
-        
+
+elif mode=='ninetools':
+        print ""+url
+        ninestreams.NINETOOLS()        
         
 elif mode=='ninemain':
         print ""+url
@@ -1554,7 +1566,11 @@ elif mode=='ninemain':
 
 elif mode=='nineresolver':
         print ""+url
-        ninestreams.NINERESOLVER(url,name)        
+        ninestreams.NINERESOLVER(url,name)
+        
+elif mode=='sublinks':
+        print ""+url
+        ninestreams.SUBLINKS(url,name)         
         
 elif mode=='ninemainlocal':
         print ""+url
@@ -1570,7 +1586,11 @@ elif mode=='ninelocallists':
 
 elif mode=='addfile':
         print ""+url
-        ninestreams.ADDFILE()          
+        ninestreams.ADDFILE()
+
+elif mode=='addplaylist':
+        print ""+url
+        ninestreams.ADDPLAYLIST()         
 
 
 elif mode=='nineplaylink':
@@ -1583,7 +1603,27 @@ elif mode=='previousmenu':
 
 elif mode=='database':
         print ""+url
-        ninestreams.DATABASE(url)        
+        ninestreams.DATABASE(url)
+
+elif mode=='standarddbtypes':
+        print ""+url
+        ninestreams.STANDARDDBTYPES()
+        
+elif mode=='boxdbtypes':
+        print ""+url
+        ninestreams.BOXDBTYPES()
+
+elif mode=='authordbtypes':
+        print ""+url
+        ninestreams.AUTHORDBTYPES()
+
+elif mode=='userdatabase':
+        print ""+url
+        ninestreams.USERDATABASE()
+
+elif mode=='playlistdata':
+        ninestreams.PLAYLISTDATA(url)        
+        
 #=======================AFDAH MODES===========================
 
 elif mode=='afdahlinkpage':

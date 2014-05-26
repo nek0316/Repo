@@ -277,8 +277,8 @@ def IWOVIDPAGE(url,name):
         dlfoldername = name
         titlename = name
         link = net.http_GET(url).content
-        match=re.compile('<a href="(.+?)" target="_blank" rel="nofollow">\r\n\t\t\t\t\t<img src="(.+?)" alt="" /> (.+?).com</a>').findall(link)
-        for url,thumb,name in match:
+        match=re.compile('<a href="(.+?)" target="_blank" rel="nofollow">').findall(link)
+        for url in match:
             link = net.http_GET(url).content
             match=re.compile('<iframe name="frame" class="frame" src="(.+?)"').findall(link)
             for urls in match:
@@ -292,8 +292,9 @@ def IWOVIDPAGE(url,name):
                                     host = hmf.get_host()
                                     hthumb = main.GETHOSTTHUMB(host)
                                     favtype = 'movie'
+                                    hostname = main.GETHOSTNAME(host)
                                     #main.addDLDir(titlename,urls,'vidpage',hthumb,'',dlfoldername,favtype,thumb)
-                                    main.addDir(titlename +' ' + name,urls,'vidpage',hthumb,'','')
+                                    main.addDir(titlename+'[COLOR lime]'+hostname+'[/COLOR]',urls,'vidpage',hthumb,'','')
                                     main.AUTO_VIEW('')                
                  
 

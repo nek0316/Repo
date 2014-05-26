@@ -106,7 +106,7 @@ class downloadThread (threading.Thread):
                    file_size_dl += len(buffer)
                    f.write(buffer)
                    status = int( file_size_dl * 1000. / file_size)
-                  
+                   thumb = 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/icon.png'
                    if status > 99 and status < 101:
                          addon.show_small_popup(title=self.name, msg='10% Complete',delay=int(10), image=thumb)
 
@@ -329,32 +329,60 @@ def addUFCDLDir(name,url,mode,thumb,labels,dlfoldername,favtype,mainimg):
      
 #Resolve Movie DL Links******************************************
 def RESOLVEDL(name,url,thumb):  
-     data=0
-     try:
+        data=0
+        try:
           data = GRABMETA(movie_name,year)
-     except:
+        except:
            data=0
-     hmf = urlresolver.HostedMediaFile(url)
-     host = ''
-     if hmf:
+        hmf = urlresolver.HostedMediaFile(url)
+        host = ''
+        if hmf:
           url = urlresolver.resolve(url)
           host = hmf.get_host()
+          ext = ''
           if '.mp4' in url:
                     ext = '.mp4'
           elif '.flv' in url:
                     ext = '.flv'
           elif '.avi' in url:
                     ext = '.avi'
-          if not ext == '':
           
           
-               console = 'Downloads/Movies/'+ dlfoldername
-               params = {'url':url, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername} 
-             
+          console = 'Downloads/Movies/'+ dlfoldername
+          params = {'url':url, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername} 
 
-               xbmc.sleep(1000)
-        
-               addToQueue(name,url,thumb,ext,console)
+
+          xbmc.sleep(1000)
+
+          addToQueue(name,url,thumb,ext,console)
+
+def SPECIALDL(name,url,thumb):
+        data=0
+        try:
+          data = GRABMETA(movie_name,year)
+        except:
+           data=0
+        hmf = urlresolver.HostedMediaFile(url)
+        host = ''
+        if hmf:
+          url = urlresolver.resolve(url)
+          host = hmf.get_host()
+          ext = ''
+          if '.mp4' in url:
+                    ext = '.mp4'
+          elif '.flv' in url:
+                    ext = '.flv'
+          elif '.avi' in url:
+                    ext = '.avi'
+          
+          
+          console = 'Downloads/Specials/'+ dlfoldername
+          params = {'url':url, 'name':name, 'thumb':thumb, 'dlfoldername':dlfoldername} 
+
+
+          xbmc.sleep(1000)
+
+          addToQueue(name,url,thumb,ext,console)         
 
 #********Resolve TV DL Links*****************************************
 

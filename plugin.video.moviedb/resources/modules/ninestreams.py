@@ -42,6 +42,7 @@ gomode = addon.queries.get('gomode', '')
 regex = addon.queries.get('regex', '')
 page = addon.queries.get('page', '')
 stream = addon.queries.get('stream', '')
+key = addon.queries.get('key', '')
 
 
 # Global Stuff
@@ -65,20 +66,19 @@ def OPEN_URL(url):
   return link
 
 
-
-
-def NINEINDEX():       
-     live.addDir('External Stream File' ,'none','ninemain','','Your Own Custom Playlist','')
-     live.addDir('Local Stream File' ,'none','ninemainlocal','','Your Own Local Playlist','')
+def NINETOOLS():
      live.addDir('URL Tester' ,'none','addfile','','Test your playable url','')
      #live.addDir('Developer Testing Tester' ,'none ','ninelists','','Dev Testing Mode','')
-     #live.addDir('User Playlists From WEB' ,'http://goo.gl/JQzOhw','database','','','')
-                    
+     #live.addDir('User Playlists From WEB' ,'none','userdatabase','','','')
+     live.addDir('Playlist Tester' ,'none','addplaylist','','Test your Playlist','')
+     main.AUTO_VIEW('movies')
+
+     
+def NINEINDEX():       
+     live.addDir('External Stream File' ,'none','ninemain','','Your Own Custom Playlist','')
+     live.addDir('Local Stream File' ,'none','ninemainlocal','','Your Own Local Playlist','')               
      main.AUTO_VIEW('movies')
           
-        
-
-
 
 def DATABASE(url):
 
@@ -86,15 +86,75 @@ def DATABASE(url):
      match=re.compile('<name>(.+?)</name><link>(.+?)</link>').findall(link)
      for name,url in match:
           live.addDir(name,url,'ninelists','','','')
+          
+def USERDATABASE():
+     #-------------Start Type Fetch------------------------------------
+     link=OPEN_URL('https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/streams/usersubmitted/subtypemenu.xml').replace('\n','').replace('\r','')        
+     match=re.compile('<title>(.+?)</title><thumbnail>(.+?)</thumbnail><typekey>(.+?)</typekey>').findall(link)
+     for name,thumb,url in match:
+          addDBDir(name,url,'playlistdata',thumb,'','')
+     #--------------End Fetch-------------------------------------------      
+     #live.addDir('Standard Playlists','none','standarddbtypes','','','')
+     #live.addDir('Box Sets','none','boxdbtypes','','','')
+     #live.addDir('Author Sets','none','authordbtypes','','','')
 
+     
+def PLAYLISTDATA(url):
+     print 'KEYTYPE IS '+ url
+     key = url
+     regex = '<name>(.+?)</name><link>(.+?)</link><type>(.+?)</type>'
+     print 'REGEX IS '+ regex
+     link=OPEN_URL('http://goo.gl/dR7emd').replace('\n','').replace('\r','')
+     
+     match=re.compile(regex).findall(link)
+     for name,url,keytype in match:
+          if key in keytype:
+               live.addDir(name,url,'ninelists','','','')
+          
+'''def STANDARDDBTYPES():
+
+     link=OPEN_URL('http://goo.gl/dR7emd').replace('\n','').replace('\r','')        
+     match=re.compile('<name>(.+?)</name><link>(.+?)</link><type>(.+?)</type>').findall(link)
+     for name,url,kind in match:
+          if 'standard' in kind:
+               live.addDir(name,url,'ninelists','','','')
+
+def BOXDBTYPES():
+
+     link=OPEN_URL('http://goo.gl/dR7emd').replace('\n','').replace('\r','')        
+     match=re.compile('<name>(.+?)</name><link>(.+?)</link><type>(.+?)</type>').findall(link)
+     for name,url,kind in match:
+          if 'boxset' in kind:
+               live.addDir(name,url,'ninelists','','','')
+
+def AUTHORDBTYPES():
+
+     link=OPEN_URL('http://goo.gl/dR7emd').replace('\n','').replace('\r','')        
+     match=re.compile('<name>(.+?)</name><link>(.+?)</link><type>(.+?)</type>').findall(link)
+     for name,url,kind in match:
+          if 'author' in kind:
+               live.addDir(name,url,'ninelists','','','')  '''            
 
          
 
+def addDBDir(name,url,mode,thumb,desc,key):
+        
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'desc':desc, 'key':key}        
+        if desc == '':
+                desc = 'Description not available at this level'
+        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
+        fanart = 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg'
+        ok=True
+        liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumb)
+        liz.setInfo( type="Video", infoLabels={ "title": name, "Plot": desc } )
+        liz.setProperty( "Fanart_Image", fanart )
+        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
+        return ok
   
 
-def addDir(name,url,mode,thumb,stream):
+def addDir(name,url,mode,thumb,key):
         
-        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb,  'page':page, 'stream':stream}        
+        params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb,  'page':page, 'key':key}        
         desc = 'Description not available at this level'
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
         fanart = 'https://raw.githubusercontent.com/Blazetamer/commoncore/master/xbmchub/moviedb/showgunart/images/fanart/fanart.jpg'
@@ -146,7 +206,7 @@ def NINEMAINLOCAL():
         main.AUTO_VIEW('movies')                 
    
         
-def NINELISTS(url):
+def NINELISTSOLD(url):
 
      link=OPEN_URL(url).replace('\n','').replace('\r','')
      #===============Info/Messages========================
@@ -166,6 +226,41 @@ def NINELISTS(url):
           match=re.compile('<name>(.+?)</name>').findall(link)
           for name in match:
                live.addDir(name,'','ninelists','','','')
+
+#=========================================================================               
+def NINELISTS(url):
+
+     link=OPEN_URL(url).replace('\n','').replace('\r','')
+               
+     #===============Info/Messages========================
+                    
+     match=re.compile('<info>(.+?)</info>').findall(link)
+     for name in match:
+          live.addDir(name,'','ninelists','','','')
+     match=re.compile('<name>(.+?)</name><link>(.+?)</link><thumbnail>(.+?)</thumbnail>').findall(link)
+     for name,url,thumb in match:
+          live.addDir(name,url,'ninelists',thumb,'',thumb)     
+     match=re.compile('<name>(.+?)</name><thumbnail>(.+?)</thumbnail><link>(.+?)</link>').findall(link)
+     for name,thumb,url in match:
+          live.addDir(name,url,'ninelists',thumb,'',thumb)
+     match=re.compile('<title>(.+?)</title><link>(.+?)</link><thumbnail>(.+?)</thumbnail>').findall(link)
+     for name,url,thumb in match:
+          if 'sublink' in url:
+               live.addDir(name,url,'sublinks',thumb,'',thumb)
+          if 'sublink' not in url:     
+               live.addSTFavDir(name,url,'nineresolver',thumb,'','',isFolder=False, isPlayable=True)     
+     if '<poster>schedule' in link:
+          match=re.compile('<message>(.+?)</message>').findall(link)
+          for name in match:
+               live.addDir(name,'','ninelists','','','') 
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def SUBLINKS(url,name):
+     name = name
+     submatch=re.compile('<sublink>(.+?)</sublink>').findall(url)
+     for sublink in submatch:
+          live.addSTFavDir(name,sublink,'nineresolver',thumb,'','',isFolder=False, isPlayable=True)
+     
                
 def PREVIOUSMENU(url):
      xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method": "Input.Back", "id": 1 }')
@@ -212,21 +307,27 @@ def NINERESOLVER(url,name):
 
 #Start Search Function
 def _get_keyboard( default="", heading="", hidden=False ):
-	keyboard = xbmc.Keyboard( default, heading, hidden )
-	keyboard.doModal()
-	if keyboard.isConfirmed() :
-		return keyboard.getText()
-	return default
+     keyboard = xbmc.Keyboard( default, heading, hidden )
+     keyboard.doModal()
+     if keyboard.isConfirmed() :
+          return keyboard.getText()
+     return default
 
                 
 def ADDFILE():
-	vq = _get_keyboard( heading="Add your url" )
-	if ( not vq ): return False, 0
-	url = vq  
-	print "Searching URL: " + url 
-	#NINERESOLVER(url,'URL TESTER')
-	live.addSTFavDir('Click to Try URL',url,'nineresolver','','','',isFolder=False, isPlayable=True)
+     vq = _get_keyboard( heading="Add your url" )
+     if ( not vq ): return False, 0
+     url = vq  
+     print "Searching URL: " + url 
+     #NINERESOLVER(url,'URL TESTER')
+     live.addSTFavDir('Click to Try URL',url,'nineresolver','','','',isFolder=False, isPlayable=True)
      
+def ADDPLAYLIST():
+     vq = _get_keyboard( heading="Add your Playlist URL" )
+     if ( not vq ): return False, 0
+     url = vq  
+     print "Playlist URL: " + url 
+     live.addDir('Click to Try Playlist',url,'ninelists','','','')   
         
 def URLTEST(url):
      try:        
