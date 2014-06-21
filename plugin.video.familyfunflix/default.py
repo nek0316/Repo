@@ -72,23 +72,20 @@ settings = xbmcaddon.Addon(id='plugin.video.familyfunflix')
 
 def CATEGORIES():
     
-    main.addDir('[COLOR white]New Arrivals[/COLOR]','http://www.popcornflixkids.com/New-Arrivals-movies','index',artPath+'newarrival.png','','movies')
-    main.addDir('[COLOR white]Most Popular (1-4)[/COLOR]','http://www.popcornflixkids.com/most-popular-movies','index',artPath+'mostpopular.png','','movies')
-    main.addDir('[COLOR white]Popcorn Junior [/COLOR]','http://www.popcornflixkids.com/Pop Junior (1-4)-movies','indexdeep',artPath+'popkids.png','','movies')
-    main.addDir('[COLOR white]Popcorn Kids (4-10)[/COLOR]','http://www.popcornflixkids.com/Pop Kids (4-10)-movies','indexdeep',artPath+'popkids.png','','movies')
-    main.addDir('[COLOR white]Teen Zone[/COLOR]','http://www.popcornflixkids.com/Teen Zone-movies','indexdeep',artPath+'teenzone.png','','movies')
-    main.addDir('[COLOR white]Family Fun Movies[/COLOR]','http://www.popcornflixkids.com/Fun For the Family-movies','indexdeep',artPath+'fun.png','','movies')
-    main.addDir('[COLOR white]Wild Kingdom[/COLOR]','http://www.popcornflixkids.com/Wild Kingdom-movies','indexdeep',artPath+'wildkingdom.png','','movies')
-    main.addDir('[COLOR white]Fairy Tales[/COLOR]','http://www.popcornflixkids.com/Fairy Tales-movies','indexdeep',artPath+'fairytales.png','','movies')
-    main.addDir('[COLOR white]Cartoons[/COLOR]','http://www.popcornflixkids.com/Cartoons-movies','indexdeep',artPath+'animated.png','','movies')
-    main.addDir('[COLOR white]Musical[/COLOR]','http://www.popcornflixkids.com/Musicals-movies','indexdeep',artPath+'musical.png','','movies')
-    main.addDir('[COLOR white]Girl Power[/COLOR]','http://www.popcornflixkids.com/Girl Power-movies','indexdeep',artPath+'girlpower.png','','movies')
-    main.addDir('[COLOR white]Boys Rock[/COLOR]','http://www.popcornflixkids.com/Boys Rock-movies','indexdeep',artPath+'boysrock.png','','movies')
-    main.addDir('[COLOR red][B]Search[/B] >>>[/COLOR]','http://www.popcornflixkids.com/search?query=','searchit',artPath+'search.png','','')
-    main.addDir('[COLOR gold]Manage Downloads[/COLOR]','none','viewQueue',artPath +'downloads.png','','')
+    main.addDir('New Arrivals','http://www.popcornflixkids.com/new-arrival-kids-movies','indexdeep','','','movies')
+    main.addDir('Most Popular','http://www.popcornflixkids.com/most-popular-movies','indexdeep','','','movies')
+    link=OPEN_URL('http://www.popcornflixkids.com').replace('\n','').replace('\r','').replace('\t','')
+    match=re.compile('Genres(.+?)<div class="copyright">').findall(link)
+    genres = match[0]
+    gmatch=re.compile('<a href="(.+?)">(.+?)</a>').findall(genres)
+    for genre, name in gmatch:
+        print 'Genres is ' +genre
+        if 'TV' not in name:   
+          main.addDir(name,'http://www.popcornflixkids.com'+genre,'indexdeep','','','movies') 
+    #main.addDir('[COLOR gold]Manage Downloads[/COLOR]','none','viewQueue',artPath +'downloads.png','','')
     #main.addDir('[COLOR white]Help and Extras[/COLOR]','none','statuscats',artPath +'help.png','','')
     main.AUTO_VIEW('')
-        
+
 def INDEX(url,favtype):
           params = {'url':url, 'favtype':favtype}
           link = net.http_GET(url).content
@@ -96,27 +93,21 @@ def INDEX(url,favtype):
           match=re.compile('<a href="(.+?)">\n                    <img width="184" height="256" src="(.+?)" alt="(.+?)"/>').findall(link)
           for url,thumb,name in match:
                url = URL + url
-               if settings.getSetting('metadata') == 'true':
-                    data = main.GRABMETA(name,year)
-                    thumb = data['cover_url'] 
-                    #addDir(name,url,'videolinks',thumb)
-                    main.addDir(name,url,'videolinks',thumb,data,favtype)
-                    main.AUTO_VIEW('movies')
-               else:
-                    main.addDir(name,url,'videolinks',thumb,'',favtype)
-                    main.AUTO_VIEW('movies')
-                    
+               main.addDir(name,url,'videolinks',thumb,'',favtype)
+          main.AUTO_VIEW('movies')
+        
 
-                
+                    
 def VIDEOLINKS(name,url,thumb,favtype):
-        params = {'url':url, 'name':name, 'thumb':thumb, 'favtype':favtype}  
-        link = net.http_GET(url).content
-        #match=re.compile('id="flashContent" data-videosrc="(.+?)" data-videodata="(.+?)"></div>').findall(link)
-        match=re.compile('id="flashContent" data-videosrc="(.+?)"\n         data-videodata="(.+?)"></div>').findall(link)
-        matchyear=re.compile('<span class="year">(.+?)</span>').findall(link)
+        params = {'url':url, 'name':name, 'thumb':thumb, 'favtype':favtype}
+        link=OPEN_URL(url).replace('\n','').replace('\r','').replace(' ','')
+        #link = net.http_GET(url).content.replace('\n','').replace('\r','').replace(' ','')
+        match=re.compile('id="flashContent"data-videosrc="(.+?)"data-videodata="(.+?)"></div>').findall(link)
+        matchyear=re.compile('<spanclass="year">(.+?)</span>').findall(link)
         for url,url2 in match:
-                     url = url2
-                     for year in matchyear:
+             #if 'undefined' in url:
+                  url = url2
+                  for year in matchyear:
                        link = net.http_GET(url).content
                        url = URL + url
                        match4=re.compile('"poster":"(.+?)","slider":".+?","duration":.+?,"rating":"(.+?)","language":".+?","cuepoints":".+?","urls":{".+?":"(.+?)"}').findall(link)
@@ -125,17 +116,14 @@ def VIDEOLINKS(name,url,thumb,favtype):
                               thumb = thumb.replace("\/","/")
                               url = url.replace("\/","/")
                               mainimg = thumb
-                              
+                              favtype = 'movies'
                               link = net.http_GET(url).content
                               match3=re.compile('RESOLUTION=864x480\r\n(.+?)\r\n#').findall(link)
                               for url in match3:
-                                   print 'Thumb is' +thumb
-                                   print 'Playurl is' +url
-                                   print 'Name is' +name
-                                   #addLink(name,url,thumb)
-                                   #addlinkDir(name + year,url,'addlink',thumb)
                                    main.addDLDir(name + year + ' Rated- ' +rating,url,'addlink',thumb,'',name + year,favtype,mainimg)
                                    main.AUTO_VIEW('movies')
+                
+
 
             
            
@@ -158,23 +146,19 @@ def OPEN_URL(url):
   return link
 
 
-
 def INDEX_DEEP(url,favtype):
+        #mainurl = url
         params = {'url':url,'favtype':favtype}  
-        link = net.http_GET(url).content
-        match=re.compile('<a href="(.+?)"><img width="184" height="256" src="(.+?)" alt="(.+?)"></a>').findall(link)
+        link=OPEN_URL(url)
+        match=re.compile('<a href="(.+?)"><img width="184" height="256" src="(.+?)"\n.+?alt="(.+?)"></a>').findall(link)
         for url,thumb,name in match:
+               print 'Stuff is ' + url 
                url = URL + url
-               if settings.getSetting('metadata') == 'true':
-                    data = main.GRABMETA(name,year)
-                    thumb = data['cover_url'] 
-                    #addDir(name,url,'videolinks',thumb)
-                    main.addDir(name,url,'videolinks',thumb,data,favtype)
-                    #addDir(name,url,'videolinks',thumb)
-                    main.AUTO_VIEW('movies')
-               else:
-                    main.addDir(name,url,'videolinks',thumb,'',favtype)
-                    main.AUTO_VIEW('movies')
+               main.addDir(name,url,'videolinks',thumb,'',favtype)
+        main.AUTO_VIEW('movies')
+
+
+
 
 	
 #Start Ketboard Function                

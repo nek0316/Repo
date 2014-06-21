@@ -8,10 +8,6 @@
 <category label="Downloads">>
 <setting id="download_folder" type="folder" label="Downloads Folder" default="" />
 </category>
-<category label="Meta-Data">
-		<setting id="metadata" type="bool" label="Enable 			MetaData" 			
-		default="false"/>
-</category>
 
 
 
