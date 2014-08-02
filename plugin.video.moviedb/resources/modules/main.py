@@ -346,6 +346,9 @@ def RESOLVEDL(name,url,thumb):
                     ext = '.flv'
           elif '.avi' in url:
                     ext = '.avi'
+
+          elif '.mkv' in url:
+                    ext = '.mkv'          
           
           
           console = 'Downloads/Movies/'+ dlfoldername
@@ -374,6 +377,9 @@ def SPECIALDL(name,url,thumb):
                     ext = '.flv'
           elif '.avi' in url:
                     ext = '.avi'
+                    
+          elif '.mkv' in url:
+                    ext = '.mkv'          
           
           
           console = 'Downloads/Specials/'+ dlfoldername
@@ -404,6 +410,10 @@ def RESOLVETVDL(name,url,thumb):
                     ext = '.flv'
           elif '.avi' in url:
                     ext = '.avi'
+
+          elif '.mkv' in url:
+                    ext = '.mkv'
+                    
           if not ext == '':
           
                console = 'Downloads/TV Shows/'+ dlfoldername
@@ -433,6 +443,10 @@ def RESOLVESPORTDL(name,url,thumb):
                     ext = '.flv'
           elif '.avi' in url:
                     ext = '.avi'
+
+          elif '.mkv' in url:
+                    ext = '.mkv'
+                    
           if not ext == '':
           
                console = 'Downloads/Sports/'+ dlfoldername
@@ -896,7 +910,7 @@ def GETHOSTNAME(host):
           host = host[:-3]
      if host.startswith('www.'):
              host = host[4:]
-     hostname=' *'+host+'*' 
+     hostname=' '+host+'' 
      
      return(hostname)
 

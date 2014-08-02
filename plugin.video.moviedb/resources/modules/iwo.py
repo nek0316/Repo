@@ -265,7 +265,7 @@ def ZEEVIDPAGE(url,name):
                                     hthumb = main.GETHOSTTHUMB(host)  
                                     favtype = 'movie'
                                     hostname = main.GETHOSTNAME(host)
-                                    main.addDLDir(titlename+'[COLOR lime]'+hostname+'[/COLOR]',urls,'vidpage',hthumb,'',dlfoldername,favtype,'')
+                                    main.addDLDir(titlename+hostname,urls,'vidpage',hthumb,'',dlfoldername,favtype,'')
                                     favtype = 'movie'
                                     main.AUTO_VIEW('')
 
@@ -294,7 +294,7 @@ def IWOVIDPAGE(url,name):
                                     favtype = 'movie'
                                     hostname = main.GETHOSTNAME(host)
                                     #main.addDLDir(titlename,urls,'vidpage',hthumb,'',dlfoldername,favtype,thumb)
-                                    main.addDir(titlename+'[COLOR lime]'+hostname+'[/COLOR]',urls,'vidpage',hthumb,'','')
+                                    main.addDir(titlename+hostname,urls,'vidpage',hthumb,'','')
                                     main.AUTO_VIEW('')                
                  
 

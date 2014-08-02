@@ -1,3 +1,15 @@
+V2.4.2
+Added FrightPix to Movie Section
+
+V2.4.1
+Added Custom Skin BETA USE AT YOUR OWN RISK
+Added Sublink routine to User Streams
+Code Clean up
+
+V2.4.0
+Activated PopcornFlix as internal addon
+Prep for Skinning  "No idea when it will be ready"
+
 V2.3.9
 Added Sublink capabilities to User Submissions
 Fixed Iwatchonline Movies
